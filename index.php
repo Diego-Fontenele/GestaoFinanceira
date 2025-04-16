@@ -34,7 +34,7 @@
 
   <!-- Imagem de destaque -->
   <div class="container mt-4">
-    <img src="/GestaoFinanceira/img/principalIndex.avif​" alt="Imagem sobre finanças" class="hero-image">
+    <img src="img/principalIndex.avif​" alt="Imagem sobre finanças" class="hero-image">
     
     <!-- Texto inspirador -->
     <div class="hero-text">
