@@ -28,7 +28,7 @@
   <nav class="navbar bg-light shadow-sm">
     <div class="container">
       <h4 class="mb-0">Gestão Financeira</h4>
-      <a href="#" class="btn btn-outline-primary">Área Logada</a>
+      <a href="login.php" class="btn btn-outline-primary">Área Logada</a>
     </div>
   </nav>
 
