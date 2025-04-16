@@ -35,7 +35,8 @@
       <button type="submit" class="btn btn-primary">Entrar</button>
     </div>
     <div class="text-center mt-3">
-      <a href="esqueceu.php">Esqueci minha senha</a>
+      <div><a href="esqueceu.php">Esqueci minha senha</a></div>
+      <div><a href="cadastro.html">Criar nova conta</a></div>
     </div>
   </form>
 </div>
