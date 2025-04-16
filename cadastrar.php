@@ -4,8 +4,6 @@ require_once 'Conexao.php';
 $nome = $_POST['nome'];
 $email = $_POST['email'];
 $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-echo $nome;
-die;
 $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':nome', $nome);
