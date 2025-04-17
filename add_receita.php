@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = '';
     $valor = '';
     $data = '';
+    echo "<script>alert('Dados salvos com sucesso!'); window.location.href = 'login.php';</script>";
   } else {
     $erro = "Erro ao salvar receita.";
   }
