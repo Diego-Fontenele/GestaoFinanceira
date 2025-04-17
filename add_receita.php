@@ -82,14 +82,22 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script>
+
 <script>
   $(document).ready(function(){
-    $('.valor').inputmask('currency', {
+    $('input.valor').inputmask({
+      alias: 'currency',
       prefix: 'R$ ',
       groupSeparator: '.',
       radixPoint: ',',
-      allowMinus: false,
-      autoUnmask: true,
+      autoGroup: true,
+      digits: 2,
+      digitsOptional: false,
+      placeholder: '0',
+      rightAlign: false,
       removeMaskOnSubmit: true
     });
   });
