@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = '';
     $valor = '';
     $data = '';
-    echo "<script>alert('Dados salvos com sucesso!'); ";
+    echo "<script>alert('Dados salvos com sucesso!'); <\script>";
   } else {
     $erro = "Erro ao salvar receita.";
   }
