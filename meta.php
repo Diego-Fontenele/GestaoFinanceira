@@ -181,8 +181,8 @@ foreach ($metas as $m) {
         <tbody>
           <?php foreach ($metas as $m): ?>
             <tr>
-              <td><?= date('d/m/Y', strtotime($m['dataini'])) ?></td>
-              <td><?= date('d/m/Y', strtotime($m['datafim'])) ?></td>
+              <td><?= date('d/m/Y', strtotime($m['data_inicio'])) ?></td>
+              <td><?= date('d/m/Y', strtotime($m['data_fim'])) ?></td>
               <td><?= $m['titulo'] ?></td>
               <td><?= $m['descricao'] ?></td>
               <td>R$ <?= number_format($m['valor'], 2, ',', '.') ?></td>
