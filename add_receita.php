@@ -35,47 +35,51 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>Adicionar Receita</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script>
 </head>
-<body class="bg-light">
+<body style="background-color: #f8f9fa;">
 
-<div class="container mt-5">
-    
-  <div class="card p-4">
-    <h4 class="mb-4">Adicionar Receita</h4>
+<div class="d-flex">
+  <!-- Menu Lateral -->
+  <?php include 'menu.php'; ?>
 
-    <?php if (!empty($erro)): ?>
-      <div class="alert alert-danger"><?= $erro ?></div>
-    <?php endif; ?>
+  <!-- Conteúdo principal -->
+  <div class="flex-grow-1 p-4">
+    <div class="card p-4">
+      <h4 class="mb-4">Adicionar Receita</h4>
 
-    <form method="POST">
-    <div class="d-flex">
-        <?php include 'menu.php'; ?>
-      <div class="mb-3">
-        <label class="form-label">Categoria</label>
-        <select class="form-select" name="categoria_id" required>
-          <option value="">Selecione</option>
-          <?php foreach ($categorias as $cat): ?>
-            <option value="<?= $cat['id'] ?>"><?= $cat['nome'] ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Descrição</label>
-        <input type="text" name="descricao" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Valor</label>
-        <input type="text" name="valor" class="form-control valor" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Data</label>
-        <input type="date" name="data" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-success">Salvar Receita</button>
-      <a href="dashboard.php" class="btn btn-secondary">Voltar</a>
-    </form>
+      <?php if (!empty($erro)): ?>
+        <div class="alert alert-danger"><?= $erro ?></div>
+      <?php endif; ?>
+
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" name="categoria_id" required>
+            <option value="">Selecione</option>
+            <?php foreach ($categorias as $cat): ?>
+              <option value="<?= $cat['id'] ?>"><?= $cat['nome'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Descrição</label>
+          <input type="text" name="descricao" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Valor</label>
+          <input type="text" name="valor" class="form-control valor" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Data</label>
+          <input type="date" name="data" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Salvar Receita</button>
+        <a href="dashboard.php" class="btn btn-secondary">Voltar</a>
+      </form>
+    </div>
   </div>
 </div>
 
