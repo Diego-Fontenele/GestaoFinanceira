@@ -90,7 +90,7 @@ if (!empty($filtro_fim)) {
   $params[] = $filtro_fim;
 }
 
-$sql .= " ORDER BY data DESC";
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
