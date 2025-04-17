@@ -51,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $titulo = '';
   $descricao = '';
   $valor = '';
-  $data = '';
+  $dataini = '';
+  $datafim = '';
 }
 
 // Exclusão
@@ -84,11 +85,11 @@ $sql = "SELECT * FROM metas WHERE usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
 
 if (!empty($filtro_inicio)) {
-  $sql .= " AND data >= ?";
+  $sql .= " AND data_inicio >= ?";
   $params[] = $filtro_inicio;
 }
 if (!empty($filtro_fim)) {
-  $sql .= " AND data <= ?";
+  $sql .= " AND data_fim <= ?";
   $params[] = $filtro_fim;
 }
 
