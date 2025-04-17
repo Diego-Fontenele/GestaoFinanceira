@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = '';
     $valor = '';
     $data = '';
-    echo "<script>alert('Dados salvos com sucesso!');<\script>";
+    echo "<script>alert('Dados salvos com sucesso!');</script>";
+    
   } else {
     $erro = "Erro ao salvar despesa.";
   }
