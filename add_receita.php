@@ -7,61 +7,10 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
-$categoria_id = '';
-$descricao = '';
-$valor = '';
-$data = '';
-$sucesso = false;
-$erro = '';
-$editando = false;
-$id_edicao = null;
-
 // Filtros
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
-
-// Se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Verifica se os dados estão presentes
-  if (empty($_POST['categoria_id']) || empty($_POST['descricao']) || empty($_POST['valor']) || empty($_POST['data'])) {
-    $erro = "Todos os campos são obrigatórios!";
-  } else {
-    $categoria_id = $_POST['categoria_id'];
-    $descricao = $_POST['descricao'];
-    $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-    $data = $_POST['data'];
-
-    if (!empty($_POST['id'])) {
-      // Atualização
-      $id_edicao = $_POST['id'];
-      $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
-      if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
-        $sucesso = true;
-        header("Location: receitas.php"); // Redireciona após sucesso
-        exit;
-      } else {
-        $erro = "Erro ao atualizar receita: " . implode(', ', $stmt->errorInfo());
-      }
-    } else {
-      // Inserção
-      $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-      if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
-        $sucesso = true;
-        header("Location: receitas.php"); // Redireciona após sucesso
-        exit;
-      } else {
-        $erro = "Erro ao salvar receita: " . implode(', ', $stmt->errorInfo());
-      }
-    }
-
-    // Limpa os campos após envio
-    $categoria_id = '';
-    $descricao = '';
-    $valor = '';
-    $data = '';
-  }
-}
 
 // Exclusão
 if (isset($_GET['excluir'])) {
@@ -119,43 +68,96 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Adicionar Receita</title>
+  <title>Receitas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-  <div class="container py-5">
-    <h4 class="mb-4"><?= $editando ? 'Editar Receita' : 'Adicionar Receita' ?></h4>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Menu Lateral -->
+      <div class="col-md-2 bg-dark text-white p-3">
+        <h4>Menu</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="receitas.php">Receitas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="despesas.php">Despesas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="metas.php">Metas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="sair.php">Sair</a>
+          </li>
+        </ul>
+      </div>
 
-    <?php if (!empty($erro)): ?>
-      <div class="alert alert-danger"><?= $erro ?></div>
-    <?php endif; ?>
+      <!-- Conteúdo Principal -->
+      <div class="col-md-10">
+        <div class="container py-5">
+          <h4 class="mb-4">Receitas</h4>
 
-    <form method="POST">
-      <input type="hidden" name="id" value="<?= $id_edicao ?>">
-      <div class="mb-3">
-        <label class="form-label">Categoria</label>
-        <select class="form-select" name="categoria_id" required>
-          <option value="">Selecione</option>
-          <?php foreach ($categorias as $cat): ?>
-            <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
-          <?php endforeach; ?>
-        </select>
+          <!-- Filtros -->
+          <form class="mb-4" method="GET">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="form-label">Categoria</label>
+                <select class="form-select" name="filtro_categoria">
+                  <option value="">Selecione</option>
+                  <?php foreach ($categorias as $cat): ?>
+                    <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $filtro_categoria ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Data Início</label>
+                <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Data Fim</label>
+                <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">&nbsp;</label><br>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Tabela de Receitas -->
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($receitas as $receita): ?>
+                <tr>
+                  <td><?= $receita['id'] ?></td>
+                  <td><?= $receita['categoria_nome'] ?></td>
+                  <td><?= $receita['descricao'] ?></td>
+                  <td>R$ <?= number_format($receita['valor'], 2, ',', '.') ?></td>
+                  <td><?= date('d/m/Y', strtotime($receita['data'])) ?></td>
+                  <td>
+                    <a href="?editar=<?= $receita['id'] ?>" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="?excluir=<?= $receita['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir esta receita?')">Excluir</a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Descrição</label>
-        <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Valor</label>
-        <input type="text" name="valor" class="form-control" value="<?= $valor ?>" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Data</label>
-        <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
-      </div>
-      <button type="submit" class="btn btn-success"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
-      <a href="receitas.php" class="btn btn-secondary">Cancelar</a>
-    </form>
+    </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
