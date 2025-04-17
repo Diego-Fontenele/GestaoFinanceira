@@ -6,7 +6,7 @@
       <a class="nav-link text-white" href="area_logada.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
     </li>
     <li class="nav-item mb-2">
-      <a class="nav-link text-white" href="receitas.php"><i class="bi bi-wallet2"></i> Receitas</a>
+      <a class="nav-link text-white" href="add_receitas.php"><i class="bi bi-wallet2"></i> Receitas</a>
     </li>
     <li class="nav-item mb-2">
       <a class="nav-link text-white" href="despesas.php"><i class="bi bi-cash-stack"></i> Despesas</a>
