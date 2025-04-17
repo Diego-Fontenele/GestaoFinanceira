@@ -7,8 +7,6 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
-$erro = '';
-
 // Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $categoria_id = $_POST['categoria_id'];
@@ -86,23 +84,26 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script>
+<!-- jQuery (obrigatório para Inputmask com jQuery funcionar) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
+<!-- Inputmask principal -->
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+
+<!-- Inputmask + jQuery bindings -->
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
+
 <script>
-  $(function() {
-    $('.valor').inputmask({
+  $(document).ready(function(){
+    Inputmask({
       alias: 'currency',
       prefix: 'R$ ',
       groupSeparator: '.',
       radixPoint: ',',
       autoGroup: true,
-      digits: 2,
-      digitsOptional: false,
-      placeholder: '0',
-      rightAlign: false,
+      allowMinus: false,
       removeMaskOnSubmit: true
-    });
+    }).mask('.valor');
   });
 </script>
 
