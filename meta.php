@@ -155,8 +155,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= date('d/m/Y', strtotime($meta['data_inicio'])) ?></td>
                 <td><?= date('d/m/Y', strtotime($meta['data_fim'])) ?></td>
                 <td>
-                  <a href="metas.php?editar=<?= $meta['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
-                  <a href="metas.php?excluir=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta meta?');"><i class="bi bi-trash"></i></a>
+                  <a href="meta.php?editar=<?= $meta['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
+                  <a href="meta.php?excluir=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta meta?');"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
             <?php endforeach; ?>
