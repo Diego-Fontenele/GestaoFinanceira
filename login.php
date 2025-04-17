@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $email = $_POST['email'];
   $senha = $_POST['senha'];
 
-  $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
+  $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
   $stmt->bindParam(':email', $email);
   $stmt->execute();
 
