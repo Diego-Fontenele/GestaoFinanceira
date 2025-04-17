@@ -1,3 +1,27 @@
+<?php
+session_start();
+include 'conexao.php';
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  $email = $_POST['email'];
+  $senha = $_POST['senha'];
+
+  $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
+  $stmt->bindParam(':email', $email);
+  $stmt->execute();
+
+  $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if ($usuario && password_verify($senha, $usuario['senha'])) {
+    $_SESSION['usuario'] = $usuario['nome'];
+    header("Location: area_logada.php");
+    exit();
+  } else {
+    $erro = "E-mail ou senha inválidos.";
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -22,7 +46,12 @@
 
 <div class="login-container">
   <h3 class="text-center mb-4">Entrar na sua conta</h3>
-  <form method="POST" action="#">
+
+  <?php if (isset($erro)): ?>
+    <div class="alert alert-danger text-center"><?php echo $erro; ?></div>
+  <?php endif; ?>
+
+  <form method="POST" action="">
     <div class="mb-3">
       <label for="email" class="form-label">E-mail</label>
       <input type="email" name="email" class="form-control" id="email" required>
