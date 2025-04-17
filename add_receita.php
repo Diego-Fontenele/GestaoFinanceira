@@ -29,12 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = '';
     $valor = '';
     $data = '';
-    ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Sucesso!</strong> Dados salvos com sucesso.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-    <?php
+    
   } else {
     $erro = "Erro ao salvar receita.";
   }
@@ -119,4 +114,15 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
       removeMaskOnSubmit: true
     }).mask('.valor');
   });
+  <?php if ($sucesso): ?>
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Receita cadastrada com sucesso!',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    <?php endif; ?>
 </script>
