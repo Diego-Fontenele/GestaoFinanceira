@@ -73,7 +73,8 @@ if (isset($_GET['editar'])) {
     $titulo = $meta['titulo'];
     $descricao = $meta['descricao'];
     $valor = number_format($meta['valor'], 2, ',', '.');
-    $data = $meta['data'];
+    $dataini = $meta['data_inicio'];
+    $datafim = $meta['data_fim'];
     $editando = true;
   }
 }
