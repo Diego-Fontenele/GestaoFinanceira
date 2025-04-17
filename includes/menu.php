@@ -9,7 +9,7 @@
       <a class="nav-link text-white" href="add_receita.php"><i class="bi bi-wallet2"></i> Receitas</a>
     </li>
     <li class="nav-item mb-2">
-      <a class="nav-link text-white" href="despesas.php"><i class="bi bi-cash-stack"></i> Despesas</a>
+      <a class="nav-link text-white" href="add_despesa.php"><i class="bi bi-cash-stack"></i> Despesas</a>
     </li>
     <li class="nav-item mb-2">
       <a class="nav-link text-white" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
