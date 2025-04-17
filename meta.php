@@ -111,7 +111,6 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($meta['titulo']) ?></td>
               <td>R$ <?= number_format($meta['valor'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($meta['data_inicio'])) ?> a <?= date('d/m/Y', strtotime($meta['data_fim'])) ?></td>
-              <td><?= date('d/m/Y', strtotime($meta['criado_em'])) ?></td>
             </tr>
           <?php endforeach; ?>
           <?php if (count($metas) === 0): ?>
