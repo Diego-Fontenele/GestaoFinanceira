@@ -33,7 +33,7 @@ if (isset($_GET['editar'])) {
 if (isset($_GET['excluir'])) {
   $stmt = $pdo->prepare("DELETE FROM receitas WHERE id = ? AND usuario_id = ?");
   $stmt->execute([$_GET['excluir'], $_SESSION['usuario_id']]);
-  header("Location: receita.php");
+  header("Location: add_receita.php");
   exit;
 }
 
