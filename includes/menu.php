@@ -12,7 +12,7 @@
       <a class="nav-link text-white" href="add_despesa.php"><i class="bi bi-cash-stack"></i> Despesas</a>
     </li>
     <li class="nav-item mb-2">
-  <a class="nav-link text-white" href="add_metas.php"><i class="bi bi-flag"></i> Metas</a>
+  <a class="nav-link text-white" href="meta.php"><i class="bi bi-flag"></i> Metas</a>
     </li>
     <li class="nav-item mb-2">
       <a class="nav-link text-white" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
