@@ -8,6 +8,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $categoria_id = '';
+$titulo = '';  // Adicionando o título
 $descricao = '';
 $valor = '';
 $data = '';
@@ -24,6 +25,7 @@ $filtro_fim = $_GET['filtro_fim'] ?? '';
 // Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $categoria_id = $_POST['categoria_id'];
+  $titulo = $_POST['titulo'];  // Capturando o título
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
   $data = $_POST['data'];
@@ -31,16 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!empty($_POST['id'])) {
     // Atualização
     $id_edicao = $_POST['id'];
-    $stmt = $pdo->prepare("UPDATE metas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
+    $stmt = $pdo->prepare("UPDATE metas SET categoria_id = ?, titulo = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
+    if ($stmt->execute([$categoria_id, $titulo, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
       $sucesso = true;
     } else {
       $erro = "Erro ao atualizar meta.";
     }
   } else {
     // Inserção
-    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
+    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, categoria_id, titulo, descricao, valor, data) VALUES (?, ?, ?, ?, ?, ?)");
+    if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $titulo, $descricao, $valor, $data])) {
       $sucesso = true;
     } else {
       $erro = "Erro ao salvar meta.";
@@ -49,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // Limpa os campos
   $categoria_id = '';
+  $titulo = '';  // Limpa o título
   $descricao = '';
   $valor = '';
   $data = '';
@@ -71,6 +74,7 @@ if (isset($_GET['editar'])) {
   $meta = $stmt->fetch(PDO::FETCH_ASSOC);
   if ($meta) {
     $categoria_id = $meta['categoria_id'];
+    $titulo = $meta['titulo'];  // Preenchendo o título
     $descricao = $meta['descricao'];
     $valor = number_format($meta['valor'], 2, ',', '.');
     $data = $meta['data'];
@@ -145,6 +149,10 @@ foreach ($metas as $m) {
           </select>
         </div>
         <div class="mb-3">
+          <label class="form-label">Título</label>
+          <input type="text" name="titulo" class="form-control" value="<?= $titulo ?>" required>
+        </div>
+        <div class="mb-3">
           <label class="form-label">Descrição</label>
           <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
         </div>
@@ -193,6 +201,7 @@ foreach ($metas as $m) {
           <tr>
             <th>Data</th>
             <th>Categoria</th>
+            <th>Título</th>
             <th>Descrição</th>
             <th>Valor</th>
             <th>Ações</th>
@@ -203,6 +212,7 @@ foreach ($metas as $m) {
             <tr>
               <td><?= date('d/m/Y', strtotime($m['data'])) ?></td>
               <td><?= $m['categoria_nome'] ?></td>
+              <td><?= $m['titulo'] ?></td> <!-- Exibindo o título -->
               <td><?= $m['descricao'] ?></td>
               <td>R$ <?= number_format($m['valor'], 2, ',', '.') ?></td>
               <td>
