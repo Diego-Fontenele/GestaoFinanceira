@@ -42,7 +42,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="d-flex">
    <?php include('includes/menu.php'); ?>
 
-  <div class="container mt-5">
+  <div class="flex-grow-1 p-4">
     <div class="card p-4">
       <h4 class="mb-4">Adicionar Despesa</h4>
 
