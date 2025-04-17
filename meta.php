@@ -7,79 +7,109 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
+$categoria_id = '';
+$descricao = '';
+$valor = '';
+$data = '';
 $sucesso = false;
 $erro = '';
 $editando = false;
-$id = '';
-$descricao = '';
-$valor = '';
-$data_inicio = '';
-$data_fim = '';
+$id_edicao = null;
 
-// Edição
-if (isset($_GET['editar'])) {
-  $editando = true;
-  $id = $_GET['editar'];
+// Filtros
+$filtro_categoria = $_GET['filtro_categoria'] ?? '';
+$filtro_inicio = $_GET['filtro_inicio'] ?? '';
+$filtro_fim = $_GET['filtro_fim'] ?? '';
 
-  $stmt = $pdo->prepare("SELECT * FROM metas WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$id, $_SESSION['usuario_id']]);
-  $meta = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  if ($meta) {
-    $descricao = $meta['descricao'];
-    $valor = number_format($meta['valor'], 2, ',', '.');
-    $data_inicio = $meta['data_inicio'];
-    $data_fim = $meta['data_fim'];
-  } else {
-    $erro = "Meta não encontrada.";
-  }
-}
-
-// Excluir Meta
-if (isset($_GET['excluir'])) {
-  $id = $_GET['excluir'];
-
-  $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
-  if ($stmt->execute([$id, $_SESSION['usuario_id']])) {
-    $sucesso = true;
-  } else {
-    $erro = "Erro ao excluir meta.";
-  }
-}
-
-// Envio do formulário
+// Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id = $_POST['id'] ?? '';
+  $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-  $data_inicio = $_POST['data_inicio'];
-  $data_fim = $_POST['data_fim'];
+  $data = $_POST['data'];
 
-  if (!empty($id)) {
-    $stmt = $pdo->prepare("UPDATE metas SET descricao = ?, valor = ?, data_inicio = ?, data_fim = ? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$descricao, $valor, $data_inicio, $data_fim, $id, $_SESSION['usuario_id']])) {
+  if (!empty($_POST['id'])) {
+    // Atualização
+    $id_edicao = $_POST['id'];
+    $stmt = $pdo->prepare("UPDATE metas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
       $sucesso = true;
     } else {
       $erro = "Erro ao atualizar meta.";
     }
   } else {
-    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, descricao, valor, data_inicio, data_fim) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['usuario_id'], $descricao, $valor, $data_inicio, $data_fim])) {
+    // Inserção
+    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
+    if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
       $sucesso = true;
-      $descricao = '';
-      $valor = '';
-      $data_inicio = '';
-      $data_fim = '';
     } else {
       $erro = "Erro ao salvar meta.";
     }
   }
+
+  // Limpa os campos
+  $categoria_id = '';
+  $descricao = '';
+  $valor = '';
+  $data = '';
 }
 
-// Buscar metas
-$stmt = $pdo->prepare("SELECT * FROM metas WHERE usuario_id = ? ORDER BY data_inicio DESC");
+// Exclusão
+if (isset($_GET['excluir'])) {
+  $id_excluir = $_GET['excluir'];
+  $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
+  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
+  header("Location: metas.php");
+  exit;
+}
+
+// Edição
+if (isset($_GET['editar'])) {
+  $id_edicao = $_GET['editar'];
+  $stmt = $pdo->prepare("SELECT * FROM metas WHERE id = ? AND usuario_id = ?");
+  $stmt->execute([$id_edicao, $_SESSION['usuario_id']]);
+  $meta = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($meta) {
+    $categoria_id = $meta['categoria_id'];
+    $descricao = $meta['descricao'];
+    $valor = number_format($meta['valor'], 2, ',', '.');
+    $data = $meta['data'];
+    $editando = true;
+  }
+}
+
+// Buscar categorias
+$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'meta' AND (usuario_id IS NULL OR usuario_id = ?) ORDER BY nome");
 $stmt->execute([$_SESSION['usuario_id']]);
+$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Buscar metas com filtros
+$sql = "SELECT m.*, c.nome AS categoria_nome FROM metas m JOIN categorias c ON m.categoria_id = c.id WHERE m.usuario_id = ?";
+$params = [$_SESSION['usuario_id']];
+
+if (!empty($filtro_categoria)) {
+  $sql .= " AND c.id = ?";
+  $params[] = $filtro_categoria;
+}
+if (!empty($filtro_inicio)) {
+  $sql .= " AND m.data >= ?";
+  $params[] = $filtro_inicio;
+}
+if (!empty($filtro_fim)) {
+  $sql .= " AND m.data <= ?";
+  $params[] = $filtro_fim;
+}
+
+$sql .= " ORDER BY m.data DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calcular total
+$total = 0;
+foreach ($metas as $m) {
+  $total += $m['valor'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -95,80 +125,98 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="d-flex">
   <?php include('includes/menu.php'); ?>
-
   <div class="flex-grow-1 p-4">
     <div class="card p-4 mb-4">
-      <h4 class="mb-4"><?= $editando ? 'Editar' : 'Cadastrar' ?> Meta Financeira</h4>
+      <h4 class="mb-4"><?= $editando ? 'Editar Meta' : 'Adicionar Meta' ?></h4>
 
       <?php if (!empty($erro)): ?>
         <div class="alert alert-danger"><?= $erro ?></div>
       <?php endif; ?>
 
       <form method="POST">
-        <input type="hidden" name="id" value="<?= $id ?>">
+        <input type="hidden" name="id" value="<?= $id_edicao ?>">
+        <div class="mb-3">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" name="categoria_id" required>
+            <option value="">Selecione</option>
+            <?php foreach ($categorias as $cat): ?>
+              <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
         <div class="mb-3">
           <label class="form-label">Descrição</label>
           <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
         </div>
-
         <div class="mb-3">
-          <label class="form-label">Valor da Meta</label>
+          <label class="form-label">Valor</label>
           <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
         </div>
-
         <div class="mb-3">
-          <label class="form-label">Data Início</label>
-          <input type="date" name="data_inicio" class="form-control" value="<?= $data_inicio ?>" required>
+          <label class="form-label">Data</label>
+          <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
         </div>
-
-        <div class="mb-3">
-          <label class="form-label">Data Fim</label>
-          <input type="date" name="data_fim" class="form-control" value="<?= $data_fim ?>" required>
-        </div>
-
-        <button type="submit" class="btn btn-<?= $editando ? 'primary' : 'success' ?>"><?= $editando ? 'Atualizar' : 'Salvar' ?> Meta</button>
-        <?php if ($editando): ?>
-          <a href="meta.php" class="btn btn-secondary">Cancelar</a>
-        <?php endif; ?>
+        <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
+        <a href="metas.php" class="btn btn-secondary">Limpar</a>
       </form>
     </div>
 
-    <!-- Lista de metas -->
     <div class="card p-4">
-      <h5 class="mb-3">Metas Registradas</h5>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-          <thead class="table-light">
-            <tr>
-              <th>Descrição</th>
-              <th class="text-end">Valor</th>
-              <th>Início</th>
-              <th>Fim</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($metas as $meta): ?>
-              <tr>
-                <td><?= $meta['descricao'] ?></td>
-                <td class="text-end">R$ <?= number_format($meta['valor'], 2, ',', '.') ?></td>
-                <td><?= date('d/m/Y', strtotime($meta['data_inicio'])) ?></td>
-                <td><?= date('d/m/Y', strtotime($meta['data_fim'])) ?></td>
-                <td>
-                  <a href="meta.php?editar=<?= $meta['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
-                  <a href="meta.php?excluir=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta meta?');"><i class="bi bi-trash"></i></a>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <h5 class="mb-3">Metas Cadastradas</h5>
 
+      <form class="row mb-4" method="GET">
+        <div class="col-md-3">
+          <label class="form-label">Categoria</label>
+          <select name="filtro_categoria" class="form-select">
+            <option value="">Todas</option>
+            <?php foreach ($categorias as $cat): ?>
+              <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Início</label>
+          <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Fim</label>
+          <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+          <a href="metas.php" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+      </form>
+
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($metas as $m): ?>
+            <tr>
+              <td><?= date('d/m/Y', strtotime($m['data'])) ?></td>
+              <td><?= $m['categoria_nome'] ?></td>
+              <td><?= $m['descricao'] ?></td>
+              <td>R$ <?= number_format($m['valor'], 2, ',', '.') ?></td>
+              <td>
+                <a href="?editar=<?= $m['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                <a href="?excluir=<?= $m['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir esta meta?')"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
@@ -190,7 +238,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       toast: true,
       position: 'top-end',
       icon: 'success',
-      title: 'Meta <?= $editando ? 'atualizada' : 'cadastrada' ?> com sucesso!',
+      title: '<?= $editando ? 'Meta atualizada' : 'Meta cadastrada' ?> com sucesso!',
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true
