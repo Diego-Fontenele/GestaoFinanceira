@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Buscar categorias
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'receita' AND (usuario_id IS NULL OR usuario_id = ?)");
-$stmt->execute([$_SESSION['usuario_id']]);
+$stmt->execute([$_SESSION['usuario']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
