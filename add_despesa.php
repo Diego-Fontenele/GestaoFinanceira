@@ -151,7 +151,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
         </div>
         <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
-        <a href="despesas.php" class="btn btn-secondary">Limpar</a>
+        <a href="add_despesa.php" class="btn btn-secondary">Limpar</a>
       </form>
     </div>
 
@@ -178,7 +178,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <div class="col-md-3 d-flex align-items-end">
           <button type="submit" class="btn btn-primary me-2">Filtrar</button>
-          <a href="despesas.php" class="btn btn-outline-secondary">Limpar</a>
+          <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
 

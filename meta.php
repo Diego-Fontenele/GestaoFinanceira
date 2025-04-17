@@ -150,7 +150,7 @@ foreach ($metas as $m) {
         </div>
       </div>
         <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
-        <a href="metas.php" class="btn btn-secondary">Limpar</a>
+        <a href="meta.php" class="btn btn-secondary">Limpar</a>
       </form>
     </div>
 
@@ -168,7 +168,7 @@ foreach ($metas as $m) {
         </div>
         <div class="col-md-3 d-flex align-items-end">
           <button type="submit" class="btn btn-primary me-2">Filtrar</button>
-          <a href="metas.php" class="btn btn-outline-secondary">Limpar</a>
+          <a href="meta.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
 
