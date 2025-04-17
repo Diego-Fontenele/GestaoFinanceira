@@ -51,7 +51,7 @@ $valores = [500, 300, 400, 300];
 
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4">
-    <h2 class="mb-4">Olá, <?= $_SESSION['usuario']['nome']; ?> 👋</h2>
+    <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
     <!-- Cards de Resumo -->
     <div class="row mb-4">
