@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+  $valor = $valor / 100;
   $data = $_POST['data'];
 
   if (!empty($_POST['id'])) {
