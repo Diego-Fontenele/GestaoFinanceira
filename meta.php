@@ -142,11 +142,11 @@ foreach ($metas as $m) {
         <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">Data início</label>
-          <input type="date" name="data_inicio" class="form-control" value="<?= $dataini ?>" required>
+          <input type="date" name="dataini" class="form-control" value="<?= $dataini ?>" required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Data fim</label>
-          <input type="date" name="data_fim" class="form-control" value="<?= $datafim ?>" required>
+          <input type="date" name="datafim" class="form-control" value="<?= $datafim ?>" required>
         </div>
       </div>
         <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
