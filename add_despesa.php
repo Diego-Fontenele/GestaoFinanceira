@@ -59,7 +59,7 @@ if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
   $stmt = $pdo->prepare("DELETE FROM despesas WHERE id = ? AND usuario_id = ?");
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
-  header("Location: despesas.php");
+  header("Location: add_despesa.php");
   exit;
 }
 
@@ -228,15 +228,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   });
 
   <?php if ($sucesso): ?>
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      title: '<?= $editando ? 'Despesa atualizada' : 'Despesa cadastrada' ?> com sucesso!',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
+    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
   <?php endif; ?>
 </script>
 </body>
