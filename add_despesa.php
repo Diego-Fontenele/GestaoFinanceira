@@ -7,6 +7,13 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
+$categoria_id = '';
+$descricao = '';
+$valor = '';
+$data = '';
+$sucesso = false;
+$erro = '';
+
 // Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $categoria_id = $_POST['categoria_id'];
@@ -16,8 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
   if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
-    header("Location: area_logada.php");
-    exit;
+    $sucesso = true;
+    // Limpa os campos
+    $categoria_id = '';
+    $descricao = '';
+    $valor = '';
+    $data = '';
   } else {
     $erro = "Erro ao salvar despesa.";
   }
@@ -63,17 +74,17 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="mb-3">
           <label class="form-label">Descrição</label>
-          <input type="text" name="descricao" class="form-control" required>
+          <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Valor</label>
-          <input type="text" name="valor" class="form-control valor" required>
+          <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Data</label>
-          <input type="date" name="data" class="form-control" required>
+          <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
         </div>
 
         <button type="submit" class="btn btn-danger">Salvar Despesa</button>
