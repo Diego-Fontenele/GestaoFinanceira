@@ -41,8 +41,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-light">
 
 <div class="container mt-5">
-<!-- Inclusão do menu lateral -->
-  <?php include('includes/menu.php'); ?>
+    
   <div class="card p-4">
     <h4 class="mb-4">Adicionar Receita</h4>
 
@@ -51,6 +50,8 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php endif; ?>
 
     <form method="POST">
+    <div class="d-flex">
+        <?php include 'menu.php'; ?>
       <div class="mb-3">
         <label class="form-label">Categoria</label>
         <select class="form-select" name="categoria_id" required>
