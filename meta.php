@@ -27,7 +27,6 @@ if (isset($_GET['editar'])) {
 
   if ($meta) {
     $descricao = $meta['descricao'];
-    // Corrigido: agora estamos formatando corretamente o valor para exibição
     $valor = number_format($meta['valor'], 2, ',', '.');
     $data_inicio = $meta['data_inicio'];
     $data_fim = $meta['data_fim'];
@@ -36,11 +35,22 @@ if (isset($_GET['editar'])) {
   }
 }
 
+// Excluir Meta
+if (isset($_GET['excluir'])) {
+  $id = $_GET['excluir'];
+
+  $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
+  if ($stmt->execute([$id, $_SESSION['usuario_id']])) {
+    $sucesso = true;
+  } else {
+    $erro = "Erro ao excluir meta.";
+  }
+}
+
 // Envio do formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $id = $_POST['id'] ?? '';
   $descricao = $_POST['descricao'];
-  // Corrigido: ajustando o valor para evitar multiplicação por 100
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
   $data_inicio = $_POST['data_inicio'];
   $data_fim = $_POST['data_fim'];
@@ -118,7 +128,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <button type="submit" class="btn btn-<?= $editando ? 'primary' : 'success' ?>"><?= $editando ? 'Atualizar' : 'Salvar' ?> Meta</button>
         <?php if ($editando): ?>
-          <a href="metas.php" class="btn btn-secondary">Cancelar</a>
+          <a href="meta.php" class="btn btn-secondary">Cancelar</a>
         <?php endif; ?>
       </form>
     </div>
@@ -146,7 +156,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= date('d/m/Y', strtotime($meta['data_fim'])) ?></td>
                 <td>
                   <a href="metas.php?editar=<?= $meta['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
-                  <!-- botão excluir pode ser adicionado aqui -->
+                  <a href="metas.php?excluir=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta meta?');"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
             <?php endforeach; ?>

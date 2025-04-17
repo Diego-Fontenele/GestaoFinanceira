@@ -155,8 +155,9 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= $r['descricao'] ?></td>
                 <td class="text-end">R$ <?= number_format($r['valor'], 2, ',', '.') ?></td>
                 <td>
-                  <a href="receitas.php?editar=<?= $r['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
+                  <a href="add_receita.php?editar=<?= $r['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
                   <!-- botão excluir pode ser adicionado aqui -->
+                  <a href="add_receita.php?excluir=<?= $receita['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta receita?');"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
             <?php endforeach; ?>

@@ -155,8 +155,9 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= $d['descricao'] ?></td>
                 <td class="text-end">R$ <?= number_format($d['valor'], 2, ',', '.') ?></td>
                 <td>
-                  <a href="despesas.php?editar=<?= $d['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
+                  <a href="add_despesa.php?editar=<?= $d['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
                   <!-- botão excluir pode ser adicionado aqui -->
+                  <a href="add_despesa.php?excluir=<?= $despesa['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta despesa?');"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
             <?php endforeach; ?>
