@@ -1,13 +1,29 @@
 <?php
 session_start();
+require 'Conexao.php';
+
 if (!isset($_SESSION['usuario'])) {
   header("Location: login.php");
   exit;
 }
 
-require 'Conexao.php';
+// Se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $categoria_id = $_POST['categoria_id'];
+  $descricao = $_POST['descricao'];
+  $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+  $data = $_POST['data'];
 
-// Buscar categorias de receita do usuário e categorias padrão
+  $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
+  if ($stmt->execute([$_SESSION['usuario'], $categoria_id, $descricao, $valor, $data])) {
+    header("Location: dashboard.php?sucesso=1");
+    exit;
+  } else {
+    $erro = "Erro ao salvar receita.";
+  }
+}
+
+// Buscar categorias
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'receita' AND (usuario_id IS NULL OR usuario_id = ?)");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -27,9 +43,14 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="container mt-5">
   <div class="card p-4">
     <h4 class="mb-4">Adicionar Receita</h4>
-    <form method="POST" action="salvar_receita.php">
+
+    <?php if (!empty($erro)): ?>
+      <div class="alert alert-danger"><?= $erro ?></div>
+    <?php endif; ?>
+
+    <form method="POST">
       <div class="mb-3">
-        <label for="categoria" class="form-label">Categoria</label>
+        <label class="form-label">Categoria</label>
         <select class="form-select" name="categoria_id" required>
           <option value="">Selecione</option>
           <?php foreach ($categorias as $cat): ?>
