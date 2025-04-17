@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $mail->isHTML(true);
             $mail->Subject = 'Nova senha para sua conta';
-            $mail->Body    = "Olá,<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login.";
+            $mail->Body    = "Olá, {$usuario['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login.";
 
             $mail->send();
             echo "Nova senha enviada para seu e-mail.";
