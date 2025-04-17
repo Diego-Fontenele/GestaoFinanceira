@@ -27,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor, data_inicio, data_fim) VALUES (?, ?, ?, ?, ?, ?)");
   if ($stmt->execute([$usuario_id, $titulo, $descricao, $valor, $data_inicio, $data_fim])) {
     $sucesso = true;
-    $titulo = $descricao = $valor = $data_inicio = $data_fim = '';
+    $titulo = '';
+    $descricao =''; 
+    $valor = '';
+    $data_inicio =''; 
+    $data_fim = '';
   } else {
     $erro = "Erro ao salvar meta.";
   }
