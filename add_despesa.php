@@ -125,7 +125,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Receita cadastrada com sucesso!',
+        title: 'Despesa cadastrada com sucesso!',
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true
