@@ -7,90 +7,73 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
+$sucesso = false;
+$erro = '';
+$editando = false;
+$id = '';
 $categoria_id = '';
 $descricao = '';
 $valor = '';
 $data = '';
-$sucesso = false;
-$erro = '';
-$modoEdicao = false;
 
-// Editar Receita
+// Se estiver editando
 if (isset($_GET['editar'])) {
+  $editando = true;
+  $id = $_GET['editar'];
+
   $stmt = $pdo->prepare("SELECT * FROM receitas WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$_GET['editar'], $_SESSION['usuario_id']]);
+  $stmt->execute([$id, $_SESSION['usuario_id']]);
   $receita = $stmt->fetch(PDO::FETCH_ASSOC);
+
   if ($receita) {
     $categoria_id = $receita['categoria_id'];
     $descricao = $receita['descricao'];
-    $valor = $receita['valor'];
+    $valor = number_format($receita['valor'], 2, ',', '.');
     $data = $receita['data'];
-    $modoEdicao = true;
+  } else {
+    $erro = "Receita não encontrada.";
   }
 }
 
-// Excluir Receita
-if (isset($_GET['excluir'])) {
-  $stmt = $pdo->prepare("DELETE FROM receitas WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$_GET['excluir'], $_SESSION['usuario_id']]);
-  header("Location: add_receita.php");
-  exit;
-}
-
-// Submissao do form
+// Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $id = $_POST['id'] ?? '';
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-  $valor = $valor / 100;
   $data = $_POST['data'];
 
-  if (!empty($_POST['id'])) {
-    // Update
+  if (!empty($id)) {
+    // Atualizar
     $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
-    $sucesso = $stmt->execute([$categoria_id, $descricao, $valor, $data, $_POST['id'], $_SESSION['usuario_id']]);
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id, $_SESSION['usuario_id']])) {
+      $sucesso = true;
+    } else {
+      $erro = "Erro ao atualizar receita.";
+    }
   } else {
-    // Insert
+    // Inserir
     $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-    $sucesso = $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data]);
-  }
-
-  if ($sucesso) {
-    $categoria_id = $descricao = $valor = $data = '';
-  } else {
-    $erro = "Erro ao salvar receita.";
+    if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
+      $sucesso = true;
+      $categoria_id = '';
+      $descricao = '';
+      $valor = '';
+      $data = '';
+    } else {
+      $erro = "Erro ao salvar receita.";
+    }
   }
 }
 
-// Buscar categorias
+// Buscar categorias do tipo receita
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'receita' AND (usuario_id IS NULL OR usuario_id = ?)");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Buscar receitas
-$filtro_categoria = $_GET['categoria_id'] ?? '';
-$filtro_de = $_GET['de'] ?? '';
-$filtro_ate = $_GET['ate'] ?? '';
-
-$query = "SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
-$params = [$_SESSION['usuario_id']];
-
-if ($filtro_categoria) {
-  $query .= " AND r.categoria_id = ?";
-  $params[] = $filtro_categoria;
-}
-if ($filtro_de) {
-  $query .= " AND r.data >= ?";
-  $params[] = $filtro_de;
-}
-if ($filtro_ate) {
-  $query .= " AND r.data <= ?";
-  $params[] = $filtro_ate;
-}
-
-$query .= " ORDER BY r.data DESC";
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
+// Buscar receitas para listar na grid
+$stmt = $pdo->prepare("SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ? ORDER BY r.data DESC");
+$stmt->execute([$_SESSION['usuario_id']]);
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -104,112 +87,110 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-light">
+
 <div class="d-flex">
   <?php include('includes/menu.php'); ?>
+
   <div class="flex-grow-1 p-4">
     <div class="card p-4 mb-4">
-      <h4 class="mb-4"><?= $modoEdicao ? 'Editar Receita' : 'Adicionar Receita' ?></h4>
+      <h4 class="mb-4"><?= $editando ? 'Editar' : 'Adicionar' ?> Receita</h4>
+
       <?php if (!empty($erro)): ?>
         <div class="alert alert-danger"><?= $erro ?></div>
       <?php endif; ?>
 
       <form method="POST">
-        <input type="hidden" name="id" value="<?= $_GET['editar'] ?? '' ?>">
+        <input type="hidden" name="id" value="<?= $id ?>">
         <div class="mb-3">
           <label class="form-label">Categoria</label>
           <select class="form-select" name="categoria_id" required>
             <option value="">Selecione</option>
             <?php foreach ($categorias as $cat): ?>
-              <option value="<?= $cat['id'] ?>" <?= $categoria_id == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+              <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
             <?php endforeach; ?>
           </select>
         </div>
+
         <div class="mb-3">
           <label class="form-label">Descrição</label>
           <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
         </div>
+
         <div class="mb-3">
           <label class="form-label">Valor</label>
           <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
         </div>
+
         <div class="mb-3">
           <label class="form-label">Data</label>
           <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
         </div>
-        <button type="submit" class="btn btn-success">Salvar Receita</button>
+
+        <button type="submit" class="btn btn-<?= $editando ? 'primary' : 'success' ?>"><?= $editando ? 'Atualizar' : 'Salvar' ?> Receita</button>
+        <?php if ($editando): ?>
+          <a href="receitas.php" class="btn btn-secondary">Cancelar</a>
+        <?php endif; ?>
       </form>
     </div>
 
+    <!-- Lista de receitas -->
     <div class="card p-4">
-      <h5 class="mb-3">Minhas Receitas</h5>
-      <form method="GET" class="row g-3 mb-3">
-        <div class="col-md-3">
-          <select name="categoria_id" class="form-select">
-            <option value="">Todas categorias</option>
-            <?php foreach ($categorias as $cat): ?>
-              <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <input type="date" name="de" class="form-control" value="<?= $filtro_de ?>">
-        </div>
-        <div class="col-md-3">
-          <input type="date" name="ate" class="form-control" value="<?= $filtro_ate ?>">
-        </div>
-        <div class="col-md-3">
-          <button class="btn btn-primary w-100">Filtrar</button>
-        </div>
-      </form>
-
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Categoria</th>
-            <th>Descrição</th>
-            <th>Valor</th>
-            <th>Data</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($receitas as $r): ?>
+      <h5 class="mb-3">Histórico de Receitas</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="table-light">
             <tr>
-              <td><?= $r['categoria_nome'] ?></td>
-              <td><?= $r['descricao'] ?></td>
-              <td>R$ <?= number_format($r['valor'], 2, ',', '.') ?></td>
-              <td><?= date('d/m/Y', strtotime($r['data'])) ?></td>
-              <td>
-                <a href="?editar=<?= $r['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                <a href="?excluir=<?= $r['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir?')"><i class="bi bi-trash"></i></a>
-              </td>
+              <th>Data</th>
+              <th>Categoria</th>
+              <th>Descrição</th>
+              <th class="text-end">Valor</th>
+              <th>Ações</th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php foreach ($receitas as $r): ?>
+              <tr>
+                <td><?= date('d/m/Y', strtotime($r['data'])) ?></td>
+                <td><?= $r['categoria_nome'] ?></td>
+                <td><?= $r['descricao'] ?></td>
+                <td class="text-end">R$ <?= number_format($r['valor'], 2, ',', '.') ?></td>
+                <td>
+                  <a href="receitas.php?editar=<?= $r['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
+                  <!-- botão excluir pode ser adicionado aqui -->
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
     </div>
+
   </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
-  Inputmask({
-    alias: 'currency',
-    prefix: 'R$ ',
-    groupSeparator: '.',
-    radixPoint: ',',
-    autoGroup: true,
-    allowMinus: false,
-    removeMaskOnSubmit: true
-  }).mask('.valor');
+  $(document).ready(function(){
+    Inputmask({
+      alias: 'currency',
+      prefix: 'R$ ',
+      groupSeparator: '.',
+      radixPoint: ',',
+      autoGroup: true,
+      allowMinus: false,
+      removeMaskOnSubmit: true
+    }).mask('.valor');
+  });
+
   <?php if ($sucesso): ?>
     Swal.fire({
       toast: true,
       position: 'top-end',
       icon: 'success',
-      title: 'Receita salva com sucesso!',
+      title: 'Receita <?= $editando ? 'atualizada' : 'cadastrada' ?> com sucesso!',
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true
