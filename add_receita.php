@@ -43,8 +43,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="d-flex">
   <!-- Menu Lateral -->
-  <?php include 'menu.php'; ?>
-
+  <?php include('includes/menu.php'); ?>
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4">
     <div class="card p-4">
