@@ -1,27 +1,30 @@
 # Usa a imagem oficial do PHP com Apache
 FROM php:8.2-apache
 
-# Instala dependências do PostgreSQL, o Composer, e outras dependências necessárias
+# Instala dependências do sistema e do PHP
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     git \
     unzip \
-    && docker-php-ext-install pdo pdo_pgsql
+    && docker-php-ext-install pdo pdo_pgsql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Instala o Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copia os arquivos do projeto para o diretório padrão do Apache
-COPY . /var/www/html/
+# Define o diretório de trabalho
+WORKDIR /var/www/html
 
-# Ajusta as permissões (opcional)
+# Copia os arquivos do projeto
+COPY . .
+
+# Ajusta as permissões
 RUN chown -R www-data:www-data /var/www/html
 
-# Rodar o Composer Install para instalar as dependências (incluindo o PHPMailer)
-WORKDIR /var/www/html
-RUN composer install
+# Instala as dependências do Composer
+RUN composer install --no-interaction --prefer-dist
 
-# Expondo a porta padrão do Apache
+# Expõe a porta padrão do Apache
 EXPOSE 80
-
