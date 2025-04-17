@@ -31,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!empty($_POST['id'])) {
     // Atualização
     $id_edicao = $_POST['id'];
-    $stmt = $pdo->prepare("UPDATE metas SET titulo = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$titulo, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
+    $stmt = $pdo->prepare("UPDATE metas SET titulo = ?, descricao = ?, valor = ?, data_inicio = ?, data_fim = ? WHERE id = ? AND usuario_id = ?");
+    if ($stmt->execute([$titulo, $descricao, $valor, $dataini,$datafim, $id_edicao, $_SESSION['usuario_id']])) {
       $sucesso = true;
     } else {
       $erro = "Erro ao atualizar meta.";
@@ -139,12 +139,16 @@ foreach ($metas as $m) {
           <label class="form-label">Valor</label>
           <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
         </div>
-        <div class="mb-3">
+        <div class="row mb-3">
+        <div class="col-md-6">
           <label class="form-label">Data início</label>
-          <input type="date" name="dataini" class="form-control" value="<?= $dataini ?>" required>
-          <label class="form-label">Data fim</label>
-          <input type="date" name="datafim" class="form-control" value="<?= $datafim ?>" required>
+          <input type="date" name="data_inicio" class="form-control" value="<?= $dataini ?>" required>
         </div>
+        <div class="col-md-6">
+          <label class="form-label">Data fim</label>
+          <input type="date" name="data_fim" class="form-control" value="<?= $datafim ?>" required>
+        </div>
+      </div>
         <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
         <a href="metas.php" class="btn btn-secondary">Limpar</a>
       </form>
