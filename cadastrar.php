@@ -12,7 +12,7 @@ $stmt->bindParam(':senha', $senha);
 
 try {
     $stmt->execute();
-    echo "<script>alert('Usuário cadastrado com sucesso!'); window.location.href = '../login.php';</script>";
+    echo "<script>alert('Usuário cadastrado com sucesso!'); window.location.href = 'login.php';</script>";
 } catch (PDOException $e) {
     echo "<script>alert('Erro: " . $e->getMessage() . "'); window.history.back();</script>";
 }

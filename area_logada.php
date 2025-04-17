@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-// Simulação: checar se usuário está logado
+// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario'])) {
   header("Location: login.php");
   exit;
 }
 
-// Simulação de dados (você depois substitui pelos dados reais do banco)
+// Simulação de dados, substitua pelos dados reais do banco
 $saldo = 3500;
 $receitas = 5000;
 $despesas = 1500;
@@ -27,27 +27,8 @@ $valores = [500, 300, 400, 300];
 <body style="background-color: #f8f9fa;">
 
 <div class="d-flex">
-  <!-- Menu lateral -->
-  <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-    <h4 class="mb-4"><i class="bi bi-piggy-bank"></i> Financeiro</h4>
-    <ul class="nav flex-column">
-      <li class="nav-item mb-2">
-        <a class="nav-link text-white" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
-      </li>
-      <li class="nav-item mb-2">
-        <a class="nav-link text-white" href="#"><i class="bi bi-wallet2"></i> Receitas</a>
-      </li>
-      <li class="nav-item mb-2">
-        <a class="nav-link text-white" href="#"><i class="bi bi-cash-stack"></i> Despesas</a>
-      </li>
-      <li class="nav-item mb-2">
-        <a class="nav-link text-white" href="#"><i class="bi bi-gear"></i> Configurações</a>
-      </li>
-      <li class="nav-item mt-5">
-        <a class="nav-link text-danger" href="logout.php"><i class="bi bi-box-arrow-left"></i> Sair</a>
-      </li>
-    </ul>
-  </nav>
+  <!-- Inclusão do menu lateral -->
+  <?php include('includes/menu.php'); ?>
 
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4">
