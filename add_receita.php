@@ -29,7 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = '';
     $valor = '';
     $data = '';
-    echo "<script>alert('Dados salvos com sucesso!'); </script>";
+    ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Sucesso!</strong> Dados salvos com sucesso.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+    <?php
   } else {
     $erro = "Erro ao salvar receita.";
   }
