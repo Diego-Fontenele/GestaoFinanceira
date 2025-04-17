@@ -2,7 +2,7 @@
 session_start();
 require 'Conexao.php';
 
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario_id'])) {
   header("Location: login.php");
   exit;
 }
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $data = $_POST['data'];
 
   $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-  if ($stmt->execute([$_SESSION['usuario'], $categoria_id, $descricao, $valor, $data])) {
+  if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
     header("Location: dashboard.php?sucesso=1");
     exit;
   } else {
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Buscar categorias
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'receita' AND (usuario_id IS NULL OR usuario_id = ?)");
-$stmt->execute([$_SESSION['usuario']]);
+$stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

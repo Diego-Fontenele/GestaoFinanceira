@@ -14,6 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   if ($usuario && password_verify($senha, $usuario['senha'])) {
     $_SESSION['usuario'] = $usuario['nome'];
+    $_SESSION['usuario_id'] = $usuario['id']; 
+
     header("Location: area_logada.php");
     exit();
   } else {
