@@ -41,6 +41,8 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-light">
 
 <div class="container mt-5">
+<!-- Inclusão do menu lateral -->
+  <?php include('includes/menu.php'); ?>
   <div class="card p-4">
     <h4 class="mb-4">Adicionar Receita</h4>
 
