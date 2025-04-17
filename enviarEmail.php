@@ -18,13 +18,13 @@ try {
     $mail->Port = 587;
 
     // Remetente e destinatário
-    $mail->setFrom('equilibriofinanceirogestao@gmail.com', 'Gestão Financeira');
+    $mail->setFrom('equilibriofinanceirogestao@gmail.com', 'Gestao Financeira');
     $mail->addAddress('diegocfontenele@gmail.com', 'Destinatário'); // Adicione o endereço de e-mail do destinatário
 
     // Conteúdo do e-mail
     $mail->isHTML(true);
-    $mail->Subject = 'Teste de Envio de E-mail';
-    $mail->Body    = 'Este é um teste do envio de e-mail usando PHPMailer no Render.';
+    $mail->Subject = 'E-mail referente a troca de senha';
+    $mail->Body    = 'Se está recebendo este e-mail é porque solicitou troca de senha.';
 
     // Envia o e-mail
     $mail->send();

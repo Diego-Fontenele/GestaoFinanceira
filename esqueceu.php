@@ -22,7 +22,7 @@
 
 <div class="recuperar-container">
   <h4 class="text-center mb-4">Recuperar Senha</h4>
-  <form method="POST" action="#">
+  <form method="POST" action="processa_esqueci.php">
     <div class="mb-3">
       <label for="email" class="form-label">Informe seu e-mail</label>
       <input type="email" name="email" class="form-control" id="email" required>
