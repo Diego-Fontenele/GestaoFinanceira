@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $titulo = $_POST['titulo'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-  $data = $_POST['data'];
+  $dataini = $_POST['dataini'];
+  $datafim = $_POST['datafim'];
 
   if (!empty($_POST['id'])) {
     // Atualização
@@ -38,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   } else {
     // Inserção
-    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['usuario_id'], $titulo, $descricao, $valor, $data])) {
+    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor, data_inicio,data_fim) VALUES (?, ?, ?, ?, ?,?)");
+    if ($stmt->execute([$_SESSION['usuario_id'], $titulo, $descricao, $valor, $dataini, $datafim])) {
       $sucesso = true;
     } else {
       $erro = "Erro ao salvar meta.";
@@ -58,7 +59,7 @@ if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
   $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
-  header("Location: metas.php");
+  header("Location: meta.php");
   exit;
 }
 
@@ -138,8 +139,10 @@ foreach ($metas as $m) {
           <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
         </div>
         <div class="mb-3">
-          <label class="form-label">Data</label>
-          <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
+          <label class="form-label">Data início</label>
+          <input type="date" name="dataini" class="form-control" value="<?= $dataini ?>" required>
+          <label class="form-label">Data fim</label>
+          <input type="date" name="datafim" class="form-control" value="<?= $datafim ?>" required>
         </div>
         <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
         <a href="metas.php" class="btn btn-secondary">Limpar</a>
@@ -167,7 +170,8 @@ foreach ($metas as $m) {
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>Data</th>
+            <th>Data Inicio</th>
+            <th>Data Fim</th>
             <th>Título</th>
             <th>Descrição</th>
             <th>Valor</th>
@@ -177,7 +181,8 @@ foreach ($metas as $m) {
         <tbody>
           <?php foreach ($metas as $m): ?>
             <tr>
-              <td><?= date('d/m/Y', strtotime($m['data'])) ?></td>
+              <td><?= date('d/m/Y', strtotime($m['dataini'])) ?></td>
+              <td><?= date('d/m/Y', strtotime($m['datafim'])) ?></td>
               <td><?= $m['titulo'] ?></td>
               <td><?= $m['descricao'] ?></td>
               <td>R$ <?= number_format($m['valor'], 2, ',', '.') ?></td>
