@@ -34,7 +34,8 @@ $sqlCategoria = $pdo->prepare('select ca.nome ,
                                   and r.usuario_id =?
                                 group by ca.nome');
                 
-$sqlCategoria->execute([$usuarioId]);                             
+$sqlCategoria->execute([$usuarioId]);   
+print_r($sqlCategoria) ;                         
 $categorias = $sqlCategoria->fetchAll()['nome'];
 $valores = $sqlCategoria->fetchAll()['total'];
 ?>
