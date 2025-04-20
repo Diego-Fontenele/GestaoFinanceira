@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'Conexao.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario'])) {
@@ -9,10 +10,32 @@ if (!isset($_SESSION['usuario'])) {
 
 // Simulação de dados, substitua pelos dados reais do banco
 $saldo = 3500;
-$receitas = 5000;
-$despesas = 1500;
-$categorias = ['Alimentação', 'Transporte', 'Lazer', 'Outros'];
-$valores = [500, 300, 400, 300];
+
+//Receitas
+$sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ?");
+$sqlReceitas->execute([$usuarioId]);
+$receitas = $sqlReceitas->fetch()['total'] ?? 0;
+
+//Despesas
+$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ?");
+$sqlDespesas->execute([$usuarioId]);
+$despesas = $sqlDespesas->fetch()['total'] ?? 0;
+
+//Saldo
+$saldo = $receitas - $despesas;
+
+//Categoria
+$sqlCategoria = $pdo->prepare('select ca.nome ,
+                                      sum(valor)as total 
+                                from receitas r  ,
+                                     categorias as ca
+                                where r.categoria_id = ca.id 
+                                  and r.usuario_id =?
+                                group by ca.nome');
+                
+$sqlCategoria->execute([$usuarioId]);                             
+$categorias = $sqlCategoria->fetchAll()['nome'];
+$valores = $sqlCategoria->fetchAll()['total'];
 ?>
 
 <!DOCTYPE html>
