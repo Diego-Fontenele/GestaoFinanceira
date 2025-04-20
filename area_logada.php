@@ -147,10 +147,10 @@ while ($row = $sqlMetas->fetch()) {
   const graficoMetas = new Chart(ctxMetas, {
     type: 'line',
     data: {
-      labels: <?= json_encode($labelsMetas); ?>, // Ex: ['Jan', 'Fev', 'Mar']
+      labels: <?= json_encode($meses); ?>,
       datasets: [{
         label: 'Valor Alcançado',
-        data: <?= json_encode($valoresMetas); ?>, // Ex: [1000, 2000, 1500]
+        data: <?= json_encode($valoresMetas); ?>,
         borderColor: '#198754',
         backgroundColor: 'rgba(25, 135, 84, 0.2)',
         tension: 0.3,
