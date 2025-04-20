@@ -89,7 +89,7 @@ if (!empty($filtro_inicio)) {
   $params[] = $filtro_inicio;
 }
 if (!empty($filtro_fim)) {
-  $sql .= " AND data_fim <= ?";
+  $sql .= " AND data_inicio <= ?";
   $params[] = $filtro_fim;
 }
 
