@@ -108,25 +108,28 @@ while ($row = $sqlMetas->fetch()) {
     </div>
 
     <!-- Gráficos lado a lado -->
-    <div class="d-flex flex-wrap gap-4 mt-4">
-      <!-- Gráfico de Pizza -->
-      <div class="card flex-fill" style="min-width: 300px;">
-        <div class="card-body">
-          <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-          <canvas id="graficoDespesas" style="height: 300px;"></canvas>
-        </div>
-      </div>
 
-      <!-- Gráfico de Linha (Metas) -->
-      <div class="card flex-fill" style="min-width: 300px;">
-        <div class="card-body">
-          <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
-          <canvas id="graficoMetas" style="height: 300px;"></canvas>
-        </div>
+<div class="row mt-4">
+  <!-- Gráfico de Pizza -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
+        <canvas id="graficoDespesas" style="height: 300px;"></canvas>
       </div>
     </div>
-
   </div>
+
+  <!-- Gráfico de Linha (Metas) -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
+        <canvas id="graficoMetas" style="height: 300px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <script>
