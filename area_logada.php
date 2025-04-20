@@ -8,8 +8,9 @@ if (!isset($_SESSION['usuario'])) {
   exit;
 }
 
+$usuarioId = $_SESSION['usuario_id'];
 // Simulação de dados, substitua pelos dados reais do banco
-$saldo = 3500;
+
 
 //Receitas
 $sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ?");
