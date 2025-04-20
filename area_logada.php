@@ -107,15 +107,22 @@ while ($row = $sqlMetas->fetch()) {
       </div>
     </div>
 
-    <!-- Gráfico -->
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-        <canvas id="graficoDespesas"></canvas>
+    <!-- Gráficos lado a lado -->
+    <div class="d-flex flex-wrap gap-4 mt-4">
+      <!-- Gráfico de Pizza -->
+      <div class="card flex-fill" style="min-width: 300px;">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
+          <canvas id="graficoDespesas" style="height: 300px;"></canvas>
+        </div>
       </div>
-      <div class="card-body">
-    <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
-    <canvas id="graficoMetas"></canvas>
+
+      <!-- Gráfico de Linha (Metas) -->
+      <div class="card flex-fill" style="min-width: 300px;">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
+          <canvas id="graficoMetas" style="height: 300px;"></canvas>
+        </div>
       </div>
     </div>
 
@@ -135,19 +142,27 @@ while ($row = $sqlMetas->fetch()) {
       }]
     }
   });
+
   const ctxMetas = document.getElementById('graficoMetas');
   const graficoMetas = new Chart(ctxMetas, {
     type: 'line',
     data: {
-      labels: <?= json_encode($meses); ?>,
+      labels: <?= json_encode($labelsMetas); ?>, // Ex: ['Jan', 'Fev', 'Mar']
       datasets: [{
-        label: 'Metas Financeiras',
-        data: <?= json_encode($valoresMetas); ?>,
+        label: 'Valor Alcançado',
+        data: <?= json_encode($valoresMetas); ?>, // Ex: [1000, 2000, 1500]
         borderColor: '#198754',
-        backgroundColor: 'rgba(25,135,84,0.2)',
+        backgroundColor: 'rgba(25, 135, 84, 0.2)',
         tension: 0.3,
         fill: true
       }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Progresso Mensal das Metas' }
+      }
     }
   });
 </script>
