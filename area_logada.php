@@ -42,6 +42,22 @@ foreach ($resultado as $linha) {
   $categorias[] = $linha['nome'];
   $valores[] = $linha['total'];
 }
+
+$sqlMetas = $pdo->prepare("
+ SELECT data_inicio , data_fim , valor
+  FROM metas 
+  WHERE usuario_id = ?
+  ORDER BY data_inicio, data_fim
+");
+$sqlMetas->execute([$usuarioId]);
+
+$meses = [];
+$valoresMetas = [];
+
+while ($row = $sqlMetas->fetch()) {
+  $meses[] = $row['data_inicio'];
+  $valoresMetas[] = $row['valor'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -97,6 +113,10 @@ foreach ($resultado as $linha) {
         <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
         <canvas id="graficoDespesas"></canvas>
       </div>
+      <div class="card-body">
+    <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
+    <canvas id="graficoMetas"></canvas>
+      </div>
     </div>
 
   </div>
@@ -112,6 +132,21 @@ foreach ($resultado as $linha) {
         label: 'Despesas',
         data: <?= json_encode($valores); ?>,
         backgroundColor: ['#dc3545', '#0d6efd', '#ffc107', '#6c757d']
+      }]
+    }
+  });
+  const ctxMetas = document.getElementById('graficoMetas');
+  const graficoMetas = new Chart(ctxMetas, {
+    type: 'line',
+    data: {
+      labels: <?= json_encode($meses); ?>,
+      datasets: [{
+        label: 'Metas Financeiras',
+        data: <?= json_encode($valoresMetas); ?>,
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25,135,84,0.2)',
+        tension: 0.3,
+        fill: true
       }]
     }
   });
