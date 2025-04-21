@@ -277,11 +277,11 @@ const ctxMeta = document.getElementById('graficoProgressoMeta');
 const graficoProgressoMeta = new Chart(ctxMeta, {
   type: 'line',
   data: {
-    labels: <?= json_encode($meses); ?>,
+    labels: <?= json_encode($labels); ?>,
     datasets: [
       {
         label: 'Valor Acumulado',
-        data: <?= json_encode($metasData); ?>,
+        data: <?= json_encode($valoresAportes); ?>,
         borderColor: '#0d6efd',
         backgroundColor: 'rgba(13, 110, 253, 0.1)',
         fill: true,
