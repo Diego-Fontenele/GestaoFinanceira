@@ -289,7 +289,7 @@ const graficoProgressoMeta = new Chart(ctxMeta, {
       },
       {
         label: 'Meta Final',
-        data: new Array(<?= count($meses); ?>).fill(<?= $valorMeta; ?>),
+        data: new Array(<?= count($labels); ?>).fill(<?= $valorMeta; ?>),
         borderColor: '#ffc107',
         borderDash: [5, 5],
         pointRadius: 0,
