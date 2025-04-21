@@ -87,7 +87,7 @@ $sqlProgressoMetas = $pdo->prepare("
     m.id as meta_id,
     m.titulo,
     m.valor as valor_meta,
-    DATE_FORMAT(a.data, '%Y-%m') as mes,
+    TO_CHAR(data, 'YYYY-MM') as mes,
     SUM(a.valor) as valor_aporte
   FROM metas m
   JOIN metas_aportes a ON m.id = a.id
