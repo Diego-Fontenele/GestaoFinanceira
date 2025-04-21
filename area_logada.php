@@ -92,10 +92,11 @@ $sqlProgressoMetas = $pdo->prepare("
   FROM metas m
   JOIN metas_aportes a ON m.id = a.id
   WHERE m.usuario_id = ?
+  and m.id = ?
   GROUP BY m.id, m.titulo, m.valor, mes
   ORDER BY m.id, mes
 ");
-$sqlProgressoMetas->execute([$usuarioId]);
+$sqlProgressoMetas->execute([$usuarioId,$metaId]);
 $dados = $sqlProgressoMetas->fetchAll(PDO::FETCH_ASSOC);
 $labels = [];
 $metasData = [];
