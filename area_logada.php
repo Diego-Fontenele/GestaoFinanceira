@@ -22,6 +22,27 @@ $sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usu
 $sqlDespesas->execute([$usuarioId]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
+//Despesas por mês
+$sqlDespesasMes = $pdo->prepare("
+  SELECT 
+    TO_CHAR(data, 'YYYY-MM') AS mes,
+    SUM(valor) AS total
+  FROM despesas
+  WHERE usuario_id = ?
+  GROUP BY mes
+  ORDER BY mes
+");
+$sqlDespesasMes->execute([$usuarioId]);
+
+$mesesDespesas = [];
+$valoresDespesas = [];
+
+while ($row = $sqlDespesasMes->fetch()) {
+  $mesesDespesas[] = $row['mes'];
+  $valoresDespesas[] = $row['total'];
+}
+
+
 //Saldo
 $saldo = $receitas - $despesas;
 
@@ -128,6 +149,17 @@ while ($row = $sqlMetas->fetch()) {
       </div>
     </div>
   </div>
+
+    <!-- Gráfico de Linha de Despesas -->
+    <div class="col-md-12 mb-4">
+    <div class="card w-100 h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+        <canvas id="graficoDespesasMes" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -167,6 +199,28 @@ while ($row = $sqlMetas->fetch()) {
       }
     }
   });
+  const ctxDespesasMes = document.getElementById('graficoDespesasMes');
+const graficoDespesasMes = new Chart(ctxDespesasMes, {
+  type: 'line',
+  data: {
+    labels: <?= json_encode($mesesDespesas); ?>,
+    datasets: [{
+      label: 'Despesas Mensais',
+      data: <?= json_encode($valoresDespesas); ?>,
+      borderColor: '#dc3545',
+      backgroundColor: 'rgba(220, 53, 69, 0.2)',
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Gastos Mensais' }
+    }
+  }
+});
 </script>
 
 </body>
