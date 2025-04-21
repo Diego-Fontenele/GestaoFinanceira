@@ -107,25 +107,24 @@ while ($row = $sqlMetas->fetch()) {
       </div>
     </div>
 
-    <!-- Gráficos lado a lado -->
-
-<div class="row mt-4">
+  <!-- Gráficos lado a lado -->
+  <div class="row mt-4">
   <!-- Gráfico de Pizza -->
-  <div class="col-md-6 mb-4">
-    <div class="card">
-      <div class="card-body">
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body d-flex flex-column">
         <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-        <canvas id="graficoDespesas" style="height: 300px;"></canvas>
+        <canvas id="graficoDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
       </div>
     </div>
   </div>
 
   <!-- Gráfico de Linha (Metas) -->
-  <div class="col-md-6 mb-4">
-    <div class="card">
-      <div class="card-body">
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body d-flex flex-column">
         <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
-        <canvas id="graficoMetas" style="height: 300px;"></canvas>
+        <canvas id="graficoMetas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
       </div>
     </div>
   </div>
