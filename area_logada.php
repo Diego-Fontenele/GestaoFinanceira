@@ -82,27 +82,41 @@ while ($row = $sqlMetas->fetch()) {
 
 // Buscar aportes para a meta 1 (ou outra que você quiser)
 $metaId = 1;
-$sqlAportes = $pdo->prepare("
-  SELECT TO_CHAR(data, 'Mon/YY') AS mes, SUM(valor) as total
-  FROM metas_aportes
-  WHERE meta_id = ?
-  GROUP BY mes, data
-  ORDER BY data
+$sqlProgressoMetas = $pdo->prepare("
+  SELECT 
+    m.id as meta_id,
+    m.titulo,
+    m.valor as valor_meta,
+    DATE_FORMAT(a.data, '%Y-%m') as mes,
+    SUM(a.valor) as valor_aporte
+  FROM metas m
+  JOIN metas_aportes a ON m.id = a.metas_id
+  WHERE m.usuario_id = ?
+  GROUP BY m.id, m.titulo, m.valor, mes
+  ORDER BY m.id, mes
 ");
-$sqlAportes->execute([$metaId]);
-$meses = [];
-$valoresAportes = [];
+$sqlProgressoMetas->execute([$usuarioId]);
+$dados = $sqlProgressoMetas->fetchAll(PDO::FETCH_ASSOC);
+$labels = [];
+$metasData = [];
+$valoresMeta = [];
 
-while ($row = $sqlAportes->fetch()) {
-  $meses[] = $row['mes'];
-  $valoresAportes[] = $row['total'];
+foreach ($dados as $linha) {
+  $titulo = $linha['titulo'];
+  $mes = $linha['mes'];
+
+  if (!in_array($mes, $labels)) {
+    $labels[] = $mes;
+  }
+
+  if (!isset($metasData[$titulo])) {
+    $metasData[$titulo] = [];
+    $valoresMeta[$titulo] = $linha['valor_meta'];
+  }
+
+  $ultimo = end($metasData[$titulo]) ?: 0;
+  $metasData[$titulo][] = $ultimo + $linha['valor_aporte'];
 }
-
-// Opcional: Buscar valor total da meta para exibir no gráfico
-$sqlValorMeta = $pdo->prepare("SELECT valor FROM metas WHERE id = ?");
-$sqlValorMeta->execute([$metaId]);
-$valorMeta = $sqlValorMeta->fetchColumn();
-
 
 ?>
 
