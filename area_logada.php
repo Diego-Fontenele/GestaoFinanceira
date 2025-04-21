@@ -79,6 +79,31 @@ while ($row = $sqlMetas->fetch()) {
   $meses[] = $row['data_inicio'];
   $valoresMetas[] = $row['valor'];
 }
+
+// Buscar aportes para a meta 1 (ou outra que você quiser)
+$metaId = 1;
+$sqlAportes = $pdo->prepare("
+  SELECT TO_CHAR(data, 'Mon/YY') AS mes, SUM(valor) as total
+  FROM metas_aportes
+  WHERE meta_id = ?
+  GROUP BY mes, data
+  ORDER BY data
+");
+$sqlAportes->execute([$metaId]);
+$meses = [];
+$valoresAportes = [];
+
+while ($row = $sqlAportes->fetch()) {
+  $meses[] = $row['mes'];
+  $valoresAportes[] = $row['total'];
+}
+
+// Opcional: Buscar valor total da meta para exibir no gráfico
+$sqlValorMeta = $pdo->prepare("SELECT valor FROM metas WHERE id = ?");
+$sqlValorMeta->execute([$metaId]);
+$valorMeta = $sqlValorMeta->fetchColumn();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -130,37 +155,45 @@ while ($row = $sqlMetas->fetch()) {
 
   <!-- Gráficos lado a lado -->
   <div class="row mt-4">
-  <!-- Gráfico de Pizza -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-        <canvas id="graficoDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+    <!-- Gráfico de Pizza -->
+    <div class="col-md-6 mb-4 d-flex">
+      <div class="card w-100 h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
+          <canvas id="graficoDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Gráfico de Linha (Metas) -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
-        <canvas id="graficoMetas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+    <!-- Gráfico de Linha (Metas) -->
+    <div class="col-md-6 mb-4 d-flex">
+      <div class="card w-100 h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
+          <canvas id="graficoMetas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+        </div>
       </div>
     </div>
-  </div>
 
-    <!-- Gráfico de Linha de Despesas -->
+      <!-- Gráfico de Linha de Despesas -->
+      <div class="col-md-12 mb-4">
+      <div class="card w-100 h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+          <canvas id="graficoDespesasMes" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Gráfico de Linha de Progresso de Meta -->
     <div class="col-md-12 mb-4">
-    <div class="card w-100 h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-        <canvas id="graficoDespesasMes" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+      <div class="card w-100 h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</h5>
+          <canvas id="graficoProgressoMeta" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+        </div>
       </div>
     </div>
   </div>
-
-</div>
 </div>
 
 <script>
@@ -218,6 +251,41 @@ const graficoDespesasMes = new Chart(ctxDespesasMes, {
     plugins: {
       legend: { position: 'top' },
       title: { display: true, text: 'Gastos Mensais' }
+    }
+  }
+});
+const ctxMeta = document.getElementById('graficoProgressoMeta');
+const graficoProgressoMeta = new Chart(ctxMeta, {
+  type: 'line',
+  data: {
+    labels: <?= json_encode($meses); ?>,
+    datasets: [
+      {
+        label: 'Valor Acumulado',
+        data: <?= json_encode($valoresAportes); ?>,
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Meta Final',
+        data: new Array(<?= count($meses); ?>).fill(<?= $valorMeta; ?>),
+        borderColor: '#ffc107',
+        borderDash: [5, 5],
+        pointRadius: 0,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: {
+        display: true,
+        text: 'Evolução do Aporte em Meta'
+      }
     }
   }
 });
