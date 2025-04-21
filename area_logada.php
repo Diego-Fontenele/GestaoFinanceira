@@ -97,6 +97,7 @@ $sqlProgressoMetas = $pdo->prepare("
   ORDER BY m.id, mes
 ");
 $sqlProgressoMetas->execute([$usuarioId,$metaId]);
+
 $dados = $sqlProgressoMetas->fetchAll(PDO::FETCH_ASSOC);
 $labels = [];
 $metasData = [];
@@ -117,11 +118,12 @@ foreach ($dados as $linha) {
 
   $ultimo = end($metasData[$titulo]) ?: 0;
   $metasData[$titulo][] = $ultimo + $linha['valor_aporte'];
-
-  $primeiraMetaTitulo = array_key_first($metasData);
-  $valoresAportes = $metasData[$primeiraMetaTitulo] ?? [];
-  $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 }
+
+// Agora fora do loop:
+$primeiraMetaTitulo = array_key_first($metasData);
+$valoresAportes = $metasData[$primeiraMetaTitulo] ?? [];
+$valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 
 ?>
 
