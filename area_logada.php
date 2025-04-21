@@ -116,6 +116,10 @@ foreach ($dados as $linha) {
 
   $ultimo = end($metasData[$titulo]) ?: 0;
   $metasData[$titulo][] = $ultimo + $linha['valor_aporte'];
+
+  $primeiraMetaTitulo = array_key_first($metasData);
+  $valoresAportes = $metasData[$primeiraMetaTitulo] ?? [];
+  $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 }
 
 ?>
@@ -276,7 +280,7 @@ const graficoProgressoMeta = new Chart(ctxMeta, {
     datasets: [
       {
         label: 'Valor Acumulado',
-        data: <?= json_encode($valoresAportes); ?>,
+        data: <?= json_encode($metasData); ?>,
         borderColor: '#0d6efd',
         backgroundColor: 'rgba(13, 110, 253, 0.1)',
         fill: true,
