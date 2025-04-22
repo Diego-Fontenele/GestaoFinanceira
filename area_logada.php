@@ -49,7 +49,7 @@ $saldo = $receitas - $despesas;
 //Categoria
 $sqlCategoria = $pdo->prepare('select ca.nome ,
                                       sum(valor)as total 
-                                from receitas r  ,
+                                from despesas r  ,
                                      categorias as ca
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
