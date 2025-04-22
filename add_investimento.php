@@ -38,9 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-// Buscar movimentações (se necessário, pode ser ajustado para mostrar as movimentações de investimentos cadastrados)
-$stmt = $pdo->prepare("SELECT m.*, c.nome AS categoria_nome FROM movimentacoes_investimentos m LEFT JOIN categorias c ON m.categoria_id = c.id WHERE m.usuario_id = ? ORDER BY m.data DESC");
-$stmt->execute([$_SESSION['usuario_id']]);
+
+// Buscar movimentações
+$stmt = $pdo->prepare("SELECT m.*, c.nome AS categoria_nome FROM investimentos_movimentacoes m LEFT JOIN categorias c ON m.categoria_id = c.id WHERE m.investimento_id = ? ORDER BY m.data DESC");
+$stmt->execute([$investimento_id]);
 $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
