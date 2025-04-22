@@ -17,6 +17,23 @@ $sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usu
 $sqlReceitas->execute([$usuarioId]);
 $receitas = $sqlReceitas->fetch()['total'] ?? 0;
 
+// Receitas por mês
+$sqlReceitasMes = $pdo->prepare("
+  SELECT 
+    TO_CHAR(data, 'YYYY-MM') AS mes,
+    SUM(valor) AS total
+  FROM receitas
+  WHERE usuario_id = ?
+  GROUP BY mes
+  ORDER BY mes
+");
+$sqlReceitasMes->execute([$usuarioId]);
+
+$dadosReceitas = [];
+while ($row = $sqlReceitasMes->fetch()) {
+  $dadosReceitas[$row['mes']] = $row['total'];
+}
+
 //Despesas
 $sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ?");
 $sqlDespesas->execute([$usuarioId]);
@@ -42,6 +59,18 @@ while ($row = $sqlDespesasMes->fetch()) {
   $valoresDespesas[] = $row['total'];
 }
 
+
+// Unificar meses entre receitas e despesas
+$mesesTotais = array_unique(array_merge($mesesDespesas, array_keys($dadosReceitas)));
+sort($mesesTotais);
+
+$valoresReceitasUnificadas = [];
+$valoresDespesasUnificadas = [];
+
+foreach ($mesesTotais as $mes) {
+  $valoresReceitasUnificadas[] = $dadosReceitas[$mes] ?? 0;
+  $valoresDespesasUnificadas[] = array_combine($mesesDespesas, $valoresDespesas)[$mes] ?? 0;
+}
 
 //Saldo
 $saldo = $receitas - $despesas;
@@ -210,6 +239,16 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
         </div>
       </div>
     </div>
+    <div class="col-md-6 mb-4 d-flex">
+      <div class="card w-100 h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">
+            <i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas
+          </h5>
+          <canvas id="graficoReceitasDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -285,6 +324,41 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       }
     }
   });
+  const ctxComparativo = document.getElementById('graficoReceitasDespesas');
+const graficoReceitasDespesas = new Chart(ctxComparativo, {
+  type: 'line',
+  data: {
+    labels: <?= json_encode($mesesTotais); ?>,
+    datasets: [
+      {
+        label: 'Receitas',
+        data: <?= json_encode($valoresReceitasUnificadas); ?>,
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Despesas',
+        data: <?= json_encode($valoresDespesasUnificadas); ?>,
+        borderColor: '#dc3545',
+        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+        fill: true,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: {
+        display: true,
+        text: 'Comparativo Mensal de Receitas e Despesas'
+      }
+    }
+  }
+});
 </script>
 
 </body>
