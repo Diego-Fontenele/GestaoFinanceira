@@ -91,8 +91,8 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php foreach ($investimentos as $inv): ?>
             <tr>
               <td><?= htmlspecialchars($inv['nome']) ?></td>
-              <td>R$ <?= number_format($inv['valor_inicial'], 2, ',', '.') ?></td>
-              <td><?= date('d/m/Y', strtotime($inv['data_aplicacao'])) ?></td>
+              <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
+              <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>
