@@ -39,11 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   } else {
     // Inserção
-    $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $data])) {
+    try {
+      $pdo->beginTransaction();
+    
+      for ($i = 0; $i < $recorrencia; $i++) {
+        $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
+    
+        $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual]);
+      }
+    
+      $pdo->commit();
       $sucesso = true;
-    } else {
-      $erro = "Erro ao salvar despesa.";
+    } catch (Exception $e) {
+      $pdo->rollBack();
+      $erro = "Erro ao salvar despesa: " . $e->getMessage();
     }
   }
 
@@ -141,6 +151,10 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="mb-3">
           <label class="form-label">Descrição</label>
           <input type="text" name="descricao" class="form-control" value="<?= $descricao ?>" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Recorrência (mensal)</label>
+          <input type="number" name="recorrencia" class="form-control" placeholder="Ex: 12 para 12 meses" min="1">
         </div>
         <div class="mb-3">
           <label class="form-label">Valor</label>
