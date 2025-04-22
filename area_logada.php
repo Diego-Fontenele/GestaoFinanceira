@@ -72,7 +72,7 @@ $metasUsuario = $sqlMetasUsuario->fetchAll(PDO::FETCH_ASSOC);
 // Pega o ID da meta selecionada via GET ou a primeira meta do usuário
 $sqlPrimeiraMeta = $pdo->prepare("SELECT id FROM metas WHERE usuario_id = ? ORDER BY id LIMIT 1");
 $sqlPrimeiraMeta->execute([$usuarioId]);
-$metaIdSelecionada = $_GET['meta_id'] ?? $sqlPrimeiraMeta->fetchColumn();
+$metaIdSelecionada = !empty($_GET['meta_id']) ? (int) $_GET['meta_id'] : (int) $sqlPrimeiraMeta->fetchColumn();
 $sqlProgressoMetas = $pdo->prepare("
       SELECT 
       m.id as meta_id,
