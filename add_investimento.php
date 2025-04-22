@@ -7,22 +7,10 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
-$investimento_id = $_GET['id'] ?? null;
-
 // Buscar categorias de investimento
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'investimento' AND (usuario_id IS NULL OR usuario_id = ?) ORDER BY nome");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Buscar dados do investimento
-$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE id = ? AND usuario_id = ?");
-$stmt->execute([$investimento_id, $_SESSION['usuario_id']]);
-$investimento = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$investimento) {
-  echo "Investimento não encontrado.";
-  exit;
-}
 
 $tipo = '';
 $valor = '';
@@ -31,7 +19,7 @@ $categoria_id = '';
 $sucesso = false;
 $erro = '';
 
-// Inserção de movimentação
+// Inserção de novo investimento
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $tipo = $_POST['tipo'] ?? '';
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
@@ -41,17 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $requer_categoria = $tipo === 'aporte';
 
   if ($tipo && $valor > 0 && (!$requer_categoria || $categoria_id)) {
-    $stmt = $pdo->prepare("INSERT INTO movimentacoes_investimentos (investimento_id, tipo, valor, data, categoria_id) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$investimento_id, $tipo, $valor, $data, $categoria_id]);
+    // Inserir o novo investimento aqui
+    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, tipo, valor_investido, data, categoria_id) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$_SESSION['usuario_id'], $tipo, $valor, $data, $categoria_id]);
     $sucesso = true;
   } else {
     $erro = "Preencha todos os campos corretamente.";
   }
 }
 
-// Buscar movimentações
-$stmt = $pdo->prepare("SELECT m.*, c.nome AS categoria_nome FROM movimentacoes_investimentos m LEFT JOIN categorias c ON m.categoria_id = c.id WHERE m.investimento_id = ? ORDER BY m.data DESC");
-$stmt->execute([$investimento_id]);
+// Buscar movimentações (se necessário, pode ser ajustado para mostrar as movimentações de investimentos cadastrados)
+$stmt = $pdo->prepare("SELECT m.*, c.nome AS categoria_nome FROM movimentacoes_investimentos m LEFT JOIN categorias c ON m.categoria_id = c.id WHERE m.usuario_id = ? ORDER BY m.data DESC");
+$stmt->execute([$_SESSION['usuario_id']]);
 $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -59,7 +48,7 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Investimento - <?= htmlspecialchars($investimento['nome']) ?></title>
+  <title>Adicionar Investimento</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -68,7 +57,7 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <?php include('includes/menu.php'); ?>
   <div class="flex-grow-1 p-4">
     <div class="card p-4 mb-4">
-      <h4>Movimentações de: <?= htmlspecialchars($investimento['nome']) ?></h4>
+      <h4>Cadastrar Novo Investimento</h4>
 
       <?php if ($erro): ?>
         <div class="alert alert-danger"><?= $erro ?></div>
@@ -87,7 +76,7 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </div>
           <div class="col-md-3">
             <label class="form-label">Categoria</label>
-            <select class="form-select" name="categoria_id" id="categoria_id">
+            <select class="form-select" name="categoria_id" id="categoria_id" required>
               <option value="">Selecione</option>
               <?php foreach ($categorias as $cat): ?>
                 <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
@@ -160,7 +149,7 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
   }).trigger('change');
 
   <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Movimentação registrada.', 'success');
+    Swal.fire('Sucesso!', 'Investimento cadastrado com sucesso.', 'success');
   <?php endif; ?>
 </script>
 </body>
