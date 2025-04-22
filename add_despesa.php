@@ -16,6 +16,7 @@ $id_edicao = null;
 $sucesso = false;
 $erro = '';
 
+$recorrencia = isset($_POST['recorrencia']) ? intval($_POST['recorrencia']) : 1;
 // Filtros
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
