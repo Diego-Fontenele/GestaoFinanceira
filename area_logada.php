@@ -74,18 +74,18 @@ $sqlPrimeiraMeta = $pdo->prepare("SELECT id FROM metas WHERE usuario_id = ? ORDE
 $sqlPrimeiraMeta->execute([$usuarioId]);
 $metaIdSelecionada = $_GET['meta_id'] ?? $sqlPrimeiraMeta->fetchColumn();
 $sqlProgressoMetas = $pdo->prepare("
-  SELECT 
-    m.id as meta_id,
-    m.titulo,
-    m.valor as valor_meta,
-    TO_CHAR(data, 'YYYY-MM') as mes,
-    SUM(a.valor) as valor_aporte
-  FROM metas m
-  JOIN metas_aportes a ON m.id = a.meta_id
-  WHERE m.usuario_id = ?
-  and m.id = ?
-  GROUP BY m.id, m.titulo, m.valor, mes
-  ORDER BY m.id, mes
+      SELECT 
+      m.id as meta_id,
+      m.titulo,
+      m.valor as valor_meta,
+      TO_CHAR(a.data, 'YYYY-MM') as mes,
+      COALESCE(SUM(a.valor), 0) as valor_aporte
+    FROM metas m
+    LEFT JOIN metas_aportes a ON m.id = a.meta_id
+    WHERE m.usuario_id = ?
+      AND m.id = ?
+    GROUP BY m.id, m.titulo, m.valor, mes
+    ORDER BY m.id, mes
 ");
 $sqlProgressoMetas->execute([$usuarioId, $metaIdSelecionada]);
 
