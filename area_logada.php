@@ -196,62 +196,62 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 
   <!-- Gráficos lado a lado -->
   <div class="row mt-4">
-    <!-- Gráfico de Pizza -->
-    <div class="col-md-6 mb-4 d-flex">
-      <div class="card w-100 h-100">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-          <canvas id="graficoDespesas" class="w-100" style="height: 300px;"></canvas>
-        </div>
+  <!-- Gráfico de Pizza -->
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
+        <!-- Definindo altura fixa para o gráfico de pizza -->
+        <canvas id="graficoDespesas" class="w-100" style="height: 300px;"></canvas>
       </div>
     </div>
+  </div>
 
-      
-      <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
-      <div class="col-md-6 mb-4 d-flex">
-        <div class="card w-100 h-100">
-          <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
-            <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-            <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-              <div style="width: 1200px; height: 300px;">
-                <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
-              </div>
-            </div>
+  <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
+        <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+          <div style="width: 1200px; height: 300px;">
+            <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-    <!-- Gráfico de Linha de Progresso de Meta -->
-    <div class="col-md-6 mb-4 d-flex">
-      <div class="card w-100 h-100">
-        <div class="card-body">
-          <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
-            <!-- Select dentro do título do card -->
-            <form method="get" class="mb-0">
-              <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
-                <?php
-                foreach ($metasUsuario as $meta) {
-                  $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
-                  echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
-                }
-                ?>
-              </select>
-            </form>
-          </h5>
-
-          <canvas id="graficoProgressoMeta" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
-        </div>
+  <!-- Gráfico de Linha de Progresso de Meta -->
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
+          <!-- Select dentro do título do card -->
+          <form method="get" class="mb-0">
+            <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+              <?php
+              foreach ($metasUsuario as $meta) {
+                $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
+                echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
+              }
+              ?>
+            </select>
+          </form>
+        </h5>
+        <!-- Ajustando o gráfico de progresso para ter altura fixa -->
+        <canvas id="graficoProgressoMeta" class="w-100" style="height: 300px;"></canvas>
       </div>
     </div>
-    <div class="col-md-6 mb-4 d-flex">
-      <div class="card w-100 h-100">
-        <div class="card-body">
-          <h5 class="card-title mb-3">
-            <i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas
-          </h5>
-          <canvas id="graficoReceitasDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
-        </div>
+  </div>
+
+  <!-- Gráfico de Comparativo de Receitas vs Despesas -->
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
+        <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
+        <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
       </div>
     </div>
   </div>
