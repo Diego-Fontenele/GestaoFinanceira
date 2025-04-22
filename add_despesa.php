@@ -245,7 +245,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   });
 }
 
-$(document).ready(function () {
+  $(document).ready(function () {
   carregarDespesas(); // Carrega na primeira vez
 
   // Quando clicar para paginar
