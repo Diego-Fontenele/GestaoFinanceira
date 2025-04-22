@@ -64,22 +64,6 @@ foreach ($resultado as $linha) {
   $valores[] = $linha['total'];
 }
 
-$sqlMetas = $pdo->prepare("
- SELECT data_inicio , data_fim , valor
-  FROM metas 
-  WHERE usuario_id = ?
-  ORDER BY data_inicio, data_fim
-");
-$sqlMetas->execute([$usuarioId]);
-
-$meses = [];
-$valoresMetas = [];
-
-while ($row = $sqlMetas->fetch()) {
-  $meses[] = $row['data_inicio'];
-  $valoresMetas[] = $row['valor'];
-}
-
 //
 $sqlMetasUsuario = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasUsuario->execute([$usuarioId]);
@@ -193,18 +177,8 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       </div>
     </div>
 
-    <!-- Gráfico de Linha (Metas) -->
-    <div class="col-md-6 mb-4 d-flex">
-      <div class="card w-100 h-100">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title mb-3"><i class="bi bi-graph-up-arrow"></i> Evolução das Metas</h5>
-          <canvas id="graficoMetas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
-        </div>
-      </div>
-    </div>
-
       <!-- Gráfico de Linha de Despesas -->
-      <div class="col-md-6 mb-4 d-flex">
+    <div class="col-md-6 mb-4 d-flex">
       <div class="card w-100 h-100">
         <div class="card-body">
           <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
@@ -253,30 +227,9 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
     }
   });
 
-  const ctxMetas = document.getElementById('graficoMetas');
-  const graficoMetas = new Chart(ctxMetas, {
-    type: 'line',
-    data: {
-      labels: <?= json_encode($meses); ?>,
-      datasets: [{
-        label: 'Valor Alcançado',
-        data: <?= json_encode($valoresMetas); ?>,
-        borderColor: '#198754',
-        backgroundColor: 'rgba(25, 135, 84, 0.2)',
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Progresso Mensal das Metas' }
-      }
-    }
-  });
+
   const ctxDespesasMes = document.getElementById('graficoDespesasMes');
-const graficoDespesasMes = new Chart(ctxDespesasMes, {
+  const graficoDespesasMes = new Chart(ctxDespesasMes, {
   type: 'line',
   data: {
     labels: <?= json_encode($mesesDespesas); ?>,
@@ -296,9 +249,9 @@ const graficoDespesasMes = new Chart(ctxDespesasMes, {
       title: { display: true, text: 'Gastos Mensais' }
     }
   }
-});
-const ctxMeta = document.getElementById('graficoProgressoMeta');
-const graficoProgressoMeta = new Chart(ctxMeta, {
+  });
+  const ctxMeta = document.getElementById('graficoProgressoMeta');
+  const graficoProgressoMeta = new Chart(ctxMeta, {
   type: 'line',
   data: {
     labels: <?= json_encode($labels); ?>,
@@ -321,17 +274,17 @@ const graficoProgressoMeta = new Chart(ctxMeta, {
       }
     ]
   },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: {
-        display: true,
-        text: 'Evolução do Aporte em Meta'
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: {
+          display: true,
+          text: 'Evolução do Aporte em Meta'
+        }
       }
     }
-  }
-});
+  });
 </script>
 
 </body>
