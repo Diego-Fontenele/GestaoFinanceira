@@ -255,7 +255,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <div class="card-body">
         <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
         <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
+        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+        <div style="width: 1200px; height: 300px;">
         <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
+        </div>
+        </div>
       </div>
     </div>
   </div>
