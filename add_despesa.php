@@ -207,20 +207,9 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Ações</th>
           </tr>
         </thead>
-        <tbody>
-          <?php foreach ($despesas as $d): ?>
-            <tr>
-              <td><?= date('d/m/Y', strtotime($d['data'])) ?></td>
-              <td><?= $d['categoria_nome'] ?></td>
-              <td><?= $d['descricao'] ?></td>
-              <td>R$ <?= number_format($d['valor'], 2, ',', '.') ?></td>
-              <td>
-                <a href="?editar=<?= $d['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                <a href="?excluir=<?= $d['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir esta despesa?')"><i class="bi bi-trash"></i></a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
+          <tbody id="tabela-despesas">
+          <!-- Os dados serão carregados via AJAX -->
+          </tbody>
       </table>
     </div>
   </div>
@@ -241,7 +230,38 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       removeMaskOnSubmit: true
     }).mask('.valor');
   });
+  function carregarDespesas(pagina = 1) {
+  const categoria = $('[name="filtro_categoria"]').val();
+  const inicio = $('[name="filtro_inicio"]').val();
+  const fim = $('[name="filtro_fim"]').val();
 
+  $.get('ajax_despesas.php', {
+    pagina: pagina,
+    filtro_categoria: categoria,
+    filtro_inicio: inicio,
+    filtro_fim: fim
+  }, function(data) {
+    $('#tabela-despesas').html(data);
+  });
+}
+
+$(document).ready(function () {
+  carregarDespesas(); // Carrega na primeira vez
+
+  // Quando clicar para paginar
+  $(document).on('click', '.paginacao-ajax', function (e) {
+    e.preventDefault();
+    const url = new URL(this.href);
+    const pagina = url.searchParams.get("pagina");
+    carregarDespesas(pagina);
+  });
+
+  // Quando o formulário de filtro for enviado
+  $('form[method="GET"]').on('submit', function(e) {
+    e.preventDefault();
+    carregarDespesas(1);
+  });
+});
   <?php if ($sucesso): ?>
     Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
   <?php endif; ?>
