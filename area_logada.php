@@ -210,9 +210,10 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
     <div class="col-md-6 mb-4 d-flex">
       <div class="card w-100 h-100">
-        <div class="card-body" style="max-height: 400px; overflow-x: auto;">
+        <div class="card-body" >
           <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-          <div style="width: 100%; overflow-x: auto;">
+          
+          <div style="width: 1200px; overflow-x: auto;">
             <canvas id="graficoDespesasMes" class="w-100" style="height: 300px;"></canvas>
           </div>
         </div>
