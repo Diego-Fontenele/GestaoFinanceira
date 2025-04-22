@@ -207,14 +207,14 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
     </div>
 
       <!-- Gráfico de Linha de Despesas -->
-    <div class="col-md-6 mb-4 d-flex">
-      <div class="card w-100 h-100">
-        <div class="card-body">
-          <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-          <canvas id="graficoDespesasMes" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+      <div class="col-md-6 mb-4 d-flex">
+        <div class="card w-100 h-100">
+          <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+            <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+            <canvas id="graficoDespesasMes" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
     <!-- Gráfico de Linha de Progresso de Meta -->
     <div class="col-md-6 mb-4 d-flex">
@@ -269,25 +269,33 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 
   const ctxDespesasMes = document.getElementById('graficoDespesasMes');
   const graficoDespesasMes = new Chart(ctxDespesasMes, {
-  type: 'line',
-  data: {
-    labels: <?= json_encode($mesesDespesas); ?>,
-    datasets: [{
-      label: 'Despesas Mensais',
-      data: <?= json_encode($valoresDespesas); ?>,
-      borderColor: '#dc3545',
-      backgroundColor: 'rgba(220, 53, 69, 0.2)',
-      fill: true,
-      tension: 0.3
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Gastos Mensais' }
+    type: 'line',
+    data: {
+      labels: <?= json_encode($mesesDespesas); ?>,
+      datasets: [{
+        label: 'Despesas Mensais',
+        data: <?= json_encode($valoresDespesas); ?>,
+        borderColor: '#dc3545',
+        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Gastos Mensais' }
+      },
+      scales: {
+        x: {
+          // Aqui você pode definir limites para o eixo X se necessário
+          ticks: {
+            maxTicksLimit: 12 // Limitando o número de ticks (meses) visíveis no gráfico
+          }
+        }
+      }
     }
-  }
   });
   const ctxMeta = document.getElementById('graficoProgressoMeta');
   const graficoProgressoMeta = new Chart(ctxMeta, {
