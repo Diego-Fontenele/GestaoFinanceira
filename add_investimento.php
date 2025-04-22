@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
 
   if ($nome && $valor_inicial > 0) {
-    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, valor_inicial, data_aplicacao) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, valor_inicial, data) VALUES (?, ?, ?, ?)");
     $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao]);
     $sucesso = true;
     $nome = '';
