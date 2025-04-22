@@ -220,7 +220,35 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
-  $(document).ready(function(){
+  // Função para carregar receitas via AJAX
+  function carregarReceitas(pagina = 1) {
+    const categoria = $('[name="filtro_categoria"]').val();
+    const inicio = $('[name="filtro_inicio"]').val();
+    const fim = $('[name="filtro_fim"]').val();
+
+    $.get('ajax_receitas.php', {
+      pagina: pagina,
+      filtro_categoria: categoria,
+      filtro_inicio: inicio,
+      filtro_fim: fim
+    }, function(data) {
+      $('#tabela-receitas').html(data);
+    });
+  }
+
+  $(document).ready(function () {
+    // Carrega receitas na primeira vez
+    carregarReceitas();
+
+    // Paginação com AJAX
+    $(document).on('click', '.paginacao-ajax', function (e) {
+      e.preventDefault();
+      const url = new URL(this.href);
+      const pagina = url.searchParams.get("pagina");
+      carregarReceitas(pagina);
+    });
+
+    // Máscara para o campo de valor
     Inputmask({
       alias: 'currency',
       prefix: 'R$ ',
@@ -230,36 +258,12 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       allowMinus: false,
       removeMaskOnSubmit: true
     }).mask('.valor');
-  });
-  function carregarDespesas(pagina = 1) {
-  const categoria = $('[name="filtro_categoria"]').val();
-  const inicio = $('[name="filtro_inicio"]').val();
-  const fim = $('[name="filtro_fim"]').val();
 
-  $.get('ajax_receitas.php', {
-    pagina: pagina,
-    filtro_categoria: categoria,
-    filtro_inicio: inicio,
-    filtro_fim: fim
-  }, function(data) {
-    $('#tabela-receitas').html(data);
+    // Alerta de sucesso, se necessário
+    <?php if ($sucesso): ?>
+      Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
+    <?php endif; ?>
   });
-}
-  $(document).ready(function(){
-    Inputmask({
-      alias: 'currency',
-      prefix: 'R$ ',
-      groupSeparator: '.',
-      radixPoint: ',',
-      autoGroup: true,
-      allowMinus: false,
-      removeMaskOnSubmit: true
-    }).mask('.valor');
-  });
-
-  <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
-  <?php endif; ?>
 </script>
 
 </body>
