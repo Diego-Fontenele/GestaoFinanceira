@@ -231,6 +231,31 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       removeMaskOnSubmit: true
     }).mask('.valor');
   });
+  function carregarDespesas(pagina = 1) {
+  const categoria = $('[name="filtro_categoria"]').val();
+  const inicio = $('[name="filtro_inicio"]').val();
+  const fim = $('[name="filtro_fim"]').val();
+
+  $.get('ajax_receitas.php', {
+    pagina: pagina,
+    filtro_categoria: categoria,
+    filtro_inicio: inicio,
+    filtro_fim: fim
+  }, function(data) {
+    $('#tabela-receitas').html(data);
+  });
+}
+  $(document).ready(function(){
+    Inputmask({
+      alias: 'currency',
+      prefix: 'R$ ',
+      groupSeparator: '.',
+      radixPoint: ',',
+      autoGroup: true,
+      allowMinus: false,
+      removeMaskOnSubmit: true
+    }).mask('.valor');
+  });
 
   <?php if ($sucesso): ?>
     Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
