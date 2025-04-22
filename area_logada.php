@@ -274,7 +274,9 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       datasets: [{
         label: 'Despesas',
         data: <?= json_encode($valores); ?>,
-        backgroundColor: ['#dc3545', '#0d6efd', '#ffc107', '#6c757d']
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                            '#e74c3c', '#3498db', '#9b59b6', '#f1c40f']
       }]
     }
   });
