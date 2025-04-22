@@ -21,11 +21,11 @@ if (!empty($filtro_categoria)) {
   $params[] = $filtro_categoria;
 }
 if (!empty($filtro_inicio)) {
-  $sql .= " AND d.data >= ?";
+  $sql .= " AND r.data >= ?";
   $params[] = $filtro_inicio;
 }
 if (!empty($filtro_fim)) {
-  $sql .= " AND d.data <= ?";
+  $sql .= " AND r.data <= ?";
   $params[] = $filtro_fim;
 }
 
@@ -35,7 +35,7 @@ $stmtTotal->execute($params);
 $totalRegistros = $stmtTotal->fetchColumn();
 $totalPaginas = ceil($totalRegistros / $limite);
 
-$sql .= " ORDER BY d.data DESC LIMIT $limite OFFSET $offset";
+$sql .= " ORDER BY r.data DESC LIMIT $limite OFFSET $offset";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
