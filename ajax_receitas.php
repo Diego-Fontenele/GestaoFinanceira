@@ -13,7 +13,7 @@ $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
 // Consulta principal
-$sql = "SELECT d.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
+$sql = "SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
 
 if (!empty($filtro_categoria)) {
