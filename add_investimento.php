@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE usuario_id = ? ORDER BY data_aplicacao DESC");
+$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE usuario_id = ? ORDER BY data DESC");
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
