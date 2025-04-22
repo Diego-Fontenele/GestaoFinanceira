@@ -205,11 +205,26 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
         </div>
       </div>
     </div>
+    
     <!-- Gráfico de Linha de Progresso de Meta -->
     <div class="col-md-6 mb-4 d-flex">
       <div class="card w-100 h-100">
         <div class="card-body">
-          <h5 class="card-title mb-3"><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</h5>
+          <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
+            <!-- Select dentro do título do card -->
+            <form method="get" class="mb-0">
+              <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                <?php
+                foreach ($metasLista as $meta) {
+                  $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
+                  echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
+                }
+                ?>
+              </select>
+            </form>
+          </h5>
+
           <canvas id="graficoProgressoMeta" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
         </div>
       </div>
