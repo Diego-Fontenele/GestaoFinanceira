@@ -201,7 +201,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <div class="card w-100 h-100">
         <div class="card-body d-flex flex-column">
           <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-          <canvas id="graficoDespesas" class="w-100" style="aspect-ratio: 2 / 1;"></canvas>
+          <canvas id="graficoDespesas" class="w-100" style="height: 300px;"></canvas>
         </div>
       </div>
     </div>
