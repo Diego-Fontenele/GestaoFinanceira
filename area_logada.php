@@ -80,8 +80,15 @@ while ($row = $sqlMetas->fetch()) {
   $valoresMetas[] = $row['valor'];
 }
 
-// Buscar aportes para a meta 1 (ou outra que você quiser)
-$metaId = 1;
+//
+$sqlMetasUsuario = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
+$sqlMetasUsuario->execute([$usuarioId]);
+$metasUsuario = $sqlMetasUsuario->fetchAll(PDO::FETCH_ASSOC);
+
+// Pega o ID da meta selecionada via GET ou a primeira meta do usuário
+$sqlPrimeiraMeta = $pdo->prepare("SELECT id FROM metas WHERE usuario_id = ? ORDER BY id LIMIT 1");
+$sqlPrimeiraMeta->execute([$usuarioId]);
+$metaIdSelecionada = $_GET['meta_id'] ?? $sqlPrimeiraMeta->fetchColumn();
 $sqlProgressoMetas = $pdo->prepare("
   SELECT 
     m.id as meta_id,
@@ -96,7 +103,7 @@ $sqlProgressoMetas = $pdo->prepare("
   GROUP BY m.id, m.titulo, m.valor, mes
   ORDER BY m.id, mes
 ");
-$sqlProgressoMetas->execute([$usuarioId,$metaId]);
+$sqlProgressoMetas->execute([$usuarioId, $metaIdSelecionada]);
 
 $dados = $sqlProgressoMetas->fetchAll(PDO::FETCH_ASSOC);
 $labels = [];
@@ -205,7 +212,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
         </div>
       </div>
     </div>
-    
+
     <!-- Gráfico de Linha de Progresso de Meta -->
     <div class="col-md-6 mb-4 d-flex">
       <div class="card w-100 h-100">
@@ -216,7 +223,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
             <form method="get" class="mb-0">
               <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
                 <?php
-                foreach ($metasLista as $meta) {
+                foreach ($metasUsuario as $meta) {
                   $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
                   echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
                 }
