@@ -15,6 +15,9 @@
   <a class="nav-link text-white" href="meta.php"><i class="bi bi-flag"></i> Metas</a>
     </li>
     <li class="nav-item mb-2">
+      <a class="nav-link text-white" href="investimento.php"><i class="bi bi-bar-chart-line"></i> Investimentos</a>
+    </li>
+    <li class="nav-item mb-2">
       <a class="nav-link text-white" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
     </li>
     <li class="nav-item mt-5">
