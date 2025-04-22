@@ -208,20 +208,9 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Ações</th>
           </tr>
         </thead>
-        <tbody>
-          <?php foreach ($receitas as $r): ?>
-            <tr>
-              <td><?= date('d/m/Y', strtotime($r['data'])) ?></td>
-              <td><?= $r['categoria_nome'] ?></td>
-              <td><?= $r['descricao'] ?></td>
-              <td>R$ <?= number_format($r['valor'], 2, ',', '.') ?></td>
-              <td>
-                <a href="?editar=<?= $r['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                <a href="?excluir=<?= $r['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir esta receita?')"><i class="bi bi-trash"></i></a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
+        <tbody id="tabela-receitas">
+          <!-- Os dados serão carregados via AJAX -->
+          </tbody>
       </table>
     </div>
   </div>
