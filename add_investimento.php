@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
 
   if ($nome && $valor_inicial > 0) {
-    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, valor_inicial, data) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, valor_inicial, data_inicio) VALUES (?, ?, ?, ?)");
     $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao]);
     $sucesso = true;
     $nome = '';
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE usuario_id = ? ORDER BY data DESC");
+$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE usuario_id = ? ORDER BY data_inicio DESC");
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
