@@ -130,9 +130,9 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <thead>
           <tr>
             <th>Nome</th>
+            <th>Data de Aplicação</th>
             <th>Categoria</th>
             <th>Valor Inicial</th>
-            <th>Data de Aplicação</th>
             <th>Rendimento</th>
             <th>Valor Atualizado</th>
             <th style="width: 150px">Ações</th>
@@ -142,9 +142,9 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php foreach ($investimentos as $inv): ?>
             <tr>
               <td><?= htmlspecialchars($inv['nome']) ?></td>
+              <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
               <td><?= htmlspecialchars($inv['categoria']) ?></td>
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
-              <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
               <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento']+ $inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>
