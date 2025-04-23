@@ -13,25 +13,7 @@ $data_aplicacao = date('Y-m-d');
 $sucesso = false;
 $erro = '';
 
-// Inserção de novo investimento
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $nome = trim($_POST['nome'] ?? '');
-  $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
-  $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
-  $categoria_id = $_POST['categoria_id'] ?? null;
 
-  if ($nome && $valor_inicial > 0) {
-    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
-    $sucesso = true;
-    $nome = '';
-    $categoria_id = null;
-    $valor_inicial = '';
-    $data_aplicacao = date('Y-m-d');
-  } else {
-    $erro = "Preencha todos os campos corretamente.";
-  }
-}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
     $tipo = $_POST['tipo'];
     $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
@@ -46,6 +28,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
     } else {
       $erro = "Preencha todos os campos da movimentação corretamente.";
     }
+  }else{
+    // Inserção de novo investimento
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nome = trim($_POST['nome'] ?? '');
+            $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
+            $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
+            $categoria_id = $_POST['categoria_id'] ?? null;
+        
+            if ($nome && $valor_inicial > 0) {
+            $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
+            $sucesso = true;
+            $nome = '';
+            $categoria_id = null;
+            $valor_inicial = '';
+            $data_aplicacao = date('Y-m-d');
+            } else {
+            $erro = "Preencha todos os campos corretamente.";
+            }
+        }
+
   }
 
 // Buscar categorias de investimento
