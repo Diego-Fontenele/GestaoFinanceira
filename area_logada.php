@@ -156,24 +156,43 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-  /* Garantir que o menu lateral tenha altura de 100vh */
+  /* Estilo do menu lateral */
   .bg-white {
     height: 100vh;
-    position: fixed; /* Fixa o menu lateral na tela */
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     width: 250px;
-    z-index: 1000; 
+    z-index: 1000;
+    overflow-y: auto;
   }
-  html, body {
-  overflow-x: hidden;
-  }
-  /* Ajustar o conteúdo principal */
+
+  /* Estilo do conteúdo principal */
   .flex-grow-1 {
-    margin-left: 250px; /* Compensa a largura do menu lateral */
+    margin-left: 250px;
+    padding: 20px;
+  }
+
+  /* Impede o scroll horizontal */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .bg-white {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+
+    .flex-grow-1 {
+      margin-left: 0;
+    }
   }
 </style>
+
 </head>
 <body style="background-color: #f8f9fa;" class="min-vh-100">
 
