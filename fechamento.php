@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
             <select name="meta_id" class="form-select" required>
               <option value="">Selecione</option>
               <?php foreach ($metas as $meta): ?>
-                <option value="<?= $meta['id'] ?>"><?= $meta['nome'] ?></option>
+                <option value="<?= $meta['id'] ?>"><?= $meta['titulo'] ?></option>
               <?php endforeach; ?>
             </select>
           </div>
