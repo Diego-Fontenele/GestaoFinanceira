@@ -18,10 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $nome = trim($_POST['nome'] ?? '');
   $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
   $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
+  $categoria_id = $_POST['categoria_id'] ?? null;
 
   if ($nome && $valor_inicial > 0) {
-    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao]);
+    $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
     $sucesso = true;
     $nome = '';
     $valor_inicial = '';
@@ -31,8 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
+// Buscar categorias de investimento
+$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'investimento' AND (usuario_id IS NULL OR usuario_id = ?) ORDER BY nome");
+$stmt->execute([$_SESSION['usuario_id']]);
+$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT * FROM investimentos WHERE usuario_id = ? ORDER BY data_inicio DESC");
+$stmt = $pdo->prepare("SELECT i.*,c.nome as categoria
+                        FROM investimentos i,
+                                    categorias c 
+                        where i.categoria_id = c.id 
+                        and i.usuario_id = ? ORDER BY data_inicio DESC");
+
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -63,6 +75,17 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <input type="text" name="nome" class="form-control" value="<?= htmlspecialchars($nome) ?>" required>
           </div>
           <div class="col-md-4">
+            <label class="form-label">Categoria</label>
+            <select name="categoria_id" class="form-select" required>
+                <option value="">Selecione</option>
+                <?php foreach ($categorias as $cat): ?>
+                <option value="<?= $cat['id'] ?>" <?= (isset($_POST['categoria_id']) && $_POST['categoria_id'] == $cat['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($cat['nome']) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+            </div>
+          <div class="col-md-4">
             <label class="form-label">Valor Inicial</label>
             <input type="text" name="valor_inicial" class="form-control valor" value="<?= htmlspecialchars($_POST['valor_inicial'] ?? '') ?>" required>
           </div>
@@ -83,6 +106,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <thead>
           <tr>
             <th>Nome</th>
+            <th>Categoria</th>
             <th>Valor Inicial</th>
             <th>Data de Aplicação</th>
           </tr>
@@ -91,6 +115,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php foreach ($investimentos as $inv): ?>
             <tr>
               <td><?= htmlspecialchars($inv['nome']) ?></td>
+              <td><?= htmlspecialchars($inv['categoria']) ?></td>
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
             </tr>
