@@ -164,8 +164,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
     left: 0;
     bottom: 0;
     width: 250px;
+    z-index: 1000; 
   }
-  
+  html, body {
+  overflow-x: hidden;
+  }
   /* Ajustar o conteúdo principal */
   .flex-grow-1 {
     margin-left: 250px; /* Compensa a largura do menu lateral */
