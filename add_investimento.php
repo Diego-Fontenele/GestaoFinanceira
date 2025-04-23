@@ -160,42 +160,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  function excluirInvestimento(id) {
-  Swal.fire({
-    title: 'Tem certeza?',
-    text: 'Esta ação é irreversível!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sim, excluir!',
-    cancelButtonText: 'Cancelar'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      window.location.href = 'excluir_investimento.php?id=' + id;
-    }
-  });
-}  
 
-  Inputmask({
-    alias: 'currency',
-    prefix: 'R$ ',
-    groupSeparator: '.',
-    radixPoint: ',',
-    autoGroup: true,
-    allowMinus: false,
-    removeMaskOnSubmit: true
-  }).mask('.valor');
-  function abrirModalMovimentacao(id, nome) {
-  $('#mov_investimento_id').val(id);
-  $('#modalMovimentacao').modal('show');
-    }
-  <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Investimento cadastrado.', 'success');
-  <?php endif; ?>
-  <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 1): ?>
-  Swal.fire('Excluído!', 'O investimento foi removido com sucesso.', 'success');
-<?php endif; ?>
-</script>
 
 <!-- Modal -->
 <div class="modal fade" id="modalMovimentacao" tabindex="-1" aria-hidden="true">
@@ -239,6 +204,41 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </form>
   </div>
 </div>
+<script>
+  function excluirInvestimento(id) {
+  Swal.fire({
+    title: 'Tem certeza?',
+    text: 'Esta ação é irreversível!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir!',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = 'excluir_investimento.php?id=' + id;
+    }
+  });
+}  
 
+  Inputmask({
+    alias: 'currency',
+    prefix: 'R$ ',
+    groupSeparator: '.',
+    radixPoint: ',',
+    autoGroup: true,
+    allowMinus: false,
+    removeMaskOnSubmit: true
+  }).mask('.valor');
+  function abrirModalMovimentacao(id, nome) {
+  $('#mov_investimento_id').val(id);
+  $('#modalMovimentacao').modal('show');
+    }
+  <?php if ($sucesso): ?>
+    Swal.fire('Sucesso!', 'Investimento cadastrado.', 'success');
+  <?php endif; ?>
+  <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 1): ?>
+  Swal.fire('Excluído!', 'O investimento foi removido com sucesso.', 'success');
+<?php endif; ?>
+</script>
 </body>
 </html>
