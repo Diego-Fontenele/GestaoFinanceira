@@ -160,8 +160,9 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 
 <div class="d-flex">
   <!-- Inclusão do menu lateral -->
+  <div style="width: 250px;">
   <?php include('includes/menu.php'); ?>
-
+  </div>
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4">
     <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
