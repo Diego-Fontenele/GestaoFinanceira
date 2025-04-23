@@ -59,12 +59,12 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento
+$stmt = $pdo->prepare("SELECT i.id, i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento
                         FROM investimentos i
                         join categorias c on i.categoria_id = c.id 
                         left join investimentos_movimentacoes im on i.id = im.investimento_id 
                         where i.usuario_id = ? 
-                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial
+                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial,i.id
     
                         order by  2 desc");
 
