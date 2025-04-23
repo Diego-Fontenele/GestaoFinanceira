@@ -192,6 +192,9 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <?php if ($sucesso): ?>
     Swal.fire('Sucesso!', 'Investimento cadastrado.', 'success');
   <?php endif; ?>
+  <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 1): ?>
+  Swal.fire('Excluído!', 'O investimento foi removido com sucesso.', 'success');
+<?php endif; ?>
 </script>
 
 <!-- Modal -->
