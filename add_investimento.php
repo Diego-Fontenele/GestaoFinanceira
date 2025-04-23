@@ -9,7 +9,7 @@ $erro = '';
 
 // Buscar categorias de investimento com AJAX
 $categorias = [];
-$categorias_json = file_get_contents('investimento_controller.php?acao=buscar_categorias');
+$categorias_json = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/investimento_controller.php?acao=buscar_categorias');
 if ($categorias_json) {
     $categorias = json_decode($categorias_json, true);
 }
