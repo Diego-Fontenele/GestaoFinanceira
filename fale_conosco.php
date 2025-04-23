@@ -1,67 +1,44 @@
 <?php
 session_start();
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php';  // Certifique-se de que o autoload do Composer está correto
+require 'vendor/autoload.php';
 
-$mail = new PHPMailer(true);
+$sucesso = false;
+$erro = false;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-try {
-    // Configurações do servidor de e-mail
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com'; // Exemplo de servidor SMTP (ajuste para o seu)
-    $mail->SMTPAuth = true;
-    //pego as variaveis que CONFIGUREI  no RENDER
-    $mail->Username = getenv('EMAIL_USER');
-    $mail->Password = getenv('EMAIL_PASS');
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
+    $mail = new PHPMailer(true);
 
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = getenv('EMAIL_USER');
+        $mail->Password   = getenv('EMAIL_PASS');
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
 
-    $nome = $_POST['nome'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $assunto = $_POST['assunto'] ?? '';
-    $mensagem = $_POST['mensagem'] ?? '';
+        $nome     = $_POST['nome'] ?? '';
+        $email    = $_POST['email'] ?? '';
+        $assunto  = $_POST['assunto'] ?? '';
+        $mensagem = $_POST['mensagem'] ?? '';
 
-    // Remetente e destinatário
-    $mail->setFrom($email, $nome);
-    $mail->addAddress('diegocfontenele@gmail.com', 'Destinatário'); // Adicione o endereço de e-mail do destinatário
+        $mail->setFrom($mail->Username, 'Fale Conosco');
+        $mail->addReplyTo($email, $nome);
+        $mail->addAddress('equilibriofinanceirogestao@gmail.com', 'Diego');
 
+        $mail->isHTML(false);
+        $mail->Subject = "Fale Conosco - $assunto";
+        $mail->Body    = "Mensagem de: $nome <$email>\n\n" . $mensagem;
 
-    
-   
-
-    $destinatario = 'equilibriofinanceirogestao@gmail.com'; // Altere para seu e-mail real
-    $cabecalhos = "From: $nome <$email>\r\n";
-    $cabecalhos .= "Reply-To: $email\r\n";
-    $cabecalhos .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-    $corpo = "Mensagem de: $nome <$email>\n\n";
-    $corpo .= "Assunto: $assunto\n\n";
-    $corpo .= "Mensagem:\n$mensagem";
-
-    if (mail($destinatario, "Fale Conosco - $assunto", $corpo, $cabecalhos)) {
+        $mail->send();
         $sucesso = true;
-    } else {
-        $erro = "Erro ao enviar a mensagem. Tente novamente.";
+    } catch (Exception $e) {
+        $erro = "Erro ao enviar o e-mail: " . $mail->ErrorInfo;
     }
-
-
-    // Conteúdo do e-mail
-    $mail->isHTML(true);
-    $mail->Subject = 'E-mail referente a troca de senha';
-    $mail->Body    = 'Se está recebendo este e-mail é porque solicitou troca de senha.';
-
-    // Envia o e-mail
-    $mail->send();
-    echo 'E-mail enviado com sucesso!';
-    $sucesso = true;
-} catch (Exception $e) {
-    echo "Erro ao enviar o e-mail. Erro: {$mail->ErrorInfo}";
-    $erro = true;
-}
-
 }
 ?>
 
@@ -86,7 +63,7 @@ try {
         <div class="alert alert-danger"><?= $erro ?></div>
       <?php endif; ?>
 
-      <form method="POST">
+      <form method="POST" class="needs-validation" novalidate>
         <div class="mb-3">
           <label class="form-label">Nome</label>
           <input type="text" name="nome" class="form-control" required>
