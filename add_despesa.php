@@ -125,22 +125,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-  /* Garantir que o menu lateral tenha altura de 100vh */
-  .bg-white {
-    height: 100vh;
-    position: fixed; /* Fixa o menu lateral na tela */
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-  }
   
-  /* Ajustar o conteúdo principal */
-  .flex-grow-1 {
-    margin-left: 250px; /* Compensa a largura do menu lateral */
-  }
-</style>
 </head>
 <body class="bg-light">
 
