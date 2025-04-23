@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
     $obs = trim($_POST['obs'] ?? '');
     $investimento_id = intval($_POST['investimento_id']);
   
-    if ($tipo && $valor > 0 && $investimento_id) {
+     if ($tipo && $investimento_id && $valor != 0) {
       $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor, data, observacao) VALUES (?, ?, ?, ?, ?)");
       $stmt->execute([$investimento_id, $tipo, $valor, $data, $obs]);
       $sucesso = true;
