@@ -226,7 +226,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     groupSeparator: '.',
     radixPoint: ',',
     autoGroup: true,
-    allowMinus: false,
+    allowMinus: true,
     removeMaskOnSubmit: true
   }).mask('.valor');
   function abrirModalMovimentacao(id, nome) {
