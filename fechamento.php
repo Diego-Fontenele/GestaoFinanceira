@@ -35,7 +35,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['valor'])) {
   $meta_id = $_POST['meta_id'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-
+  echo $valor;
+  echo $saldo;
   if ($valor > 0 && $valor <= $saldo) {
     $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     if ($stmt->execute([$meta_id, "$ano-$mes-01", $valor])) {
