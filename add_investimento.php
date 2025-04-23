@@ -141,9 +141,6 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
               <td>
-                <a href="editar_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-warning" title="Editar">
-                    <i class="bi bi-pencil"></i>
-                </a>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
                 </a>
