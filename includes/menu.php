@@ -18,6 +18,9 @@
       <a class="nav-link text-white" href="add_investimento.php"><i class="bi bi-bar-chart-line"></i> Investimentos</a>
     </li>
     <li class="nav-item mb-2">
+      <a class="nav-link text-white" href="fechamento.php"><i class="bi bi-archive"></i> Fechamento</a>
+    </li>
+    <li class="nav-item mb-2">
       <a class="nav-link text-white" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
     </li>
     <li class="nav-item mt-5">
