@@ -30,24 +30,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
     }
   }else{
     // Inserção de novo investimento
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = trim($_POST['nome'] ?? '');
-            $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
-            $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
-            $categoria_id = $_POST['categoria_id'] ?? null;
-        
-            if ($nome && $valor_inicial > 0) {
-            $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
-            $sucesso = true;
-            $nome = '';
-            $categoria_id = null;
-            $valor_inicial = '';
-            $data_aplicacao = date('Y-m-d');
-            } else {
-            $erro = "Preencha todos os campos corretamente.";
-            }
+    $tipo = '';
+    $instituicao = '';
+    $descricao = '';
+    $valor = '';
+    $data = '';
+    $editando = false;
+    $id_edicao = null;
+    $sucesso = false;
+    $erro = '';
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $tipo = $_POST['tipo'];
+      $instituicao = $_POST['instituicao'];
+      $descricao = $_POST['descricao'];
+      $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+      $data = $_POST['data'];
+    
+      if (!empty($_POST['id'])) {
+        // Atualização
+        $id_edicao = $_POST['id'];
+        $stmt = $pdo->prepare("UPDATE investimentos SET tipo = ?, instituicao = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
+        if ($stmt->execute([$tipo, $instituicao, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
+          $sucesso = true;
+        } else {
+          $erro = "Erro ao atualizar investimento.";
         }
+      } else {
+        // Inserção
+        try {
+          $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, tipo, instituicao, descricao, valor, data) VALUES (?, ?, ?, ?, ?, ?)");
+          $stmt->execute([$_SESSION['usuario_id'], $tipo, $instituicao, $descricao, $valor, $data]);
+          $sucesso = true;
+        } catch (Exception $e) {
+          $erro = "Erro ao salvar investimento: " . $e->getMessage();
+        }
+      }
+    
+      // Limpa os campos após submit
+      $tipo = '';
+      $instituicao = '';
+      $descricao = '';
+      $valor = '';
+      $data = '';
+    }
+    
+    // Edição
+    if (isset($_GET['editar'])) {
+      $id_edicao = $_GET['editar'];
+      $stmt = $pdo->prepare("SELECT * FROM investimentos WHERE id = ? AND usuario_id = ?");
+      $stmt->execute([$id_edicao, $_SESSION['usuario_id']]);
+      $investimento = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($investimento) {
+        $tipo = $investimento['tipo'];
+        $instituicao = $investimento['instituicao'];
+        $descricao = $investimento['descricao'];
+        $valor = number_format($investimento['valor'], 2, ',', '.');
+        $data = $investimento['data'];
+        $editando = true;
+      }
+    }
 
   }
 
