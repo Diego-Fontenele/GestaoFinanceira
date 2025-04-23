@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mb-3">
           <label class="form-label">E-mail</label>
-          <input type="email" name="email" value=<?php $_SESSION['email'];?> class="form-control" readonly required>
+          <input type="email" name="email" value=<?= $_SESSION['email'];?> class="form-control" readonly required>
         </div>
         <div class="mb-3">
           <label class="form-label">Assunto</label>
