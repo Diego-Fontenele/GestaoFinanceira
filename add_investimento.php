@@ -136,10 +136,16 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
               <td>
-                <a href="editar_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-primary">Editar</a>
-                <button class="btn btn-sm btn-danger" onclick="excluirInvestimento(<?= $inv['id'] ?>)">Excluir</button>
-                <button class="btn btn-sm btn-secondary" onclick="abrirModalMovimentacao(<?= $inv['id'] ?>, '<?= htmlspecialchars($inv['nome']) ?>')">Movimentar</button>
-              </td>
+                <a href="editar_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-primary" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
+                    <i class="bi bi-trash"></i>
+                </a>
+                <button class="btn btn-sm btn-secondary" title="Movimentar" onclick="abrirModalMovimentacao(<?= $inv['id'] ?>, '<?= htmlspecialchars($inv['nome']) ?>')">
+                    <i class="bi bi-arrow-left-right"></i>
+                </button>
+                </td>
             </tr>
           <?php endforeach; ?>
         </tbody>
