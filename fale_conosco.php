@@ -56,8 +56,10 @@ try {
     // Envia o e-mail
     $mail->send();
     echo 'E-mail enviado com sucesso!';
+    $sucesso = true;
 } catch (Exception $e) {
     echo "Erro ao enviar o e-mail. Erro: {$mail->ErrorInfo}";
+    $erro = true;
 }
 
 }
