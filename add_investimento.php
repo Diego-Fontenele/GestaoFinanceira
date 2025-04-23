@@ -59,11 +59,14 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT i.*,c.nome as categoria
-                        FROM investimentos i,
-                                    categorias c 
-                        where i.categoria_id = c.id 
-                        and i.usuario_id = ? ORDER BY data_inicio DESC");
+$stmt = $pdo->prepare("SELECT i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento
+                        FROM investimentos i
+                        join categorias c on i.categoria_id = c.id 
+                        left join investimentos_movimentacoes im on i.id = im.investimento_id 
+                        where i.usuario_id = ? 
+                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial
+    
+                        order by  2 desc");
 
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -130,6 +133,8 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Categoria</th>
             <th>Valor Inicial</th>
             <th>Data de Aplicação</th>
+            <th>Rendimento</th>
+            <th>Valor Atualizado</th>
             <th style="width: 150px">Ações</th>
           </tr>
         </thead>
@@ -140,6 +145,8 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($inv['categoria']) ?></td>
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
+              <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
+              <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.')+ number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
@@ -226,6 +233,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     groupSeparator: '.',
     radixPoint: ',',
     autoGroup: true,
+    //pra aceitar valor negativo
     allowMinus: true,
     removeMaskOnSubmit: true
   }).mask('.valor');
