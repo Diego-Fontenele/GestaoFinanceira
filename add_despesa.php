@@ -155,7 +155,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <div class="mb-3">
           <label class="form-label">Recorrência (mensal)</label>
-          <input type="number" name="recorrencia" class="form-control" placeholder="Ex: 12 para 12 meses" min="1">
+          <input type="number" name="recorrencia" class="form-control" placeholder="Ex: 12 para 12 meses" min="1" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Valor</label>
