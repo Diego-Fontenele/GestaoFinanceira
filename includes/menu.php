@@ -23,10 +23,8 @@
     <li class="nav-item mb-2">
       <a class="nav-link text-white" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="fale_conosco.php">
-        <i class="bi bi-envelope"></i> Fale Conosco
-      </a>
+    <li class="nav-item mb-4">
+      <a class="nav-link text-white" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
     </li>
     <li class="nav-item mt-5">
       <a class="nav-link text-danger" href="logout.php"><i class="bi bi-box-arrow-left"></i> Sair</a>

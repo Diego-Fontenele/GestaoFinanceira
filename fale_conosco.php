@@ -1,14 +1,36 @@
 <?php
 session_start();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-$sucesso = false;
-$erro = '';
+require 'vendor/autoload.php';  // Certifique-se de que o autoload do Composer está correto
 
+$mail = new PHPMailer(true);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+try {
+    // Configurações do servidor de e-mail
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com'; // Exemplo de servidor SMTP (ajuste para o seu)
+    $mail->SMTPAuth = true;
+    //pego as variaveis que CONFIGUREI  no RENDER
+    $mail->Username = getenv('EMAIL_USER');
+    $mail->Password = getenv('EMAIL_PASS');
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
+
+
     $nome = $_POST['nome'] ?? '';
     $email = $_POST['email'] ?? '';
     $assunto = $_POST['assunto'] ?? '';
     $mensagem = $_POST['mensagem'] ?? '';
+
+    // Remetente e destinatário
+    $mail->setFrom($email, $nome);
+    $mail->addAddress('diegocfontenele@gmail.com', 'Destinatário'); // Adicione o endereço de e-mail do destinatário
+
+
+    
+   
 
     $destinatario = 'equilibriofinanceirogestao@gmail.com'; // Altere para seu e-mail real
     $cabecalhos = "From: $nome <$email>\r\n";
@@ -24,6 +46,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $erro = "Erro ao enviar a mensagem. Tente novamente.";
     }
+
+
+    // Conteúdo do e-mail
+    $mail->isHTML(true);
+    $mail->Subject = 'E-mail referente a troca de senha';
+    $mail->Body    = 'Se está recebendo este e-mail é porque solicitou troca de senha.';
+
+    // Envia o e-mail
+    $mail->send();
+    echo 'E-mail enviado com sucesso!';
+} catch (Exception $e) {
+    echo "Erro ao enviar o e-mail. Erro: {$mail->ErrorInfo}";
+}
+
 }
 ?>
 
