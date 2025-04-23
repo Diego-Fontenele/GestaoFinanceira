@@ -155,43 +155,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-  /* Estilo do menu lateral */
-  .bg-white {
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    z-index: 1000;
-    overflow-y: auto;
-  }
-
-  /* Estilo do conteúdo principal */
-  .flex-grow-1 {
-    margin-left: 250px;
-    padding: 20px;
-  }
-
-  /* Impede o scroll horizontal */
-  html, body {
-    overflow-x: hidden;
-  }
-
-  /* Responsividade */
-  @media (max-width: 768px) {
-    .bg-white {
-      width: 100%;
-      height: auto;
-      position: relative;
-    }
-
-    .flex-grow-1 {
-      margin-left: 0;
-    }
-  }
-</style>
+  
 
 </head>
 <body style="background-color: #f8f9fa;" class="min-vh-100">
