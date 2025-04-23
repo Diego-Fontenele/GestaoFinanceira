@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
       <h5>Resumo de <?= date('m/Y', strtotime("$ano-$mes-01")) ?></h5>
       <p><strong>Total de Receitas:</strong> R$ <?= number_format($total_receitas, 2, ',', '.') ?></p>
       <p><strong>Total de Despesas:</strong> R$ <?= number_format($total_despesas, 2, ',', '.') ?></p>
+      <p><strong>Total Alocado em Metas:</strong> R$ <?= number_format($total_alocacao, 2, ',', '.') ?></p>
       <p><strong>Saldo:</strong> R$ <?= number_format($saldo, 2, ',', '.') ?></p>
 
       <?php if ($saldo > 0): ?>
