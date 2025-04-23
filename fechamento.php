@@ -27,7 +27,7 @@ $total_despesas = $stmt->fetchColumn() ?? 0;
 $saldo = $total_receitas - $total_despesas;
 
 // Buscar metas
-$stmt = $pdo->prepare("SELECT id, nome FROM metas WHERE usuario_id = ?");
+$stmt = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $stmt->execute([$usuario_id]);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
