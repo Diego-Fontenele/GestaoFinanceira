@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
 
   if ($valor > 0 && $valor <= $saldo) {
-    $stmt = $pdo->prepare("INSERT INTO metas_aportes (metas_id, data, valor) VALUES (?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     if ($stmt->execute([$meta_id, "$ano-$mes-01", $valor])) {
       $sucesso = true;
       $saldo -= $valor;
