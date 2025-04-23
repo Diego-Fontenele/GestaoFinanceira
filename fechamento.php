@@ -24,7 +24,20 @@ $stmt = $pdo->prepare("SELECT SUM(valor) AS total FROM despesas WHERE usuario_id
 $stmt->execute([$usuario_id, $mes, $ano]);
 $total_despesas = $stmt->fetchColumn() ?? 0;
 
-$saldo = $total_receitas - $total_despesas;
+// Buscar total de alocação em metas
+$stmt = $pdo->prepare("select COALESCE(SUM(ma.valor), 0) AS alocado
+                        from metas m
+                        left join metas_aportes ma on m.id = ma.meta_id 
+                        where usuario_id = ?
+                        and ma.data  = ?
+    					");
+$stmt->execute([$usuario_id,"$ano-$mes-01"]);
+$total_alocacao = $stmt->fetchColumn() ?? 0;
+
+
+
+
+$saldo = $total_receitas - $total_despesas - $total_alocacao;
 
 // Buscar metas
 $stmt = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
@@ -35,8 +48,10 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['valor'])) {
   $meta_id = $_POST['meta_id'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-  echo $valor;
-  echo $saldo;
+
+  $valor = round($valor, 2);
+  $saldo = round($saldo, 2);
+
   if ($valor > 0 && $valor <= $saldo) {
     $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     if ($stmt->execute([$meta_id, "$ano-$mes-01", $valor])) {
