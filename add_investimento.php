@@ -25,12 +25,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
     $sucesso = true;
     $nome = '';
+    $categoria_id = null;
     $valor_inicial = '';
     $data_aplicacao = date('Y-m-d');
   } else {
     $erro = "Preencha todos os campos corretamente.";
   }
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
+    $tipo = $_POST['tipo'];
+    $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+    $data = $_POST['data'] ?? date('Y-m-d');
+    $obs = trim($_POST['obs'] ?? '');
+    $investimento_id = intval($_POST['investimento_id']);
+  
+    if ($tipo && $valor > 0 && $investimento_id) {
+      $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor, data, observacao) VALUES (?, ?, ?, ?, ?)");
+      $stmt->execute([$investimento_id, $tipo, $valor, $data, $obs]);
+      $sucesso = true;
+    } else {
+      $erro = "Preencha todos os campos da movimentação corretamente.";
+    }
+  }
 
 // Buscar categorias de investimento
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'investimento' AND (usuario_id IS NULL OR usuario_id = ?) ORDER BY nome");
@@ -109,6 +125,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Categoria</th>
             <th>Valor Inicial</th>
             <th>Data de Aplicação</th>
+            <th style="width: 150px">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -118,6 +135,11 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($inv['categoria']) ?></td>
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td><?= date('d/m/Y', strtotime($inv['data_inicio'])) ?></td>
+              <td>
+                <a href="editar_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-primary">Editar</a>
+                <button class="btn btn-sm btn-danger" onclick="excluirInvestimento(<?= $inv['id'] ?>)">Excluir</button>
+                <button class="btn btn-sm btn-secondary" onclick="abrirModalMovimentacao(<?= $inv['id'] ?>, '<?= htmlspecialchars($inv['nome']) ?>')">Movimentar</button>
+              </td>
             </tr>
           <?php endforeach; ?>
         </tbody>
@@ -130,6 +152,21 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
+  function excluirInvestimento(id) {
+  Swal.fire({
+    title: 'Tem certeza?',
+    text: 'Esta ação é irreversível!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir!',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = 'excluir_investimento.php?id=' + id;
+    }
+  });
+}  
+
   Inputmask({
     alias: 'currency',
     prefix: 'R$ ',
@@ -139,10 +176,57 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     allowMinus: false,
     removeMaskOnSubmit: true
   }).mask('.valor');
-
+  function abrirModalMovimentacao(id, nome) {
+  $('#mov_investimento_id').val(id);
+  $('#modalMovimentacao').modal('show');
+    }
   <?php if ($sucesso): ?>
     Swal.fire('Sucesso!', 'Investimento cadastrado.', 'success');
   <?php endif; ?>
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="modalMovimentacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" id="formMovimentacao">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Movimentação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="investimento_id" id="mov_investimento_id">
+          
+          <div class="mb-2">
+            <label class="form-label">Tipo</label>
+            <select class="form-select" name="tipo" required>
+              <option value="">Selecione</option>
+              <option value="aporte">Aporte</option>
+              <option value="rendimento">Rendimento</option>
+              <option value="resgate">Resgate</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Valor</label>
+            <input type="text" name="valor" class="form-control valor" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Data</label>
+            <input type="date" name="data" class="form-control" value="<?= date('Y-m-d') ?>" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Observação</label>
+            <input type="text" name="obs" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Salvar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
