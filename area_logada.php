@@ -156,11 +156,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body style="background-color: #f8f9fa;">
+<body style="background-color: #f8f9fa;" class="min-vh-100">
 
 <div class="d-flex">
   <!-- Inclusão do menu lateral -->
-  <div style="width: 250px;">
+  <div style="width: 250px;" class="bg-white border-end min-vh-100">
   <?php include('includes/menu.php'); ?>
   </div>
   <!-- Conteúdo principal -->
