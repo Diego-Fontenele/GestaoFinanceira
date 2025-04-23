@@ -160,10 +160,18 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
     height: 100%;
     margin: 0;
   }
-
+  .bg-white {
+  height: 100%;
+  }
   .full-height {
     min-height: 100vh;
   }
+  .d-flex.min-vh-100 {
+  height: 100%;
+}
+.flex-grow-1 {
+  min-height: 100%;
+}
 </style>
 </head>
 <body style="background-color: #f8f9fa;" class="min-vh-100">
