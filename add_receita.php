@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados'
 
   if ($stmt->execute($params)) {
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita excluida com sucesso!'];
-    header("Location: add_receita.php");
     exit;
   } else {
     $erro = "Erro ao excluir receitas selecionadas.";
