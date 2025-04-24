@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados'
 
   if ($stmt->execute($params)) {
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita excluida com sucesso!'];
+    header("Location: add_receita.php");
+    exit;
 
   } else {
     $erro = "Erro ao excluir receitas selecionadas.";
@@ -61,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita atualizada com sucesso!'];
+      header("Location: add_receita.php");
+      exit;
     } else {
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao atualizar Receita'];
     }
@@ -78,6 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     
       $pdo->commit();
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita cadastrada com sucesso!'];
+      header("Location: add_receita.php");
+      exit;
     } catch (Exception $e) {
       $pdo->rollBack();
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Receita'];
