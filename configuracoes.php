@@ -51,7 +51,7 @@ if (isset($_GET['excluir'])) {
   }
   catch (Exception $e){
   $probExcluir = true; 
-  header("Location:configuracoes.php"); 
+
 }
 }
 
@@ -159,8 +159,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </script>
 
-<?php
-
-endif; ?>
+<?php endif; ?>
+<?php header("Location:configuracoes.php"); ?>
 </body>
 </html>
