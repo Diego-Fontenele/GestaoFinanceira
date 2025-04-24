@@ -69,7 +69,7 @@ $stmt = $pdo->prepare("SELECT i.id, i.nome,i.data_inicio,  c.nome as categoria ,
                         where i.usuario_id = ? 
                         group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial,i.id,i.dt_vencimento
     
-                        order by  2 desc");
+                        order by  3 desc");
 
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -157,6 +157,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento']+ $inv['saldo_inicial'], 2, ',', '.') ?></td>
+              <?= $row['dt_vencimento'] ?? '0000-00-00' ?>
               <td><?= date('d/m/Y', strtotime($inv['dt_vencimento'])) ?></td>
               <td>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
