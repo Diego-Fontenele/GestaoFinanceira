@@ -9,6 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $nome = '';
 $valor_inicial = '';
+$data_vencimento= date('Y-m-d');
 $data_aplicacao = date('Y-m-d');
 $sucesso = false;
 $erro = '';
@@ -35,14 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
         $nome = trim($_POST['nome'] ?? '');
         $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
         $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
+        $data_vencimento = $_POST['data_vencimento'] ?? date('Y-m-d');
         $categoria_id = $_POST['categoria_id'] ?? null;
     
         if ($nome && $valor_inicial > 0) {
-        $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id]);
+        $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id,dt_vencimento) VALUES (?, ?, ?, ?, ?,?)");
+        $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id,$data_vencimento]);
         $sucesso = true;
         $nome = '';
         $categoria_id = null;
+        $data_vencimento=date('Y-m-d');
         $valor_inicial = '';
         $data_aplicacao = date('Y-m-d');
         } else {
@@ -59,12 +62,12 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT i.id, i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento
+$stmt = $pdo->prepare("SELECT i.id, i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento, i.dt_vencimento
                         FROM investimentos i
                         join categorias c on i.categoria_id = c.id 
                         left join investimentos_movimentacoes im on i.id = im.investimento_id 
                         where i.usuario_id = ? 
-                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial,i.id
+                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial,i.id,i.dt_vencimento
     
                         order by  2 desc");
 
@@ -119,6 +122,11 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <input type="date" name="data_aplicacao" class="form-control" value="<?= htmlspecialchars($data_aplicacao) ?>" required>
           </div>
         </div>
+        <div class="col-md-4">
+            <label class="form-label">Data de Vencimento</label>
+            <input type="date" name="data_vencimento" class="form-control" value="<?= htmlspecialchars($data_vencimento) ?>" >
+          </div>
+        </div>
         <div class="mt-3">
           <button type="submit" class="btn btn-success">Salvar</button>
         </div>
@@ -136,6 +144,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Valor Inicial</th>
             <th>Rendimento</th>
             <th>Valor Atualizado</th>
+            <th>Data de Vencimento</th>
             <th style="width: 150px">Ações</th>
           </tr>
         </thead>
@@ -148,6 +157,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento']+ $inv['saldo_inicial'], 2, ',', '.') ?></td>
+              <td><?= date('d/m/Y', strtotime($inv['dt_vencimento'])) ?></td>
               <td>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
