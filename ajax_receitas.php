@@ -51,7 +51,7 @@ foreach ($receitas as $d) {
     <td>R$ " . number_format($d['valor'], 2, ',', '.') . "</td>
     <td>
       <a href='?editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
-      <a href='?excluir={$d['id']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Excluir esta receita?\")'><i class='bi bi-trash'></i></a>
+      
     </td>
   </tr>";
 }

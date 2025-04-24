@@ -226,12 +226,12 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th style="width: 10%;">Marcar todos? <input type="checkbox" id="selecionar-todos"></th>  
+            <th style="width: 10%;"><input type="checkbox" id="selecionar-todos">  Marcar todos?</th>  
             <th>Data</th>
             <th>Categoria</th>
             <th>Descrição</th>
             <th>Valor</th>
-            <th>Ações</th>
+            <th style="width: 10%;">Ações</th>
           </tr>
         </thead>
         <tbody id="tabela-receitas">
