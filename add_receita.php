@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Exclusão
-if (isset($_GET['excluir'])) {
+
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
     $ids_para_excluir = $_POST['receitas_selecionadas'];
     
@@ -87,7 +87,7 @@ if (isset($_GET['excluir'])) {
       $erro = "Erro ao excluir receitas selecionadas.";
     }
   }
-}
+
 
 // Edição
 if (isset($_GET['editar'])) {
@@ -212,7 +212,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
-
+      <form method="POST">          
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -229,6 +229,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </tbody>
       </table>
       <button type="submit" name="excluir_selecionados" class="btn btn-danger mt-2">Excluir Selecionados</button>
+      </form>
     </div>
   </div>
 </div>
