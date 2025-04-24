@@ -218,7 +218,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th><input type="checkbox" id="selecionar-todos"></th>  
+            <th><input type="checkbox" id="selecionar-todos">Marcar todos?</th>  
             <th>Data</th>
             <th>Categoria</th>
             <th>Descrição</th>
