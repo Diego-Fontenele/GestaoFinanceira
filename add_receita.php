@@ -281,6 +281,9 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
     <?php endif; ?>
   });
+  $('#selecionar-todos').on('change', function () {
+  $('input[name="receitas_selecionadas[]"]').prop('checked', this.checked);
+});
 </script>
 
 </body>
