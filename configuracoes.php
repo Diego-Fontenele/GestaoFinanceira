@@ -44,13 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Exclusão
 if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
+  try{
   $stmt = $pdo->prepare("DELETE FROM categorias WHERE id = ? AND usuario_id = ?");
-  if ($stmt->execute([$id_excluir, $_SESSION['usuario_id']])){
+  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
   $exclusao=true;
-}else{
+  }
+  catch (Exception $e){
   $probExcluir = true;  
 }
 }
+
 // Edição
 if (isset($_GET['editar'])) {
   $id_edicao = $_GET['editar'];
