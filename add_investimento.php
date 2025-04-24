@@ -158,15 +158,15 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento']+ $inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>
-                <?php
-                    $dt_vencimento = $inv['dt_vencimento'] ?? null;
-                    echo $dt_vencimento ? date('d/m/Y', strtotime($dt_vencimento)) : 'Sem vencimento';
-                ?>
-              </td>
-              <td>
+                    <?= isset($inv['dt_vencimento']) && $inv['dt_vencimento'] !== '0000-00-00' && $inv['dt_vencimento'] !== null
+                    ? date('d/m/Y', strtotime($inv['dt_vencimento']))
+                    : '<span class="text-muted">Sem vencimento</span>' ?>
+                </td>
+              <td class="text-nowrap">
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
                 </a>
+
                 <button class="btn btn-sm btn-secondary" title="Movimentar" onclick="abrirModalMovimentacao(<?= $inv['id'] ?>, '<?= htmlspecialchars($inv['nome']) ?>')">
                     <i class="bi bi-arrow-left-right"></i>
                 </button>
