@@ -7,70 +7,66 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
+// Lê e limpa flash
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+
 $nome = '';
 $valor_inicial = '';
 $data_vencimento= '';
 $data_aplicacao = date('Y-m-d');
-$sucesso = false;
-$erro = '';
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
+    // Cadastro de movimentação
     $tipo = $_POST['tipo'];
     $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
     $data = $_POST['data'] ?? date('Y-m-d');
     $obs = trim($_POST['obs'] ?? '');
     $investimento_id = intval($_POST['investimento_id']);
-  
-     if ($tipo && $investimento_id && $valor != 0) {
-      $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor, data, observacao) VALUES (?, ?, ?, ?, ?)");
-      $stmt->execute([$investimento_id, $tipo, $valor, $data, $obs]);
-      $sucesso = true;
+
+    if ($tipo && $investimento_id && $valor != 0) {
+        $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor, data, observacao) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$investimento_id, $tipo, $valor, $data, $obs]);
+        $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Movimentação cadastrada com sucesso!'];
     } else {
-      $erro = "Preencha todos os campos da movimentação corretamente.";
-    }
-  }else{
-
-    // Inserção de novo investimento
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nome = trim($_POST['nome'] ?? '');
-        $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
-        $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
-        $data_vencimento = empty($_POST['data_vencimento']) ? null : $_POST['data_vencimento'];
-        $categoria_id = $_POST['categoria_id'] ?? null;
-    
-        if ($nome && $valor_inicial > 0) {
-        $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio,categoria_id,dt_vencimento) VALUES (?, ?, ?, ?, ?,?)");
-        $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao,$categoria_id,$data_vencimento]);
-        $sucesso = true;
-        $nome = '';
-        $categoria_id = null;
-        $data_vencimento='';
-        $valor_inicial = '';
-        $data_aplicacao = date('Y-m-d');
-        } else {
-        $erro = "Preencha todos os campos corretamente.";
-        }
+        $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Preencha todos os campos da movimentação corretamente.'];
     }
 
-  }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Cadastro de novo investimento
+    $nome = trim($_POST['nome'] ?? '');
+    $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
+    $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
+    $data_vencimento = empty($_POST['data_vencimento']) ? null : $_POST['data_vencimento'];
+    $categoria_id = $_POST['categoria_id'] ?? null;
+
+    if ($nome && $valor_inicial > 0) {
+        $stmt = $pdo->prepare("INSERT INTO investimentos (usuario_id, nome, saldo_inicial, data_inicio, categoria_id, dt_vencimento) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['usuario_id'], $nome, $valor_inicial, $data_aplicacao, $categoria_id, $data_vencimento]);
+        $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Investimento cadastrado com sucesso!'];
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Preencha todos os campos corretamente.'];
+    }
+}
 
 // Buscar categorias de investimento
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'investimento' AND (usuario_id IS NULL OR usuario_id = ?) ORDER BY nome");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
 // Buscar investimentos cadastrados
-$stmt = $pdo->prepare("SELECT i.id, i.nome,i.data_inicio,  c.nome as categoria ,i.saldo_inicial  ,COALESCE(SUM(im.valor), 0) AS rendimento, i.dt_vencimento
-                        FROM investimentos i
-                        join categorias c on i.categoria_id = c.id 
-                        left join investimentos_movimentacoes im on i.id = im.investimento_id 
-                        where i.usuario_id = ? 
-                        group by i.nome,i.data_inicio,  c.nome  ,i.saldo_inicial,i.id,i.dt_vencimento
-    
-                        order by  3 desc");
-
+$stmt = $pdo->prepare("SELECT i.id, i.nome, i.data_inicio, c.nome as categoria, i.saldo_inicial, COALESCE(SUM(im.valor), 0) AS rendimento, i.dt_vencimento
+                       FROM investimentos i
+                       JOIN categorias c ON i.categoria_id = c.id 
+                       LEFT JOIN investimentos_movimentacoes im ON i.id = im.investimento_id 
+                       WHERE i.usuario_id = ? 
+                       GROUP BY i.id, i.nome, i.data_inicio, c.nome, i.saldo_inicial, i.dt_vencimento
+                       ORDER BY 3 DESC");
 $stmt->execute([$_SESSION['usuario_id']]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -256,11 +252,9 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $('#mov_investimento_id').val(id);
   $('#modalMovimentacao').modal('show');
     }
-  <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Investimento cadastrado.', 'success');
-  <?php endif; ?>
-  <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 1): ?>
-  Swal.fire('Excluído!', 'O investimento foi removido com sucesso.', 'success');
+  
+<?php if ($flash): ?>
+Swal.fire('<?= ucfirst($flash['tipo']) ?>', '<?= $flash['mensagem'] ?>', '<?= $flash['tipo'] ?>');
 <?php endif; ?>
 </script>
 </body>
