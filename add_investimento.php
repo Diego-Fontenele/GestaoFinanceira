@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $nome = '';
 $valor_inicial = '';
 $data_vencimento= date('Y-m-d');
-$data_aplicacao = date('Y-m-d');
+$data_aplicacao = '';
 $sucesso = false;
 $erro = '';
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nome = trim($_POST['nome'] ?? '');
         $valor_inicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
-        $data_aplicacao = $_POST['data_aplicacao'] ?? date('Y-m-d');
+        $data_aplicacao = $_POST['data_aplicacao'];
         $data_vencimento = $_POST['data_vencimento'] ?? date('Y-m-d');
         $categoria_id = $_POST['categoria_id'] ?? null;
     
