@@ -2,6 +2,9 @@
 session_start();
 require 'Conexao.php';
 
+
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 if (!isset($_SESSION['usuario_id'])) {
   header("Location: login.php");
   exit;
@@ -22,7 +25,7 @@ if ($id) {
     $stmt->execute([$id, $_SESSION['usuario_id']]);
 
     $pdo->commit();
-
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Movimentação excluída com sucesso!'];
     header("Location: add_investimento.php?excluido=1");;
     exit;
   } catch (Exception $e) {
