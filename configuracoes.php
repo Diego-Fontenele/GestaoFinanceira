@@ -48,7 +48,7 @@ if (isset($_GET['excluir'])) {
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
   header("Location: configuracoes.php");
   $exclusao=true;
-  exit;
+
 }
 
 // Edição
