@@ -159,7 +159,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </script>
 
 <?php
-header("Location: configuracoes.php");
-endif; ?>
+
+endif; header("Location: configuracoes.php");?>
 </body>
 </html>
