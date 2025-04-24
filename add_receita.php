@@ -23,8 +23,31 @@ $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
+// Exclusão
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
+  $ids_para_excluir = $_POST['receitas_selecionadas'];
+  
+  // Garantir que todos os IDs são números inteiros
+  $ids_para_excluir = array_map('intval', $ids_para_excluir);
+  $placeholders = implode(',', array_fill(0, count($ids_para_excluir), '?'));
+
+  // Montar a query
+  $sql = "DELETE FROM receitas WHERE id IN ($placeholders) AND usuario_id = ?";
+  $stmt = $pdo->prepare($sql);
+  $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
+
+  if ($stmt->execute($params)) {
+    header("Location: add_receita.php");
+    exit;
+  } else {
+    $erro = "Erro ao excluir receitas selecionadas.";
+  }
+}
+
+
 // Se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados'])) {
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
@@ -66,27 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $data = '';
 }
 
-// Exclusão
-
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
-    $ids_para_excluir = $_POST['receitas_selecionadas'];
-    
-    // Garantir que todos os IDs são números inteiros
-    $ids_para_excluir = array_map('intval', $ids_para_excluir);
-    $placeholders = implode(',', array_fill(0, count($ids_para_excluir), '?'));
-  
-    // Montar a query
-    $sql = "DELETE FROM receitas WHERE id IN ($placeholders) AND usuario_id = ?";
-    $stmt = $pdo->prepare($sql);
-    $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
-  
-    if ($stmt->execute($params)) {
-      header("Location: add_receita.php");
-      exit;
-    } else {
-      $erro = "Erro ao excluir receitas selecionadas.";
-    }
-  }
 
 
 // Edição
