@@ -160,9 +160,9 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>
                 <?php
                     $dt_vencimento = $inv['dt_vencimento'] ?? null;
-                    echo $dt_vencimento ? date('d/m/Y', strtotime($dt_vencimento)) : '00-00-0000';
+                    echo $dt_vencimento ? date('d/m/Y', strtotime($dt_vencimento)) : 'Sem vencimento';
                 ?>
-                <?= date('d/m/Y', strtotime($dt_vencimento)) ?></td>
+              </td>
               <td>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
