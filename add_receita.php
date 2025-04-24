@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados'
   $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
 
   if ($stmt->execute($params)) {
-    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita excluida com sucesso!'];
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) excluída(s) com sucesso!'];
     header("Location: add_receita.php");
     exit;
 
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       }
     
       $pdo->commit();
-      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita cadastrada com sucesso!'];
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) cadastrada(s) com sucesso!'];
       header("Location: add_receita.php");
       exit;
     } catch (Exception $e) {
@@ -226,7 +226,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th><input type="checkbox" id="selecionar-todos">Marcar todos?</th>  
+            <th style="width: 10%;">Marcar todos? <input type="checkbox" id="selecionar-todos"></th>  
             <th>Data</th>
             <th>Categoria</th>
             <th>Descrição</th>
