@@ -68,11 +68,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Exclusão
 if (isset($_GET['excluir'])) {
-  $id_excluir = $_GET['excluir'];
-  $stmt = $pdo->prepare("DELETE FROM receitas WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
-  header("Location: add_receita.php");
-  exit;
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
+    $ids_para_excluir = $_POST['receitas_selecionadas'];
+    
+    // Garantir que todos os IDs são números inteiros
+    $ids_para_excluir = array_map('intval', $ids_para_excluir);
+    $placeholders = implode(',', array_fill(0, count($ids_para_excluir), '?'));
+  
+    // Montar a query
+    $sql = "DELETE FROM receitas WHERE id IN ($placeholders) AND usuario_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
+  
+    if ($stmt->execute($params)) {
+      header("Location: add_receita.php");
+      exit;
+    } else {
+      $erro = "Erro ao excluir receitas selecionadas.";
+    }
+  }
 }
 
 // Edição
@@ -202,6 +216,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
+            <th><input type="checkbox" id="selecionar-todos"></th>  
             <th>Data</th>
             <th>Categoria</th>
             <th>Descrição</th>
@@ -213,6 +228,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <!-- Os dados serão carregados via AJAX -->
           </tbody>
       </table>
+      <button type="submit" name="excluir_selecionados" class="btn btn-danger mt-2">Excluir Selecionados</button>
     </div>
   </div>
 </div>
