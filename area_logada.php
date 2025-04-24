@@ -205,7 +205,9 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <div class="card-body">
         <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
         <!-- Definindo altura fixa para o gráfico de pizza -->
-        <canvas id="graficoDespesas" class="w-100" style="height: 100%;"></canvas>
+        <div style="height: 300px;">
+        <canvas id="graficoDespesas" class="w-100 h-100"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -281,7 +283,18 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
                             '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
                             '#e74c3c', '#3498db', '#9b59b6', '#f1c40f']
       }]
+    },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false, // <- ESSENCIAL!
+    plugins: {
+      legend: { position: 'bottom' },
+      title: {
+        display: true,
+        text: 'Distribuição das Despesas'
+      }
     }
+  }
   });
 
 
