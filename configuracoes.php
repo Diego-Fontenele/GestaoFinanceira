@@ -11,9 +11,10 @@ $nome = '';
 $tipo = '';
 $editando = false;
 $id_edicao = null;
-$sucesso = false;
-$exclusao=false;
-$erro = '';
+
+// Exibir mensagens de sucesso ou erro via sessão
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 
 // Inserção ou atualização
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,38 +22,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $tipo = $_POST['tipo'];
 
   if (!empty($_POST['id'])) {
+    // Atualização
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE categorias SET nome = ?, tipo = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$nome, $tipo, $id_edicao, $_SESSION['usuario_id']])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Categoria atualizada com sucesso.'];
     } else {
-      $erro = "Erro ao atualizar categoria.";
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Erro ao atualizar categoria.'];
     }
   } else {
+    // Inserção
     $stmt = $pdo->prepare("INSERT INTO categorias (nome, tipo, usuario_id) VALUES (?, ?, ?)");
     if ($stmt->execute([$nome, $tipo, $_SESSION['usuario_id']])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Categoria inserida com sucesso.'];
     } else {
-      $erro = "Erro ao inserir categoria.";
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Erro ao inserir categoria.'];
     }
   }
 
-  $nome = '';
-  $tipo = '';
+  header("Location: configuracoes.php");
+  exit;
 }
 
 // Exclusão
 if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
-  try{
-  $stmt = $pdo->prepare("DELETE FROM categorias WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
-  $exclusao=true;
+  try {
+    $stmt = $pdo->prepare("DELETE FROM categorias WHERE id = ? AND usuario_id = ?");
+    $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Exclusão realizada com sucesso.'];
+  } catch (Exception $e) {
+    $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Existem registros vinculados a esta categoria.'];
   }
-  catch (Exception $e){
-  $probExcluir = true; 
-
-}
+  header("Location: configuracoes.php");
+  exit;
 }
 
 // Edição
@@ -73,7 +76,6 @@ $stmt = $pdo->prepare("SELECT * FROM categorias WHERE usuario_id = ? ORDER BY ti
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -82,7 +84,6 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
 </head>
 <body class="bg-light">
 
@@ -91,10 +92,6 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="flex-grow-1 p-4">
     <div class="card p-4 mb-4">
       <h4 class="mb-4"><?= $editando ? 'Editar Categoria' : 'Nova Categoria' ?></h4>
-
-      <?php if (!empty($erro)): ?>
-        <div class="alert alert-danger"><?= $erro ?></div>
-      <?php endif; ?>
 
       <form method="POST">
         <input type="hidden" name="id" value="<?= $id_edicao ?>">
@@ -143,23 +140,15 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
-<?php if ($sucesso): ?>
+<?php if (!empty($flash)): ?>
 <script>
-  Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
+  Swal.fire({
+    icon: '<?= $flash['tipo'] ?>',
+    title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+    text: '<?= $flash['mensagem'] ?>'
+  });
 </script>
 <?php endif; ?>
-<?php if ($exclusao): ?>
-<script>
-  Swal.fire('Sucesso!', 'Exclusão realizada com sucesso.', 'success');
-</script>
-<?php endif; ?>
-<?php if ($probExcluir): ?>
-<script>
-  Swal.fire('Não Pode ser excluído', 'Existem registros vinculados a esta categoria.', 'error');
 
-</script>
-
-<?php endif; ?>
-<?php header("Location:configuracoes.php"); ?>
 </body>
 </html>
