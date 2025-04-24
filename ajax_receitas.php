@@ -44,7 +44,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach ($receitas as $d) {
   echo "<tr>
  
-    <td><input type= 'checkbox' name='receitas_selecionadas[]' value=".$row['id']."></td>
+    <td><input type= 'checkbox' name='receitas_selecionadas[]' value=".$d['id']."></td>
     <td>" . date('d/m/Y', strtotime($d['data'])) . "</td>
     <td>" . htmlspecialchars($d['categoria_nome']) . "</td>
     <td>" . htmlspecialchars($d['descricao']) . "</td>
