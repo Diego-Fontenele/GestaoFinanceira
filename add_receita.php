@@ -6,6 +6,8 @@ if (!isset($_SESSION['usuario_id'])) {
   header("Location: login.php");
   exit;
 }
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 
 $categoria_id = '';
 $descricao = '';
