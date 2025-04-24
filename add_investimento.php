@@ -157,8 +157,13 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td>R$ <?= number_format($inv['saldo_inicial'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento'], 2, ',', '.') ?></td>
               <td>R$ <?= number_format($inv['rendimento']+ $inv['saldo_inicial'], 2, ',', '.') ?></td>
-              <?= $row['dt_vencimento'] ?? '0000-00-00' ?>
-              <td><?= date('d/m/Y', strtotime($inv['dt_vencimento'])) ?></td>
+              <td>
+                <?php
+                    $dt_vencimento = $inv['dt_vencimento'] ?? null;
+                    echo $dt_vencimento ? date('d/m/Y', strtotime($dt_vencimento)) : '00-00-0000';
+                ?>
+                </td>
+              <td><?= date('d/m/Y', strtotime($dt_vencimento)) ?></td>
               <td>
                 <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
                     <i class="bi bi-trash"></i>
