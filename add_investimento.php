@@ -134,7 +134,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="card p-4">
-      <h5 class="mb-3">Investimentos Cadastrados</h5>
+      <h5 class="mb-4">Investimentos Cadastrados</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
