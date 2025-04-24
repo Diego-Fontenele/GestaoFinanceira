@@ -249,14 +249,14 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $('#modalMovimentacao').modal('show');
     }
   
-    <?php if (!empty($flash)): ?>
-<script>
+<?php if (!empty($flash)): ?>
+
   Swal.fire({
     icon: '<?= $flash['tipo'] ?>',
     title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
     text: '<?= $flash['mensagem'] ?>'
   });
-</script>
+
 <?php endif; ?>
 </script>
 </body>
