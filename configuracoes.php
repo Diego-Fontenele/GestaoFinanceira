@@ -12,6 +12,7 @@ $tipo = '';
 $editando = false;
 $id_edicao = null;
 $sucesso = false;
+$exclusao=false;
 $erro = '';
 
 // Inserção ou atualização
@@ -46,6 +47,7 @@ if (isset($_GET['excluir'])) {
   $stmt = $pdo->prepare("DELETE FROM categorias WHERE id = ? AND usuario_id = ?");
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
   header("Location: configuracoes.php");
+  $exclusao=true;
   exit;
 }
 
@@ -142,6 +144,10 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
   Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
 </script>
 <?php endif; ?>
-
+<?php if ($exclusao): ?>
+<script>
+  Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
+</script>
+<?php endif; ?>
 </body>
 </html>
