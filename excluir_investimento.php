@@ -26,7 +26,7 @@ if ($id) {
 
     $pdo->commit();
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Movimentação excluída com sucesso!'];
-    header("Location: add_investimento.php?excluido=1");;
+    
     exit;
   } catch (Exception $e) {
     $pdo->rollBack();
