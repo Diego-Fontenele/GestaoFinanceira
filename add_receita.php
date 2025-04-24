@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados'
   $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
 
   if ($stmt->execute($params)) {
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita excluida com sucesso!'];
     header("Location: add_receita.php");
     exit;
   } else {
@@ -58,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita atualizada com sucesso!'];
     } else {
-      $erro = "Erro ao atualizar receita.";
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao atualizar Receita'];
     }
   } else {
     // Inserção
@@ -75,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       }
     
       $pdo->commit();
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita cadastrada com sucesso!'];
     } catch (Exception $e) {
       $pdo->rollBack();
-      $erro = "Erro ao salvar receita: " . $e->getMessage();
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Receita'];
     }
   }
 
@@ -279,14 +280,21 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       removeMaskOnSubmit: true
     }).mask('.valor');
 
-    // Alerta de sucesso, se necessário
-    <?php if ($sucesso): ?>
-      Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
-    <?php endif; ?>
+    
   });
   $('#selecionar-todos').on('change', function () {
   $('input[name="receitas_selecionadas[]"]').prop('checked', this.checked);
 });
+
+<?php if (!empty($flash)): ?>
+
+Swal.fire({
+  icon: '<?= $flash['tipo'] ?>',
+  title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+  text: '<?= $flash['mensagem'] ?>'
+});
+
+<?php endif; ?>
 </script>
 
 </body>
