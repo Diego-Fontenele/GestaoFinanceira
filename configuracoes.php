@@ -155,7 +155,11 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php if ($probExcluir): ?>
 <script>
   Swal.fire('Não Pode ser excluído', 'Existem registros vinculados a esta categoria.', 'error');
+
 </script>
-<?php endif; ?>
+
+<?php
+header("Location: configuracoes.php");
+endif; ?>
 </body>
 </html>
