@@ -45,10 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
   $stmt = $pdo->prepare("DELETE FROM categorias WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
+  if ($stmt->execute([$id_excluir, $_SESSION['usuario_id']])){
   $exclusao=true;
+}else{
+  $probExcluir = true;  
 }
-
+}
 // Edição
 if (isset($_GET['editar'])) {
   $id_edicao = $_GET['editar'];
@@ -145,6 +147,11 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php if ($exclusao): ?>
 <script>
   Swal.fire('Sucesso!', 'Exclusão realizada com sucesso.', 'success');
+</script>
+<?php endif; ?>
+<?php if ($probExcluir): ?>
+<script>
+  Swal.fire('Não Pode ser excluído', 'Existem registros vinculados a esta categoria.', 'error');
 </script>
 <?php endif; ?>
 </body>
