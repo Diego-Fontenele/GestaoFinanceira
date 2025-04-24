@@ -121,7 +121,6 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label">Data de Aplicação</label>
             <input type="date" name="data_aplicacao" class="form-control" value="<?= htmlspecialchars($data_aplicacao) ?>" required>
           </div>
-        </div>
         <div class="col-md-4">
             <label class="form-label">Data de Vencimento</label>
             <input type="date" name="data_vencimento" class="form-control" value="<?= htmlspecialchars($data_vencimento) ?>" >
