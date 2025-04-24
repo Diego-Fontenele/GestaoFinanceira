@@ -88,10 +88,6 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="card p-4 mb-4">
       <h4>Adicionar Novo Investimento</h4>
 
-      <?php if ($erro): ?>
-        <div class="alert alert-danger"><?= $erro ?></div>
-      <?php endif; ?>
-
       <form method="POST">
         <div class="row">
           <div class="col-md-4">
