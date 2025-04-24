@@ -144,7 +144,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php endif; ?>
 <?php if ($exclusao): ?>
 <script>
-  Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
+  Swal.fire('Sucesso!', 'Exclusão realizada com sucesso.', 'success');
 </script>
 <?php endif; ?>
 </body>
