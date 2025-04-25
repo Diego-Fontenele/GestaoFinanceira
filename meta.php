@@ -7,6 +7,10 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
+// Lê e limpa flash
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+
 $titulo = '';
 $descricao = '';
 $valor = '';
@@ -33,7 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE metas SET titulo = ?, descricao = ?, valor = ?, data_inicio = ?, data_fim = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$titulo, $descricao, $valor, $dataini,$datafim, $id_edicao, $_SESSION['usuario_id']])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Meta alterada com sucesso!'];
+      header("Location: meta.php");;
+      exit;
     } else {
       $erro = "Erro ao atualizar meta.";
     }
@@ -41,7 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Inserção
     $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor, data_inicio,data_fim) VALUES (?, ?, ?, ?, ?,?)");
     if ($stmt->execute([$_SESSION['usuario_id'], $titulo, $descricao, $valor, $dataini, $datafim])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Meta cadastrada com sucesso!'];
+    header("Location: meta.php");;
+    exit;
     } else {
       $erro = "Erro ao salvar meta.";
     }
@@ -60,8 +68,9 @@ if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
   $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
-  header("Location: meta.php");
-  exit;
+  $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Meta excluída com sucesso!'];
+    header("Location: meta.php");;
+    exit;
 }
 
 // Edição
@@ -221,9 +230,15 @@ foreach ($metas as $m) {
     }).mask('.valor');
   });
 
-  <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
-  <?php endif; ?>
+  <?php if (!empty($flash)): ?>
+
+Swal.fire({
+  icon: '<?= $flash['tipo'] ?>',
+  title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+  text: '<?= $flash['mensagem'] ?>'
+});
+
+<?php endif; ?>
 </script>
 </body>
 </html>
