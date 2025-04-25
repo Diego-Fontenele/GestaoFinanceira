@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mail->setFrom($mail->Username, 'Fale Conosco');
         $mail->addReplyTo($email, $nome);
-        $mail->addAddress($email, $nome );
+        $mail->addAddress('equilibriofinanceirogestao@gmail.com', 'Diego');
 
         $mail->isHTML(false);
         $mail->Subject = "Fale Conosco - $assunto";
