@@ -9,18 +9,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':nome', $nome);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':senha', $senha);
+    // Verificar se o e-mail já está cadastrado
+    $verifica = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email LIMIT 1");
+    $verifica->bindParam(':email', $email);
+    $verifica->execute();
 
-    try {
-        $stmt->execute();
-        $mensagem = "Usuário cadastrado com sucesso!";
-        header("refresh:2;url=login.php");
-    } catch (PDOException $e) {
-        $erro = "Erro ao cadastrar: " . $e->getMessage();
+    if ($verifica->rowCount() > 0) {
+        $erro = "Este e-mail já está cadastrado. <a href='esqueceu.php'>Esqueci minha senha</a>";
+    } else {
+        // Se não existe, cadastrar novo usuário
+        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+
+        try {
+            $stmt->execute();
+            $mensagem = "Usuário cadastrado com sucesso!";
+            header("refresh:2;url=login.php");
+        } catch (PDOException $e) {
+            $erro = "Erro ao cadastrar: " . $e->getMessage();
+        }
     }
 }
 ?>
@@ -42,6 +52,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       background-color: white;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .alert a {
+      text-decoration: underline;
     }
   </style>
 </head>
