@@ -6,6 +6,8 @@ if (!isset($_SESSION['usuario_id'])) {
   header("Location: login.php");
   exit;
 }
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 
 $categoria_id = '';
 $descricao = '';
@@ -23,10 +25,10 @@ $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
 // Se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados'])){
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
-  $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+  $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
   $data = $_POST['data'];
 
   if (!empty($_POST['id'])) {
@@ -34,9 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
+      header("Location: add_receita.php");
+      exit;
     } else {
-      $erro = "Erro ao atualizar despesa.";
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao atualizar Despesa.'];
     }
   } else {
     // Inserção
@@ -51,10 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     
       $pdo->commit();
-      $sucesso = true;
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesas(s) cadastrada(s) com sucesso!'];
+      header("Location: add_receita.php");
+      exit;
     } catch (Exception $e) {
       $pdo->rollBack();
-      $erro = "Erro ao salvar despesa: " . $e->getMessage();
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Despesa'];
     }
   }
 
@@ -66,12 +72,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Exclusão
-if (isset($_GET['excluir'])) {
-  $id_excluir = $_GET['excluir'];
-  $stmt = $pdo->prepare("DELETE FROM despesas WHERE id = ? AND usuario_id = ?");
-  $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
+if (isset($_POST['excluir_selecionados']) && empty($_POST['receitas_selecionadas'])){
+  $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'É necessário marcar pelo menos 1 registro para excluir.'];
   header("Location: add_despesa.php");
   exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
+  $ids_para_excluir = $_POST['receitas_selecionadas'];
+  
+  // Garantir que todos os IDs são números inteiros
+  $ids_para_excluir = array_map('intval', $ids_para_excluir);
+  $placeholders = implode(',', array_fill(0, count($ids_para_excluir), '?'));
+
+  // Montar a query
+  $sql = "DELETE FROM despesas WHERE id IN ($placeholders) AND usuario_id = ?";
+  $stmt = $pdo->prepare($sql);
+  $params = array_merge($ids_para_excluir, [$_SESSION['usuario_id']]);
+
+  if ($stmt->execute($params)) {
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesa(s) excluída(s) com sucesso!'];
+    header("Location: add_despesa.php");
+    exit;
+
+  } else {
+    $erro = "Erro ao excluir despesas selecionadas.";
+  }
 }
 
 // Edição
@@ -197,21 +223,24 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
-
+      <form method="POST">     
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
+          <th style="width: 10%;"><input type="checkbox" id="selecionar-todos">  Marcar todos?</th>
             <th>Data</th>
             <th>Categoria</th>
             <th>Descrição</th>
             <th>Valor</th>
-            <th>Ações</th>
+            <th style="width: 5%;">Ações</th>
           </tr>
         </thead>
           <tbody id="tabela-despesas">
           <!-- Os dados serão carregados via AJAX -->
           </tbody>
       </table>
+      <button type="submit" name="excluir_selecionados" class="btn btn-danger mt-2">Excluir Selecionados</button>
+      </form>
     </div>
   </div>
 </div>
@@ -220,7 +249,35 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
-  $(document).ready(function(){
+  // Função para carregar receitas via AJAX
+  function carregarDespesas(pagina = 1) {
+    const categoria = $('[name="filtro_categoria"]').val();
+    const inicio = $('[name="filtro_inicio"]').val();
+    const fim = $('[name="filtro_fim"]').val();
+
+    $.get('ajax_despesas.php', {
+      pagina: pagina,
+      filtro_categoria: categoria,
+      filtro_inicio: inicio,
+      filtro_fim: fim
+    }, function(data) {
+      $('#tabela-despesas').html(data);
+    });
+  }
+
+  $(document).ready(function () {
+    // Carrega receitas na primeira vez
+    carregarDespesas();
+
+    // Paginação com AJAX
+    $(document).on('click', '.paginacao-ajax', function (e) {
+      e.preventDefault();
+      const url = new URL(this.href);
+      const pagina = url.searchParams.get("pagina");
+      carregarDespesas(pagina);
+    });
+
+    // Máscara para o campo de valor
     Inputmask({
       alias: 'currency',
       prefix: 'R$ ',
@@ -230,42 +287,22 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       allowMinus: false,
       removeMaskOnSubmit: true
     }).mask('.valor');
-  });
-  function carregarDespesas(pagina = 1) {
-  const categoria = $('[name="filtro_categoria"]').val();
-  const inicio = $('[name="filtro_inicio"]').val();
-  const fim = $('[name="filtro_fim"]').val();
 
-  $.get('ajax_despesas.php', {
-    pagina: pagina,
-    filtro_categoria: categoria,
-    filtro_inicio: inicio,
-    filtro_fim: fim
-  }, function(data) {
-    $('#tabela-despesas').html(data);
+    
   });
-}
-
-  $(document).ready(function () {
-  carregarDespesas(); // Carrega na primeira vez
-
-  // Quando clicar para paginar
-  $(document).on('click', '.paginacao-ajax', function (e) {
-    e.preventDefault();
-    const url = new URL(this.href);
-    const pagina = url.searchParams.get("pagina");
-    carregarDespesas(pagina);
-  });
-
-  // Quando o formulário de filtro for enviado
-  $('form[method="GET"]').on('submit', function(e) {
-    e.preventDefault();
-    carregarDespesas(1);
-  });
+  $('#selecionar-todos').on('change', function () {
+  $('input[name="despesas_selecionadas[]"]').prop('checked', this.checked);
 });
-  <?php if ($sucesso): ?>
-    Swal.fire('Sucesso!', 'Operação realizada com sucesso.', 'success');
-  <?php endif; ?>
+
+<?php if (!empty($flash)): ?>
+
+Swal.fire({
+  icon: '<?= $flash['tipo'] ?>',
+  title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+  text: '<?= $flash['mensagem'] ?>'
+});
+
+<?php endif; ?>
 </script>
 </body>
 </html>

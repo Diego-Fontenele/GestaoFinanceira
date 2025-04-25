@@ -236,7 +236,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Categoria</th>
             <th>Descrição</th>
             <th>Valor</th>
-            <th style="width: 10%;">Ações</th>
+            <th style="width: 5%;">Ações</th>
           </tr>
         </thead>
         <tbody id="tabela-receitas">
