@@ -16,7 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $_SESSION['usuario'] = $usuario['nome'];
     $_SESSION['usuario_id'] = $usuario['id'];
     $_SESSION['email']=$usuario['email'] ;
-
+    if (isset($_POST['lembrar'])) {
+      setcookie('lembrar_email', $email, time() + (86400 * 30), "/"); // 30 dias
+      setcookie('lembrar_senha', $senha, time() + (86400 * 30), "/"); // 30 dias
+    } else {
+      setcookie('lembrar_email', '', time() - 3600, "/");
+      setcookie('lembrar_senha', '', time() - 3600, "/");
+    }
     header("Location: area_logada.php");
     exit();
   } else {
@@ -57,11 +63,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <form method="POST" action="">
     <div class="mb-3">
       <label for="email" class="form-label">E-mail</label>
-      <input type="email" name="email" class="form-control" id="email" required>
+      <input type="email" name="email" class="form-control" id="email" required value="<?php echo isset($_COOKIE['lembrar_email']) ? $_COOKIE['lembrar_email'] : ''; ?>>
     </div>
     <div class="mb-3">
       <label for="senha" class="form-label">Senha</label>
-      <input type="password" name="senha" class="form-control" id="senha" required>
+      <input type="password" name="senha" class="form-control" id="senha" required value="<?php echo isset($_COOKIE['lembrar_senha']) ? $_COOKIE['lembrar_senha'] : ''; ?>>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" name="lembrar" id="lembrar">
+      <label class="form-check-label" for="lembrar">
+        Lembrar login
+      </label>
     </div>
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">Entrar</button>
@@ -70,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <div><a href="esqueceu.php">Esqueci minha senha</a></div>
       <div><a href="cadastro.html">Criar nova conta</a></div>
     </div>
+    
   </form>
 </div>
 
