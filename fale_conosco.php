@@ -6,8 +6,11 @@ use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
 
-$sucesso = false;
-$erro = false;
+// Lê e limpa flash
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mail = new PHPMailer(true);
@@ -35,9 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->Body    = "Mensagem de: $nome <$email>\n\n" . $mensagem;
 
         $mail->send();
-        $sucesso = true;
+        
+        $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'E-mail enviado com sucesso!'];
+         header("Location: meta.php");;
+          exit;
     } catch (Exception $e) {
-        $erro = "Erro ao enviar o e-mail: " . $mail->ErrorInfo;
+        $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao enviar e-mail!'. $mail->ErrorInfo];
     }
 }
 ?>
@@ -58,12 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="flex-grow-1 p-4">
     <div class="card p-4">
       <h4 class="mb-4">Fale com o Desenvolvedor</h4>
-
-      <?php if ($sucesso): ?>
-        <div class="alert alert-success">Mensagem enviada com sucesso!</div>
-      <?php elseif ($erro): ?>
-        <div class="alert alert-danger"><?= $erro ?></div>
-      <?php endif; ?>
 
       <form method="POST" class="needs-validation" novalidate>
         <div class="mb-3">
@@ -87,6 +87,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 </div>
+<script>
+ <?php if (!empty($flash)): ?>
 
+Swal.fire({
+  icon: '<?= $flash['tipo'] ?>',
+  title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+  text: '<?= $flash['mensagem'] ?>'
+});
+
+<?php endif; ?>
+</script>
 </body>
 </html>
