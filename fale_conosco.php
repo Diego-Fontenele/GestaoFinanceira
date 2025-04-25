@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->send();
         
         $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'E-mail enviado com sucesso!'];
-         header("Location: meta.php");;
+         header("Location: fale_conosco.php");;
           exit;
     } catch (Exception $e) {
         $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao enviar e-mail!'. $mail->ErrorInfo];
