@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
-      header("Location: add_receita.php");
+      header("Location: add_despesa.php");
       exit;
     } else {
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao atualizar Despesa.'];
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     
       $pdo->commit();
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesas(s) cadastrada(s) com sucesso!'];
-      header("Location: add_receita.php");
+      header("Location: add_despesa.php");
       exit;
     } catch (Exception $e) {
       $pdo->rollBack();
@@ -72,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 }
 
 // Exclusão
-if (isset($_POST['excluir_selecionados']) && empty($_POST['receitas_selecionadas'])){
+if (isset($_POST['excluir_selecionados']) && empty($_POST['despesas_selecionadas'])){
   $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'É necessário marcar pelo menos 1 registro para excluir.'];
   header("Location: add_despesa.php");
   exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
-  $ids_para_excluir = $_POST['receitas_selecionadas'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['despesas_selecionadas'])) {
+  $ids_para_excluir = $_POST['despesas_selecionadas'];
   
   // Garantir que todos os IDs são números inteiros
   $ids_para_excluir = array_map('intval', $ids_para_excluir);
@@ -249,7 +249,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
-  // Função para carregar receitas via AJAX
+  // Função para carregar despesas via AJAX
   function carregarDespesas(pagina = 1) {
     const categoria = $('[name="filtro_categoria"]').val();
     const inicio = $('[name="filtro_inicio"]').val();
@@ -266,7 +266,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   $(document).ready(function () {
-    // Carrega receitas na primeira vez
+    // Carrega despesas na primeira vez
     carregarDespesas();
 
     // Paginação com AJAX
