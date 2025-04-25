@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->send();
         
         $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'E-mail enviado com sucesso!'];
-         header("Location: fale_conosco.php");;
-          exit;
+        header("Location: fale_conosco.php");
+        exit;
     } catch (Exception $e) {
         $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao enviar e-mail!'. $mail->ErrorInfo];
     }
@@ -87,6 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/bindings/inputmask.binding.min.js"></script>
 <script>
  <?php if (!empty($flash)): ?>
 
