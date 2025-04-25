@@ -43,14 +43,13 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Renderiza a tabela
 foreach ($despesas as $d) {
   echo "<tr>
-  <td><input type= 'checkbox' name='receitas_selecionadas[]' value=".$d['id']."></td>
+    <td><input type= 'checkbox' name='despesas_selecionadas[]' value=".$d['id']."></td>
     <td>" . date('d/m/Y', strtotime($d['data'])) . "</td>
     <td>" . htmlspecialchars($d['categoria_nome']) . "</td>
     <td>" . htmlspecialchars($d['descricao']) . "</td>
     <td>R$ " . number_format($d['valor'], 2, ',', '.') . "</td>
     <td>
       <a href='?editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
-      <a href='?excluir={$d['id']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Excluir esta despesa?\")'><i class='bi bi-trash'></i></a>
     </td>
   </tr>";
 }
