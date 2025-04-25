@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
     <div class="text-center mt-3">
       <div><a href="esqueceu.php">Esqueci minha senha</a></div>
-      <div><a href="cadastro.html">Criar nova conta</a></div>
+      <div><a href="cadastrar.php">Criar nova conta</a></div>
     </div>
     
   </form>
