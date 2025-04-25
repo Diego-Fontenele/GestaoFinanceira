@@ -26,6 +26,11 @@ $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
 // Exclusão
+if (isset($_POST['excluir_selecionados']) && empty($_POST['receitas_selecionadas'])){
+  $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'É necessário marcar pelo menos 1 registro para excluir.'];
+  header("Location: add_receita.php");
+  exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
   $ids_para_excluir = $_POST['receitas_selecionadas'];
