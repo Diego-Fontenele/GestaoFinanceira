@@ -59,6 +59,7 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
       <form method="get">
         <label for="aluno_id" class="form-label">Escolha o Aluno:</label>
         <select name="aluno_id" id="aluno_id" class="form-select" onchange="this.form.submit()">
+        <option value='' selected>Selecione</option>
           <?php
           foreach ($alunos as $aluno) {
             $selected = $aluno['id'] == $alunoId ? 'selected' : '';
