@@ -28,6 +28,19 @@ $sqlDespesasAluno = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHER
 $sqlDespesasAluno->execute([$alunoId]);
 $despesasAluno = $sqlDespesasAluno->fetch()['total'] ?? 0;
 
+$sqlCategorias = $pdo->prepare("
+  SELECT c.nome AS categoria, SUM(d.valor) AS total
+  FROM despesas d
+  JOIN categorias c ON d.categoria_id = c.id
+  WHERE d.usuario_id = ?
+  GROUP BY c.nome
+");
+$sqlCategorias->execute([$alunoId]);
+$dadosCategorias = $sqlCategorias->fetchAll(PDO::FETCH_ASSOC);
+
+$categorias = array_column($dadosCategorias, 'categoria');
+$valores = array_column($dadosCategorias, 'total');
+
 $sqlMetasAluno = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasAluno->execute([$alunoId]);
 $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
@@ -59,7 +72,6 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
       <form method="get">
         <label for="aluno_id" class="form-label">Escolha o Aluno:</label>
         <select name="aluno_id" id="aluno_id" class="form-select" onchange="this.form.submit()">
-        <option value='' selected>Selecione</option>
           <?php
           foreach ($alunos as $aluno) {
             echo "<option value='{$aluno['id']}' $selected>{$aluno['nome']}</option>";
