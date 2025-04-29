@@ -27,6 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         try {
             $stmt->execute();
             $mensagem = "Usuário cadastrado com sucesso!";
+            $resultado = enviarEmail(
+              'equilibriofinanceirogestao@gmail.com',
+              'Diego',
+              'Usuário Novo',
+              'Usuário novo cadastrado'.$email
+          );
             header("refresh:2;url=login.php");
         } catch (PDOException $e) {
             $erro = "Erro ao cadastrar: " . $e->getMessage();
