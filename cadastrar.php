@@ -1,6 +1,6 @@
 <?php
 require_once 'Conexao.php';
-
+include 'enviarEmail.php';
 $mensagem = "";
 $erro = "";
 
