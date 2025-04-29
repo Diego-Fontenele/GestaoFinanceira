@@ -51,7 +51,7 @@ $sqlEvolucaoDespesas = $pdo->prepare("
   GROUP BY mes
   ORDER BY mes ASC
 ");
-$sqlEvolucaoDespesas->execute([$alunoId]);
+
 $dadosEvolucao = $sqlEvolucaoDespesas->fetchAll(PDO::FETCH_ASSOC);
 
 $meses = array_column($dadosEvolucao, 'mes_formatado');
@@ -92,6 +92,7 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
         <select name="aluno_id" id="aluno_id" class="form-select" onchange="this.form.submit()">
           <?php
           foreach ($alunos as $aluno) {
+            $selected = ($aluno['id'] == $alunoId) ? 'selected' : '';
             echo "<option value='{$aluno['id']}' $selected>{$aluno['nome']}</option>";
           }
           ?>
