@@ -41,6 +41,27 @@ $dadosCategorias = $sqlCategorias->fetchAll(PDO::FETCH_ASSOC);
 $categorias = array_column($dadosCategorias, 'categoria');
 $valores = array_column($dadosCategorias, 'total');
 
+$sqlEvolucaoDespesas = $pdo->prepare("
+   SELECT 
+    DATE_TRUNC('month', data) AS mes,
+    TO_CHAR(DATE_TRUNC('month', data), 'MM/YYYY') AS mes_formatado,
+    SUM(valor) AS total
+  FROM despesas
+  WHERE usuario_id = ?
+  GROUP BY mes
+  ORDER BY mes ASC
+");
+$sqlEvolucaoDespesas->execute([$alunoId]);
+$dadosEvolucao = $sqlEvolucaoDespesas->fetchAll(PDO::FETCH_ASSOC);
+$meses = array_column($dadosEvolucao, 'mes');
+$valoresEvolucao = array_column($dadosEvolucao, 'total');
+$dadosEvolucao = $sqlEvolucaoDespesas->fetchAll(PDO::FETCH_ASSOC);
+
+$meses = array_column($dadosEvolucao, 'mes_formatado');
+$valoresEvolucao = array_column($dadosEvolucao, 'total');
+
+
+
 $sqlMetasAluno = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasAluno->execute([$alunoId]);
 $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
@@ -177,6 +198,28 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
   });
 
   // Gráficos de evolução de despesas, progresso de metas e comparativo de receitas vs despesas seriam implementados aqui da mesma forma.
+  const ctxLinhaDespesas = document.getElementById('graficoDespesasMes');
+  new Chart(ctxLinhaDespesas, {
+    type: 'line',
+    data: {
+      labels: <?= json_encode($meses); ?>,
+      datasets: [{
+        label: 'Despesas',
+        data: <?= json_encode($valoresEvolucao); ?>,
+        borderColor: '#e74c3c',
+        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Evolução das Despesas' }
+      }
+    }
+  });
 </script>
 
 </body>
