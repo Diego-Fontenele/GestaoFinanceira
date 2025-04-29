@@ -19,14 +19,6 @@ $alunos = $sqlAlunos->fetchAll(PDO::FETCH_ASSOC);
 // Verifica se um aluno foi selecionado
 $alunoId = !empty($_GET['aluno_id']) ? (int) $_GET['aluno_id'] : $alunos[0]['id'] ?? 0;
 
-// Buscar informações do aluno selecionado (ex: receitas, despesas, metas)
-$sqlReceitasAluno = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ?");
-$sqlReceitasAluno->execute([$alunoId]);
-$receitasAluno = $sqlReceitasAluno->fetch()['total'] ?? 0;
-
-$sqlDespesasAluno = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ?");
-$sqlDespesasAluno->execute([$alunoId]);
-$despesasAluno = $sqlDespesasAluno->fetch()['total'] ?? 0;
 
 $sqlCategorias = $pdo->prepare("
   SELECT c.nome AS categoria, SUM(d.valor) AS total
@@ -57,10 +49,62 @@ $meses = array_column($dadosEvolucao, 'mes_formatado');
 $valoresEvolucao = array_column($dadosEvolucao, 'total');
 
 
+// Receitas por mês
+$sqlReceitasMes = $pdo->prepare("
+  SELECT 
+    TO_CHAR(data, 'YYYY-MM') AS mes,
+    SUM(valor) AS total
+  FROM receitas
+  WHERE usuario_id = ?
+  GROUP BY mes
+  ORDER BY mes
+");
+$sqlReceitasMes->execute([$usuarioId]);
+
+$dadosReceitas = [];
+while ($row = $sqlReceitasMes->fetch()) {
+  $dadosReceitas[$row['mes']] = $row['total'];
+}
+
+//Despesas por mês
+$sqlDespesasMes = $pdo->prepare("
+  SELECT 
+    TO_CHAR(data, 'YYYY-MM') AS mes,
+    SUM(valor) AS total
+  FROM despesas
+  WHERE usuario_id = ?
+  GROUP BY mes
+  ORDER BY mes
+");
+$sqlDespesasMes->execute([$usuarioId]);
+
+$mesesDespesas = [];
+$valoresDespesas = [];
+
+while ($row = $sqlDespesasMes->fetch()) {
+  $mesesDespesas[] = $row['mes'];
+  $valoresDespesas[] = $row['total'];
+}
+// Unificar meses entre receitas e despesas
+$mesesTotais = array_unique(array_merge($mesesDespesas, array_keys($dadosReceitas)));
+sort($mesesTotais);
+
+$valoresReceitasUnificadas = [];
+$valoresDespesasUnificadas = [];
+
+foreach ($mesesTotais as $mes) {
+  $valoresReceitasUnificadas[] = $dadosReceitas[$mes] ?? 0;
+  $valoresDespesasUnificadas[] = array_combine($mesesDespesas, $valoresDespesas)[$mes] ?? 0;
+}
+
+
 
 $sqlMetasAluno = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasAluno->execute([$alunoId]);
 $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 
 ?>
 
@@ -171,6 +215,7 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+  
   const ctx = document.getElementById('graficoDespesas');
   const grafico = new Chart(ctx, {
     type: 'pie',
@@ -217,6 +262,41 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
       }
     }
   });
+  const ctxComparativo = document.getElementById('graficoReceitasDespesas');
+const graficoReceitasDespesas = new Chart(ctxComparativo, {
+  type: 'line',
+  data: {
+    labels: <?= json_encode($mesesTotais); ?>,
+    datasets: [
+      {
+        label: 'Receitas',
+        data: <?= json_encode($valoresReceitasUnificadas); ?>,
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Despesas',
+        data: <?= json_encode($valoresDespesasUnificadas); ?>,
+        borderColor: '#dc3545',
+        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+        fill: true,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: {
+        display: true,
+        text: 'Comparativo Mensal de Receitas e Despesas'
+      }
+    }
+  }
+});
 </script>
 
 </body>
