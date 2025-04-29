@@ -59,7 +59,7 @@ $sqlReceitasMes = $pdo->prepare("
   GROUP BY mes
   ORDER BY mes
 ");
-$sqlReceitasMes->execute([$usuarioId]);
+$sqlReceitasMes->execute([$alunoId]);
 
 $dadosReceitas = [];
 while ($row = $sqlReceitasMes->fetch()) {
@@ -76,7 +76,7 @@ $sqlDespesasMes = $pdo->prepare("
   GROUP BY mes
   ORDER BY mes
 ");
-$sqlDespesasMes->execute([$usuarioId]);
+$sqlDespesasMes->execute([$alunoId]);
 
 $mesesDespesas = [];
 $valoresDespesas = [];
