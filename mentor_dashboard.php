@@ -62,7 +62,6 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
         <option value='' selected>Selecione</option>
           <?php
           foreach ($alunos as $aluno) {
-            $selected = $aluno['id'] == $alunoId ? 'selected' : '';
             echo "<option value='{$aluno['id']}' $selected>{$aluno['nome']}</option>";
           }
           ?>
