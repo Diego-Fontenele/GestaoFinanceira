@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               'equilibriofinanceirogestao@gmail.com',
               'Diego',
               'Usuário Novo',
-              'Usuário novo cadastrado'.$email
+              'Usuário novo cadastrado '.$nome.' seu e-mail '.$email
           );
             header("refresh:2;url=login.php");
         } catch (PDOException $e) {
