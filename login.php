@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $_SESSION['usuario'] = $usuario['nome'];
     $_SESSION['usuario_id'] = $usuario['id'];
     $_SESSION['email']=$usuario['email'] ;
+    $_SESSION['tipo'] = $usuario['tipo']; 
     if (isset($_POST['lembrar'])) {
       setcookie('lembrar_email', $email, time() + (86400 * 30), "/"); // 30 dias
       setcookie('lembrar_senha', $senha, time() + (86400 * 30), "/"); // 30 dias
