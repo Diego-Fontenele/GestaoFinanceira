@@ -51,6 +51,7 @@ $sqlEvolucaoDespesas = $pdo->prepare("
   GROUP BY mes
   ORDER BY mes ASC
 ");
+$sqlEvolucaoDespesas->execute([$alunoId]);
 $dadosEvolucao = $sqlEvolucaoDespesas->fetchAll(PDO::FETCH_ASSOC);
 
 $meses = array_column($dadosEvolucao, 'mes_formatado');
