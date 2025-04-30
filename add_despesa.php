@@ -144,7 +144,7 @@ if (!empty($filtro_fim)) {
 }
 if (!empty($filtro_desc)) {
   $sql .= " AND d.descricao = ?";
-  $params[] = $filtro_fim;
+  $params[] = $filtro_desc;
 }
 
 $sql .= " ORDER BY d.data DESC";
