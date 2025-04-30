@@ -21,7 +21,7 @@ $erro = '';
 $recorrencia = isset($_POST['recorrencia']) ? intval($_POST['recorrencia']) : 1;
 // Filtros
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
-$filtro_desc= $_GET['filtro_desc'] ?? '';
+$filtro_desc= $_GET['filtro_descricao'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
@@ -123,7 +123,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Buscar descrições do cliente das despesas
-$stmt = $pdo->prepare("SELECT descricao FROM despesas WHERE usuario_id = ? ORDER BY 1");
+$stmt = $pdo->prepare("SELECT distinct descricao FROM despesas WHERE usuario_id = ? ORDER BY 1");
 $stmt->execute([$_SESSION['usuario_id']]);
 $desc_despesa = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
