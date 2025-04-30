@@ -272,12 +272,14 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   // Função para carregar despesas via AJAX
   function carregarDespesas(pagina = 1) {
     const categoria = $('[name="filtro_categoria"]').val();
+    const descricao = $('[name="filtro_descricao"]').val(); 
     const inicio = $('[name="filtro_inicio"]').val();
     const fim = $('[name="filtro_fim"]').val();
 
     $.get('ajax_despesas.php', {
       pagina: pagina,
       filtro_categoria: categoria,
+      filtro_descricao: descricao, 
       filtro_inicio: inicio,
       filtro_fim: fim
     }, function(data) {

@@ -11,6 +11,7 @@ $offset = ($pagina - 1) * $limite;
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
+$filtro_desc= $_GET['filtro_descricao'] ?? '';
 
 // Consulta principal
 $sql = "SELECT d.*, c.nome AS categoria_nome FROM despesas d JOIN categorias c ON d.categoria_id = c.id WHERE d.usuario_id = ?";
