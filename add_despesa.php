@@ -211,8 +211,8 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="card p-4">
       <h5 class="mb-3">Despesas Cadastradas</h5>
 
-      <form class="row mb-4" method="GET">
-        <div class="col-md-3">
+      <form class="row mb-4 align-items-end" method="GET">
+        <div class="col-md-2">
           <label class="form-label">Categoria</label>
           <select name="filtro_categoria" class="form-select">
             <option value="">Todas</option>
@@ -221,7 +221,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Descrição</label>
           <select name="filtro_descricao" class="form-select">
             <option value="">Todas</option>
@@ -230,16 +230,16 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Início</label>
           <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Fim</label>
           <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
         </div>
-        <div class="col-md-3 d-flex align-items-end">
-          <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+        <div class="col-md-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Filtrar</button>
           <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
