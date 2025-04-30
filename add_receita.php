@@ -205,7 +205,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <h5 class="mb-3">Receitas Cadastradas</h5>
 
       <form class="row mb-4" method="GET">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Categoria</label>
           <select name="filtro_categoria" class="form-select">
             <option value="">Todas</option>
@@ -214,15 +214,15 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Início</label>
           <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Fim</label>
           <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
         </div>
-        <div class="col-md-3 d-flex align-items-end">
+        <div class="col-md-4 d-flex align-items-end">
           <button type="submit" class="btn btn-primary me-2">Filtrar</button>
           <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
