@@ -120,6 +120,12 @@ $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'despesa' AN
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+// Buscar descrições do cliente das despesas
+$stmt = $pdo->prepare("SELECT descricao FROM despesas WHERE usuario_id = ? ORDER BY 1");
+$stmt->execute([$_SESSION['usuario_id']]);
+$desc_despesa = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Buscar despesas com filtros
 $sql = "SELECT d.*, c.nome AS categoria_nome FROM despesas d JOIN categorias c ON d.categoria_id = c.id WHERE d.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
@@ -134,6 +140,10 @@ if (!empty($filtro_inicio)) {
 }
 if (!empty($filtro_fim)) {
   $sql .= " AND d.data <= ?";
+  $params[] = $filtro_fim;
+}
+if (!empty($filtro_desc)) {
+  $sql .= " AND d.descricao = ?";
   $params[] = $filtro_fim;
 }
 
@@ -207,6 +217,15 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <option value="">Todas</option>
             <?php foreach ($categorias as $cat): ?>
               <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Descrição</label>
+          <select name="filtro_descricao" class="form-select">
+            <option value="">Todas</option>
+            <?php foreach ($desc_despesa as $desc): ?>
+              <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
             <?php endforeach; ?>
           </select>
         </div>
