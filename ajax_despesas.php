@@ -30,6 +30,12 @@ if (!empty($filtro_fim)) {
   $params[] = $filtro_fim;
 }
 
+if (!empty($filtro_desc)) {
+  $sql .= " AND d.descricao = ?";
+  $params[] = $filtro_desc;
+}
+
+
 $totalSql = "SELECT COUNT(*) FROM ($sql) as sub";
 $stmtTotal = $pdo->prepare($totalSql);
 $stmtTotal->execute($params);
