@@ -21,6 +21,7 @@ $erro = '';
 $recorrencia = isset($_POST['recorrencia']) ? intval($_POST['recorrencia']) : 1;
 // Filtros
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
+$filtro_desc= $_GET['filtro_desc'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
