@@ -59,7 +59,7 @@ foreach ($receitas as $d) {
     <td>" . htmlspecialchars($d['descricao']) . "</td>
     <td>R$ " . number_format($d['valor'], 2, ',', '.') . "</td>
     <td>
-      <a href='?{$queryString}&editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
+      <a href='{$queryString}&editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
     </td>
   </tr>";
 }
