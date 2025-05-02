@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Exclusão
 if (isset($_GET['excluir'])) {
   $id_excluir = $_GET['excluir'];
-  $stmt = $pdo->prepare("DELETE FROM metas_aportes WHERE metas_id = ? AND id = ?");
+  $stmt = $pdo->prepare("DELETE FROM metas_aportes WHERE meta_id = ? AND id = ?");
   $stmt->execute([$id_excluir, $_SESSION['usuario_id']]);
 
   $stmt = $pdo->prepare("DELETE FROM metas WHERE id = ? AND usuario_id = ?");
