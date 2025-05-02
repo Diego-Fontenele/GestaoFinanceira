@@ -13,6 +13,16 @@ $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 $filtro_desc= $_GET['filtro_descricao'] ?? '';
 
+$queryString = '';
+if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
+  $params_qs = [];
+  // ifs de uma linha somente não usei as {}
+  if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
+  if ($filtro_inicio) $params_qs[] = 'filtro_inicio=' . urlencode($filtro_inicio);
+  if ($filtro_fim) $params_qs[] = 'filtro_fim=' . urlencode($filtro_fim);
+  $queryString = '?' . implode('&', $params_qs);
+}
+
 // Consulta principal
 $sql = "SELECT d.*, c.nome AS categoria_nome FROM despesas d JOIN categorias c ON d.categoria_id = c.id WHERE d.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
@@ -56,7 +66,7 @@ foreach ($despesas as $d) {
     <td>" . htmlspecialchars($d['descricao']) . "</td>
     <td>R$ " . number_format($d['valor'], 2, ',', '.') . "</td>
     <td>
-      <a href='?editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
+      <a href='{$queryString}&editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
     </td>
   </tr>";
 }

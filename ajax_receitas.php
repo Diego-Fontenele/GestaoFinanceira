@@ -11,6 +11,7 @@ $offset = ($pagina - 1) * $limite;
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
+$filtro_desc= $_GET['filtro_descricao'] ?? '';
 
 $queryString = '';
 if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
@@ -37,6 +38,10 @@ if (!empty($filtro_inicio)) {
 if (!empty($filtro_fim)) {
   $sql .= " AND r.data <= ?";
   $params[] = $filtro_fim;
+}
+if (!empty($filtro_desc)) {
+  $sql .= " AND r.descricao = ?";
+  $params[] = $filtro_desc;
 }
 
 $totalSql = "SELECT COUNT(*) FROM ($sql) as sub";

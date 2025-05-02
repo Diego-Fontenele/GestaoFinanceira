@@ -24,6 +24,7 @@ $recorrencia = isset($_POST['recorrencia']) ? intval($_POST['recorrencia']) : 1;
 $filtro_categoria = $_GET['filtro_categoria'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
+$filtro_desc= $_GET['filtro_descricao'] ?? '';
 
 
 
@@ -33,6 +34,7 @@ if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
   // ifs de uma linha somente não usei as {}
   if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
   if ($filtro_inicio) $params_qs[] = 'filtro_inicio=' . urlencode($filtro_inicio);
+  if ($filtro_desc) $params_qs[] = 'filtro_descricao=' . urlencode($filtro_desc);
   if ($filtro_fim) $params_qs[] = 'filtro_fim=' . urlencode($filtro_fim);
   $queryString = '?' . implode('&', $params_qs);
 }
@@ -136,6 +138,11 @@ $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo = 'receita' AN
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Buscar descrições do cliente das receitas
+$stmt = $pdo->prepare("SELECT distinct descricao FROM receitas WHERE usuario_id = ? ORDER BY 1");
+$stmt->execute([$_SESSION['usuario_id']]);
+$desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Buscar receitas com filtros
 $sql = "SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
@@ -151,6 +158,10 @@ if (!empty($filtro_inicio)) {
 if (!empty($filtro_fim)) {
   $sql .= " AND r.data <= ?";
   $params[] = $filtro_fim;
+}
+if (!empty($filtro_desc)) {
+  $sql .= " AND r.descricao = ?";
+  $params[] = $filtro_desc;
 }
 
 $sql .= " ORDER BY r.data DESC";
@@ -227,6 +238,15 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </select>
         </div>
         <div class="col-md-2">
+          <label class="form-label">Descrição</label>
+          <select name="filtro_descricao" class="form-select">
+            <option value="">Todas</option>
+            <?php foreach ($desc_despesa as $desc): ?>
+              <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="col-md-2">
           <label class="form-label">Início</label>
           <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
         </div>
@@ -268,12 +288,14 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   // Função para carregar receitas via AJAX
   function carregarReceitas(pagina = 1) {
     const categoria = $('[name="filtro_categoria"]').val();
+    const descricao = $('[name="filtro_descricao"]').val(); 
     const inicio = $('[name="filtro_inicio"]').val();
     const fim = $('[name="filtro_fim"]').val();
 
     $.get('ajax_receitas.php', {
       pagina: pagina,
       filtro_categoria: categoria,
+      filtro_descricao: descricao,
       filtro_inicio: inicio,
       filtro_fim: fim
     }, function(data) {
