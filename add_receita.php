@@ -43,7 +43,7 @@ if (isset($_POST['excluir_selecionados']) && empty($_POST['receitas_selecionadas
   header("Location: add_receita.php");
   exit;
 }
-
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados']) && !empty($_POST['receitas_selecionadas'])) {
   $ids_para_excluir = $_POST['receitas_selecionadas'];
   
