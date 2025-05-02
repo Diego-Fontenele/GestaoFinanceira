@@ -40,7 +40,7 @@ if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
 // Exclusão
 if (isset($_POST['excluir_selecionados']) && empty($_POST['receitas_selecionadas'])){
   $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'É necessário marcar pelo menos 1 registro para excluir.'];
-  header("Location: add_receita.php");
+  header("Location: add_receita.php$queryString");
   exit;
 }
  
