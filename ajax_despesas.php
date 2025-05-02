@@ -14,7 +14,7 @@ $filtro_fim = $_GET['filtro_fim'] ?? '';
 $filtro_desc= $_GET['filtro_descricao'] ?? '';
 
 $queryString = '';
-if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
+if ($filtro_categoria || $filtro_inicio || $filtro_fim || $filtro_desc){
   $params_qs = [];
   // ifs de uma linha somente não usei as {}
   if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
@@ -22,6 +22,7 @@ if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
   if ($filtro_desc) $params_qs[] = 'filtro_descricao=' . urlencode($filtro_desc);
   if ($filtro_fim) $params_qs[] = 'filtro_fim=' . urlencode($filtro_fim);
   $queryString = '?' . implode('&', $params_qs);
+  
 }
 
 // Consulta principal
@@ -40,12 +41,10 @@ if (!empty($filtro_fim)) {
   $sql .= " AND d.data <= ?";
   $params[] = $filtro_fim;
 }
-
 if (!empty($filtro_desc)) {
   $sql .= " AND d.descricao = ?";
   $params[] = $filtro_desc;
 }
-
 
 $totalSql = "SELECT COUNT(*) FROM ($sql) as sub";
 $stmtTotal = $pdo->prepare($totalSql);
@@ -60,6 +59,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Renderiza a tabela
 foreach ($despesas as $d) {
+  $editarLink = $queryString ? "$queryString&editar={$d['id']}" : "?editar={$d['id']}";
   echo "<tr>
     <td><input type= 'checkbox' name='despesas_selecionadas[]' value=".$d['id']."></td>
     <td>" . date('d/m/Y', strtotime($d['data'])) . "</td>
@@ -67,7 +67,7 @@ foreach ($despesas as $d) {
     <td>" . htmlspecialchars($d['descricao']) . "</td>
     <td>R$ " . number_format($d['valor'], 2, ',', '.') . "</td>
     <td>
-      <a href='{$queryString}&editar={$d['id']}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
+      <a href='{$editarLink}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i></a>
     </td>
   </tr>";
 }

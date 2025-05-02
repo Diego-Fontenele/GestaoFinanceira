@@ -27,7 +27,7 @@ $filtro_fim = $_GET['filtro_fim'] ?? '';
 
 
 $queryString = '';
-if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
+if ($filtro_categoria || $filtro_inicio || $filtro_fim || $filtro_desc){
   $params_qs = [];
   // ifs de uma linha somente não usei as {}
   if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
