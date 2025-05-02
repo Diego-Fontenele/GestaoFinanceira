@@ -19,6 +19,7 @@ if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
   // ifs de uma linha somente não usei as {}
   if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
   if ($filtro_inicio) $params_qs[] = 'filtro_inicio=' . urlencode($filtro_inicio);
+  if ($filtro_desc) $params_qs[] = 'filtro_descricao=' . urlencode($filtro_desc);
   if ($filtro_fim) $params_qs[] = 'filtro_fim=' . urlencode($filtro_fim);
   $queryString = '?' . implode('&', $params_qs);
 }

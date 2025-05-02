@@ -25,6 +25,18 @@ $filtro_desc= $_GET['filtro_descricao'] ?? '';
 $filtro_inicio = $_GET['filtro_inicio'] ?? '';
 $filtro_fim = $_GET['filtro_fim'] ?? '';
 
+
+$queryString = '';
+if ($filtro_categoria || $filtro_inicio || $filtro_fim) {
+  $params_qs = [];
+  // ifs de uma linha somente não usei as {}
+  if ($filtro_categoria) $params_qs[] = 'filtro_categoria=' . urlencode($filtro_categoria);
+  if ($filtro_inicio) $params_qs[] = 'filtro_inicio=' . urlencode($filtro_inicio);
+  if ($filtro_desc) $params_qs[] = 'filtro_descricao=' . urlencode($filtro_desc);
+  if ($filtro_fim) $params_qs[] = 'filtro_fim=' . urlencode($filtro_fim);
+  $queryString = '?' . implode('&', $params_qs);
+}
+
 // Se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados'])){
   $categoria_id = $_POST['categoria_id'];
@@ -38,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
     if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
-      header("Location: add_despesa.php");
+      header("Location: add_despesa.php$queryString");
       exit;
     } else {
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao atualizar Despesa.'];
@@ -57,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     
       $pdo->commit();
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesas(s) cadastrada(s) com sucesso!'];
-      header("Location: add_despesa.php");
+      header("Location: add_despesa.php$queryString");
       exit;
     } catch (Exception $e) {
       $pdo->rollBack();
@@ -75,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 // Exclusão
 if (isset($_POST['excluir_selecionados']) && empty($_POST['despesas_selecionadas'])){
   $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'É necessário marcar pelo menos 1 registro para excluir.'];
-  header("Location: add_despesa.php");
+  header("Location: add_despesa.php$queryString");
   exit;
 }
 
@@ -93,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_selecionados'
 
   if ($stmt->execute($params)) {
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesa(s) excluída(s) com sucesso!'];
-    header("Location: add_despesa.php");
+    header("Location: add_despesa.php$queryString");
     exit;
 
   } else {
