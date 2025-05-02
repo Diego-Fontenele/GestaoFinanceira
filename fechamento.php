@@ -12,6 +12,17 @@ $usuario_id = $_SESSION['usuario_id'];
 $sucesso = false;
 $erro = '';
 
+
+$queryString = '';
+if ($mesSelecionado){
+  $params_qs = [];
+  // ifs de uma linha somente não usei as {}
+  if ($mesSelecionado) $params_qs[] = 'mes=' . urlencode($mesSelecionado);
+  
+  $queryString = '?' . implode('&', $params_qs);
+}
+
+
 list($ano, $mes) = explode('-', $mesSelecionado);
 
 // Buscar total de receitas
@@ -57,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     if ($stmt->execute([$meta_id, "$ano-$mes-01", $valor])) {
       $sucesso = true;
       $saldo -= $valor;
+      header("Location: fechamento.php$queryString");
     } else {
       $erro = "Erro ao direcionar valor para a meta.";
     }
