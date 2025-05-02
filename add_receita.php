@@ -139,7 +139,7 @@ $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar descrições do cliente das receitas
-$stmt = $pdo->prepare("SELECT distinct descricao FROM receitas WHERE usuario_id = ? ORDER BY 1");
+$stmt = $pdo->prepare("SELECT distinct descricao FROM receitas  WHERE usuario_id = ? ORDER BY 1");
 $stmt->execute([$_SESSION['usuario_id']]);
 $desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -241,7 +241,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <label class="form-label">Descrição</label>
           <select name="filtro_descricao" class="form-select">
             <option value="">Todas</option>
-            <?php foreach ($desc_despesa as $desc): ?>
+            <?php foreach ($desc_receitas as $desc): ?>
               <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
             <?php endforeach; ?>
           </select>
