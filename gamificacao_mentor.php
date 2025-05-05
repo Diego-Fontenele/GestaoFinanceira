@@ -171,7 +171,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h5 class="mb-3">Metas Cadastradas para Alunos</h5>
             <div class="card p-3 mb-4">
                 <form method="GET" class="row g-2 align-items-end">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Aluno</label>
                         <select name="aluno_id" class="form-select">
                             <option value="">Todos</option>
@@ -185,7 +185,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                             </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Dificuldade</label>
                         <select name="grau_dificuldade" class="form-select">
                             <option value="">Todas</option>
@@ -194,7 +194,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="Difícil" <?= ($_GET['grau_dificuldade'] ?? '') == 'Difícil' ? 'selected' : '' ?>>Difícil</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Status</label>
                         <select name="concluida" class="form-select">
                             <option value="">Todos</option>
