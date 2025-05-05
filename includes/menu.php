@@ -26,6 +26,12 @@
     <li class="nav-item mb-4">
       <a class="nav-link text-white" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
     </li>
+    <!-- Gamificação: visível para todos, mas com funções diferentes -->
+    <li class="nav-item mb-2">
+      <a class="nav-link text-white" href="gamificacao.php">
+        <i class="bi bi-trophy"></i> Gamificação
+      </a>
+    </li>
     <!-- Menu exclusivo para mentores -->
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
       <li class="nav-item mb-2">
