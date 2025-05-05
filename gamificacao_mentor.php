@@ -202,9 +202,9 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="0" <?= ($_GET['concluida'] ?? '') === '0' ? 'selected' : '' ?>>Não Concluídas</option>
                         </select>
                     </div>
-                    
+            
                     <div class="col-md-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary">
                             <i class="bi bi-filter"></i> Filtrar
                         </button>
                         <a href="gamificacao_mentor.php" class="btn btn-outline-secondary">Limpar</a>
