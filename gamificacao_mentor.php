@@ -161,11 +161,14 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <select name="aluno_id" class="form-select">
                             <option value="">Todos</option>
                             <?php foreach ($alunos as $aluno): ?>
-                                <option value="<?= $aluno['id'] ?>" <?= $_GET['aluno_id'] ?? '' == $aluno['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($alunoId) ?>
+                                <option 
+                                value="<?= $aluno['id'] ?>" 
+                                <?= $alunoId == $aluno['id'] ? 'selected' : '' ?>
+                                >
+                                <?= htmlspecialchars($aluno['nome']) ?>
                                 </option>
                             <?php endforeach; ?>
-                        </select>
+                            </select>
                     </div>
                     <div class="col-md-3">
                         <label>Dificuldade</label>
