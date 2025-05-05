@@ -123,7 +123,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="card p-4 mb-4">
             <h4>Cadastrar Meta para Aluno</h4>
             <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="ranking_mentor.php" class="btn btn-outline-info">
+            <a href="gamificacao_relatorio.php" class="btn btn-outline-info">
                 <i class="bi bi-trophy"></i> Ranking de Alunos
             </a>
             </div>
