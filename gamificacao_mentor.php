@@ -206,6 +206,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-filter"></i> Filtrar
                         </button>
+                        <a href="gamificacao_mentor.php" class="btn btn-outline-secondary">Limpar</a>
+                        
                     </div>
                 </form>
             </div>
@@ -241,9 +243,6 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td>
                                 <a href="?excluirId=<?= $meta['id'] ?>&<?= $q?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
                                     <i class="bi bi-trash"></i>
-                                </a>
-                                <a href="gamificacao_mentor.php" class="btn btn-outline-secondary w-50">
-                                    <i class="bi bi-x-circle"></i> Limpar
                                 </a>
                             </td>
                         </tr>
