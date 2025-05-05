@@ -242,7 +242,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="?excluirId=<?= $meta['id'] ?>&<?= $q?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
+                                <a href="?excluirId=<?= $meta['id'] ?>&aluno=<?= $meta['usuario_id']?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
