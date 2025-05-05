@@ -35,6 +35,17 @@ $q = http_build_query([
     'concluida'        => $fil_concluida,
   ]);
 
+// Excluir
+if (isset($_GET['excluirId'])){
+    $idExcluir = $_GET['excluirId'];
+    $sql = "DELETE FROM gamificacao_metas WHERE id = ? AND usuario_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $params = array_merge($idExcluir, [$_SESSION['usuario_id']]);
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Registro excluído com sucesso.'];
+    header("Location: " . $_SERVER['PHP_SELF'].'?'.$q);
+    exit;
+  }
+
 // Cadastro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario_id = $_POST['usuario_id'] ?? null;
