@@ -242,7 +242,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 <script>
-<?php if (!empty($flash)): ?>
+ <?php if (!empty($flash)): ?>
    
     
         Swal.fire({
@@ -250,6 +250,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Erro!' ?>',
             text: '<?= $flash['mensagem'] ?>'
         });
+ <?php endif; ?>
+ 
     $(document).ready(function () {
     // Carrega despesas na primeira vez
     
@@ -267,8 +269,6 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     
   });
-    
-<?php endif; ?>
 </script>
 </body>
 </html>
