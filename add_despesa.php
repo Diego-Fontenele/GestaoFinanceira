@@ -251,7 +251,10 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
         </div>
         <div class="col-md-4 d-flex gap-2">
-          <button type="submit" class="btn btn-primary">Filtrar</button>
+          
+          <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-filter"></i> Filtrar
+                        </button>
           <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
