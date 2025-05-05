@@ -1,5 +1,6 @@
 <?php
 
+//Preciso disso pois essa pagina é chamada da gamificação por um include, ou seja, já tem o session.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,6 +16,13 @@ $mentor_id = $_SESSION['usuario_id'];
 // Lê e limpa flash
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
+
+
+// captura os filtros
+$alunoId            = $_GET['aluno_id']            ?? $alunos[0]['id'] ?? null;
+$fil_grau           = $_GET['grau_dificuldade']    ?? '';
+$fil_concluida      = $_GET['concluida']           ?? '';
+
 
 // Buscar alunos vinculados ao mentor
 $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
