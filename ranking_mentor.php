@@ -58,7 +58,11 @@ $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <td><?= htmlspecialchars($row['nome']) ?></td>
             <td><?= $row['total_metas'] ?></td>
             <td><?= $row['metas_concluidas'] ?></td>
-            <td><?= $row['pct_conclusao'] ?>%</td>
+            <td><div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: <?= $info['progresso'] ?>%;">
+                                                <?= $info['progresso'] ?>
+                                            </div>
+        </td>
           </tr>
         <?php endforeach; ?>
         <?php if (empty($ranking)): ?>
