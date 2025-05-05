@@ -263,7 +263,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       autoGroup: true,
       allowMinus: false,
       removeMaskOnSubmit: true
-    }).mask('#valor');
+    }).mask('.valor');
 
     
   });
