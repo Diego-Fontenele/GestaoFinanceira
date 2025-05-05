@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar metas dos alunos do mentor
-$filtros = ["m.mentor_id = :mentor_id"];
+$filtros = ["u.mentor_id = :mentor_id"];
 $params = ['mentor_id' => $mentor_id];
 
 if (!empty($_GET['aluno_id'])) {
@@ -68,8 +68,8 @@ $sql = "
     SELECT gm.*, u.nome AS aluno_nome 
     FROM gamificacao_metas gm 
     JOIN usuarios u ON gm.usuario_id = u.id
-    JOIN usuarios m ON u.mentor_id = m.id
-    WHERE " . implode(" AND ", $filtros) . "
+    WHERE u.mentor_id = :mentor_id
+    " . (count($filtros) > 1 ? " AND " . implode(" AND ", array_slice($filtros, 1)) : "") . "
     ORDER BY gm.criado_em DESC
 ";
 
