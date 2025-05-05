@@ -181,7 +181,9 @@ foreach ($metas as $m) {
           <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
         </div>
         <div class="col-md-3 d-flex align-items-end">
-          <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-filter"></i> Filtrar
+                        </button>
           <a href="meta.php" class="btn btn-outline-secondary">Limpar</a>
         </div>
       </form>
