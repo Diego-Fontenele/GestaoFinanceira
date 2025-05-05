@@ -127,7 +127,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-md-4">
                         <label>Valor (meta financeira)</label>
-                        <input type="text" name="valor" class="form-control" required>
+                        <input type="text" name="valor" class="form-control valor" required>
                     </div>
                     <div class="col-md-6">
                         <label>Descrição</label>
