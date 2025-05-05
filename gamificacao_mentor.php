@@ -41,7 +41,7 @@ if (isset($_GET['excluirId'])){
     $idAluno = $_GET['aluno'];
     $sql = "DELETE FROM gamificacao_metas WHERE id = ? AND usuario_id = ?";
     $stmt = $pdo->prepare($sql);
-    $params = array_merge($idExcluir, $idAluno);
+    $stmt->execute([$idExcluir, $idAluno]);
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Registro excluído com sucesso.'];
     header("Location: " . $_SERVER['PHP_SELF'].'?'.$q);
     exit;
