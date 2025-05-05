@@ -18,16 +18,16 @@ $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 
 
+// Buscar alunos vinculados ao mentor
+$stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
+$stmt->execute([$mentor_id]);
+$alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // captura os filtros
 $alunoId            = $_GET['aluno_id']            ?? $alunos[0]['id'] ?? null;
 $fil_grau           = $_GET['grau_dificuldade']    ?? '';
 $fil_concluida      = $_GET['concluida']           ?? '';
 
-
-// Buscar alunos vinculados ao mentor
-$stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
-$stmt->execute([$mentor_id]);
-$alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Cadastro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
