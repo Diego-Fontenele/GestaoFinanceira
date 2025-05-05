@@ -28,6 +28,12 @@ $alunoId            = $_GET['aluno_id']            ?? $alunos[0]['id'] ?? null;
 $fil_grau           = $_GET['grau_dificuldade']    ?? '';
 $fil_concluida      = $_GET['concluida']           ?? '';
 
+// não perder filtro
+$q = http_build_query([
+    'aluno_id'         => $alunoId,
+    'grau_dificuldade' => $fil_grau,
+    'concluida'        => $fil_concluida,
+  ]);
 
 // Cadastro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -49,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Preencha todos os campos obrigatórios.'];
     }
 
-    header("Location: " . $_SERVER['PHP_SELF']);
+    header("Location: " . $_SERVER['PHP_SELF'].'?'.$q);
     exit;
 }
 
@@ -156,7 +162,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="">Todos</option>
                             <?php foreach ($alunos as $aluno): ?>
                                 <option value="<?= $aluno['id'] ?>" <?= $_GET['aluno_id'] ?? '' == $aluno['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($aluno['nome']) ?>
+                                    <?= htmlspecialchars($alunoId) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
