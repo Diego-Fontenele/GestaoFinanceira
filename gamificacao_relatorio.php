@@ -9,22 +9,66 @@ $mentor_id = $_SESSION['usuario_id'];
 
 // Buscar ranking
 $stmt = $pdo->prepare("
-  SELECT 
-    u.id,
-    u.nome,
-    COUNT(gm.id) AS total_metas,
-    SUM(CASE WHEN gm.concluida THEN 1 ELSE 0 END) AS metas_concluidas,
-    ROUND(
-      CASE WHEN COUNT(gm.id)=0 THEN 0 
-           ELSE 100.0 * SUM(CASE WHEN gm.concluida THEN 1 ELSE 0 END) / COUNT(gm.id)
-      END
-    , 2) AS pct_conclusao
-  FROM usuarios u
-  LEFT JOIN gamificacao_metas gm ON gm.usuario_id = u.id
-  WHERE u.mentor_id = :mentor_id
-  GROUP BY u.id, u.nome
-  ORDER BY metas_concluidas DESC, pct_conclusao DESC
-");
+                        with ranking as (
+                        select
+                            u.id,
+                            u.nome,
+                            COUNT(gm.id) as total_metas,
+                            SUM(case when gm.concluida then 1 else 0 end) as metas_concluidas,
+                            ROUND(
+                            case when COUNT(gm.id)= 0 then 0 
+                                else 100.0 * SUM(case when gm.concluida then 1 else 0 end) / COUNT(gm.id)
+                            end
+                            , 2) as pct_conclusao,
+                            case
+                                when gm.grau_dificuldade = 'Fácil' then 1
+                                when gm.grau_dificuldade = 'Médio' then 2
+                                else 3
+                            end as pontos
+                        from
+                            usuarios u
+                        left join gamificacao_metas gm on
+                            gm.usuario_id = u.id
+                        where
+                            u.mentor_id = :mentor_id
+                        group by
+                            u.id,
+                            u.nome,
+                            grau_dificuldade
+                        order by
+                            metas_concluidas desc,
+                            pct_conclusao desc
+                        ),
+                        rankingFinal as (
+                        select
+                            id,
+                            nome,
+                            sum(total_metas)as total_metas,
+                            sum(metas_concluidas) as metas_concluidas,
+                            sum(metas_concluidas)/ sum(total_metas) as pct_conclusao,
+                            sum(metas_concluidas) * pontos as pontos
+                        from
+                            ranking
+                        group by
+                            id,
+                            nome,
+                            pontos
+                        )
+
+                        select
+                            id,
+                            nome,
+                            sum(total_metas)as total_metas,
+                            sum(metas_concluidas) as metas_concluidas,
+                            round(sum(metas_concluidas)/ sum(total_metas)* 100, 2) as pct_conclusao,
+                            sum(pontos) as pontos
+                        from
+                            rankingFinal
+                        group by
+                            id,
+                            nome
+                            order by pontos desc, metas_concluidas DESC, pct_conclusao DESC
+                        ");
 $stmt->execute(['mentor_id' => $mentor_id]);
 $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -49,6 +93,7 @@ $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <th>Total de Metas</th>
           <th>Concluídas</th>
           <th>% Conclusão</th>
+          <th>Pontos</th>
         </tr>
       </thead>
       <tbody>
@@ -64,6 +109,7 @@ $ranking = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </td>
+            <td><?= $row['pontos'] ?></td>
           </tr>
         <?php endforeach; ?>
         <?php if (empty($ranking)): ?>
