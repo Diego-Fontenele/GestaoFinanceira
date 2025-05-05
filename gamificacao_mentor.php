@@ -46,14 +46,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar metas dos alunos do mentor
-$stmt = $pdo->prepare("
+$filtros = ["ma.mentor_id = :mentor_id"];
+$params = ['mentor_id' => $mentor_id];
+
+if (!empty($_GET['aluno_id'])) {
+    $filtros[] = "u.id = :aluno_id";
+    $params['aluno_id'] = $_GET['aluno_id'];
+}
+
+if (!empty($_GET['grau_dificuldade'])) {
+    $filtros[] = "gm.grau_dificuldade = :grau_dificuldade";
+    $params['grau_dificuldade'] = $_GET['grau_dificuldade'];
+}
+
+if (isset($_GET['concluida']) && $_GET['concluida'] !== '') {
+    $filtros[] = "gm.concluida = :concluida";
+    $params['concluida'] = $_GET['concluida'];
+}
+
+$sql = "
     SELECT gm.*, u.nome AS aluno_nome 
     FROM gamificacao_metas gm 
     JOIN usuarios u ON gm.usuario_id = u.id
-    WHERE u.mentor_id = ?
+    JOIN usuarios m ON u.mentor_id = m.id
+    WHERE " . implode(" AND ", $filtros) . "
     ORDER BY gm.criado_em DESC
-");
-$stmt->execute([$mentor_id]);
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -119,6 +140,43 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="card p-4">
             <h5 class="mb-3">Metas Cadastradas para Alunos</h5>
+            <div class="card p-3 mb-4">
+                <form method="GET" class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label>Aluno</label>
+                        <select name="aluno_id" class="form-select">
+                            <option value="">Todos</option>
+                            <?php foreach ($alunos as $aluno): ?>
+                                <option value="<?= $aluno['id'] ?>" <?= $_GET['aluno_id'] ?? '' == $aluno['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($aluno['nome']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Dificuldade</label>
+                        <select name="grau_dificuldade" class="form-select">
+                            <option value="">Todas</option>
+                            <option value="Fácil" <?= ($_GET['grau_dificuldade'] ?? '') == 'Fácil' ? 'selected' : '' ?>>Fácil</option>
+                            <option value="Médio" <?= ($_GET['grau_dificuldade'] ?? '') == 'Médio' ? 'selected' : '' ?>>Médio</option>
+                            <option value="Difícil" <?= ($_GET['grau_dificuldade'] ?? '') == 'Difícil' ? 'selected' : '' ?>>Difícil</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Status</label>
+                        <select name="concluida" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="1" <?= ($_GET['concluida'] ?? '') === '1' ? 'selected' : '' ?>>Concluídas</option>
+                            <option value="0" <?= ($_GET['concluida'] ?? '') === '0' ? 'selected' : '' ?>>Não Concluídas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter"></i> Filtrar
+                        </button>
+                    </div>
+                </form>
+            </div>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
