@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar metas dos alunos do mentor
-$filtros = ["ma.mentor_id = :mentor_id"];
+$filtros = ["m.mentor_id = :mentor_id"];
 $params = ['mentor_id' => $mentor_id];
 
 if (!empty($_GET['aluno_id'])) {
