@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require 'Conexao.php';
 
 if (!isset($_SESSION['usuario_id'])) {
