@@ -23,10 +23,10 @@ $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
 $stmt->execute([$mentor_id]);
 $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// captura os filtros
-$alunoId            = $_GET['aluno_id']            ?? $alunos[0]['id'] ?? null;
-$fil_grau           = $_GET['grau_dificuldade']    ?? '';
-$fil_concluida      = $_GET['concluida']           ?? '';
+
+$alunoId       = $_GET['aluno_id'] ?? '';
+$fil_grau      = $_GET['grau_dificuldade'] ?? '';
+$fil_concluida = $_GET['concluida'] ?? '';
 
 // não perder filtro
 $q = http_build_query([
@@ -63,9 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $filtros = ["u.mentor_id = :mentor_id"];
 $params = ['mentor_id' => $mentor_id];
 
-if (!empty($_GET['aluno_id'])) {
+if ($alunoId !== '') {
     $filtros[] = "u.id = :aluno_id";
-    $params['aluno_id'] = $_GET['aluno_id'];
+    $params['aluno_id'] = $alunoId;
 }
 
 if (!empty($_GET['grau_dificuldade'])) {
