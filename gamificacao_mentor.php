@@ -227,7 +227,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="excluir_meta.php?id=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
+                                <a href="?excluirId=<?= $meta['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
@@ -251,7 +251,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             text: '<?= $flash['mensagem'] ?>'
         });
  <?php endif; ?>
- 
+
     $(document).ready(function () {
     // Carrega despesas na primeira vez
     
