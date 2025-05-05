@@ -171,6 +171,31 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Erro!' ?>',
             text: '<?= $flash['mensagem'] ?>'
         });
+        $(document).ready(function () {
+    // Carrega despesas na primeira vez
+    carregarDespesas();
+
+    // Paginação com AJAX
+    $(document).on('click', '.paginacao-ajax', function (e) {
+      e.preventDefault();
+      const url = new URL(this.href);
+      const pagina = url.searchParams.get("pagina");
+      carregarDespesas(pagina);
+    });
+
+    // Máscara para o campo de valor
+    Inputmask({
+      alias: 'currency',
+      prefix: 'R$ ',
+      groupSeparator: '.',
+      radixPoint: ',',
+      autoGroup: true,
+      allowMinus: false,
+      removeMaskOnSubmit: true
+    }).mask('.valor');
+
+    
+  });
     </script>
 <?php endif; ?>
 </body>
