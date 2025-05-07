@@ -1,5 +1,3 @@
-<!-- includes/menu.php -->
-<div style="width: 250px;">
   <!-- conteúdo do menu -->
 
 <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
@@ -46,4 +44,3 @@
     </li>
   </ul>
 </nav>
-</div>
