@@ -251,7 +251,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" style="display:inline;">
                                     <input type="hidden" name="excluirId" value="<?= $meta['id'] ?>">
                                     <input type="hidden" name="alunoId" value="<?= $meta['usuario_id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir este investimento?')">Excluir</button>
                                 </form>
                         </tr>
                     <?php endforeach; ?>
