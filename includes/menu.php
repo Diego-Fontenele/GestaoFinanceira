@@ -1,5 +1,5 @@
 <!-- includes/menu.php -->
-<div style="width: 250px;">
+<div class="bg-dark text-white p-3" style="width: 250px; height: 100vh; position: fixed;">
   <!-- conteúdo do menu -->
 
 <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
