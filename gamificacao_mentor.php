@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Erro ao enviar imagem para o Imgur: $erro";
         } else {
             $resposta_json = json_decode($resposta, true);
-    
+            var_dump($resposta_json);
             // Verifique se a resposta JSON contém as chaves esperadas
             if (isset($resposta_json['success']) && $resposta_json['success'] === true) {
                 // Se a chave 'data' existir e contiver 'link'
