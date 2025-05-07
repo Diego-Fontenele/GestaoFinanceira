@@ -37,7 +37,7 @@
     <!-- Menu exclusivo para mentores -->
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
         <li class="nav-item mb-2">
-        <a class="nav-link text-white d-flex align-items-center gap-2" href="mentor_dashboard.php"><i class="bi bi-people"></i> Área do Mentor</a>
+        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="mentor_dashboard.php"><i class="bi bi-people"></i>&nbsp;Área do Mentor</a>
         </li>
       <?php endif; ?>
     <li class="nav-item mt-5">

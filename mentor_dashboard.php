@@ -103,9 +103,6 @@ $sqlMetasAluno = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = 
 $sqlMetasAluno->execute([$alunoId]);
 $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +116,7 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body style="background-color: #f8f9fa;">
 
-<div class="d-flex" style="min-height: 100vh;">
+<div class="d-flex" >
   <!-- Inclusão do menu lateral -->
   
     <?php include('includes/menu.php'); ?>
