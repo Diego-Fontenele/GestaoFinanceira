@@ -94,12 +94,12 @@ foreach ($resultado as $linha) {
 }
 
 if (isset($_GET['mes_descricao'])){
-  echo "aqui".$mesSelecionado ;
+ 
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 
 }else{
-  echo "aqui2".$mesSelecionado ;
+  
     $dataAnterior = new DateTime();
     $dataAnterior->modify('-1 month');
 
@@ -252,7 +252,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <div class="card-body">
       <form  id="formFiltroMes" method="GET" class="mb-0">
           <label class="form-label">Mês</label>
-          <input type="month" name="mes_descricao" class="form-control" value="<?= ($mesSelecionado == '') ? $mesSelecionado : "$ano-$mes"  ?>">
+          <input type="month" name="mes_descricao" class="form-control" value="<?= isset($_GET['mes_descricao']) ? $mesSelecionado : "$ano-$mes"  ?>">
       </form>
         <h5 class="card-title mb-3"><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</h5>
         <div style="height: 300px;">
