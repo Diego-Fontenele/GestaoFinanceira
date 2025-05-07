@@ -37,11 +37,15 @@
     <!-- Menu exclusivo para mentores -->
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
       <li class="nav-item mb-2">
-        <a class="nav-link text-warning" href="mentor_dashboard.php"><i class="bi bi-people"></i> Área do Mentor</a>
+        <a class="nav-link text-warning d-flex align-items-center gap-2" href="mentor_dashboard.php">
+          <i class="bi bi-people"></i> Área do Mentor
+        </a>
       </li>
     <?php endif; ?>
     <li class="nav-item mt-5">
-      <a class="nav-link text-danger" href="logout.php"><i class="bi bi-box-arrow-left"></i> Sair</a>
+      <a class="nav-link text-danger d-flex align-items-center gap-2" href="logout.php">
+        <i class="bi bi-box-arrow-left"></i> Sair
+      </a>
     </li>
   </ul>
 </nav>
