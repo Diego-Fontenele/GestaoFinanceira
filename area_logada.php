@@ -98,8 +98,11 @@ if (isset($_GET['mes_descricao'])){
   list($ano, $mes) = explode('-', $mesSelecionado);
 
 }else{
-  $mes = date('m'); 
-  $ano = date('Y'); 
+    $dataAnterior = new DateTime();
+    $dataAnterior->modify('-1 month');
+
+    $mes = $dataAnterior->format('m'); 
+    $ano = $dataAnterior->format('Y'); 
 }
 
 $sqlDescricao = $pdo->prepare("
