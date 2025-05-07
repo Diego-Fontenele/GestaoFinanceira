@@ -35,7 +35,7 @@ $q = http_build_query([
     'concluida'        => $fil_concluida,
   ]);
 
-  $limite = 3;
+  $limite = 15;
   $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) && $_GET['pagina'] > 0 ? (int)$_GET['pagina'] : 1;
   $offset = ($pagina - 1) * $limite;
 
@@ -60,7 +60,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valor = str_replace(',', '.', $_POST['valor'] ?? 0);
     $data_limite = $_POST['data_limite'] ?? null;
     $grau_dificuldade = $_POST['grau_dificuldade'] ?? '';
-    $medalha_url = trim($_POST['medalha_url'] ?? '');
+    $medalha_url = null;
+    if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($_FILES['medalha_imagem']['name'], PATHINFO_EXTENSION);
+        $nomeArquivo = uniqid('medalha_', true) . '.' . $ext;
+        $caminhoDestino = 'uploads/' . $nomeArquivo;
+    
+    if (!is_dir('uploads')) {
+        mkdir('uploads', 0777, true);
+    }
+
+    if (move_uploaded_file($_FILES['medalha_imagem']['tmp_name'], $caminhoDestino)) {
+        $medalha_url = $caminhoDestino;
+    }
+}
 
     if ($usuario_id && $titulo && $valor && $data_limite && $grau_dificuldade) {
         $stmt = $pdo->prepare("INSERT INTO gamificacao_metas 
@@ -148,7 +161,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <i class="bi bi-trophy"></i> Ranking de Alunos
             </a>
             </div>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-4">
                         <label>Aluno</label>
@@ -185,8 +198,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label>Medalha (URL da imagem)</label>
-                        <input type="text" name="medalha_url" class="form-control">
+                    <label>Medalha (Upload de imagem)</label>
+                    <input type="file" name="medalha_imagem" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success mt-3">Salvar Meta</button>
