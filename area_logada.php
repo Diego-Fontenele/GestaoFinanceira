@@ -97,6 +97,9 @@ if (isset($_GET['mes_descricao'])){
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 
+}else{
+  $mes = date('m'); 
+  $ano = date('Y'); 
 }
 
 $sqlDescricao = $pdo->prepare("
