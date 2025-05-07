@@ -251,11 +251,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
   <div class="col-md-6 mb-4 d-flex">
     <div class="card w-100 h-100">
       <div class="card-body">
-        <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</h5>
-        <form  id="formFiltroMes" method="GET" class="mb-0">
-          
-          <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
-      </form>
+        <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)
+          <form  id="formFiltroMes" method="GET" class="mb-0">
+            <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
+          </form>
+        </h5>
         <div style="height: 300px;">
           <canvas id="graficoDescricao" class="w-100 h-100"></canvas>
         </div>
