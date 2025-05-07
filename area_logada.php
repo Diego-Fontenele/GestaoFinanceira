@@ -192,9 +192,9 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
   
 
 </head>
-<body style="background-color: #f8f9fa;">
+<body class="bg-light">
 
-<div class="d-flex align-items-center" >
+<div class="d-flex">
   <!-- Inclusão do menu lateral -->
   <?php include('includes/menu.php'); ?>
  
