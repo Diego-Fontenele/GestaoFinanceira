@@ -35,6 +35,11 @@ $q = http_build_query([
     'concluida'        => $fil_concluida,
   ]);
 
+  $limite = 3;
+  $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) && $_GET['pagina'] > 0 ? (int)$_GET['pagina'] : 1;
+  $offset = ($pagina - 1) * $limite;
+
+
 // Excluir
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluirId'])) {
     $idExcluir = $_POST['excluirId'];
@@ -90,17 +95,33 @@ if (isset($_GET['concluida']) && $_GET['concluida'] !== '') {
     $params['concluida'] = $_GET['concluida'];
 }
 
+$sqlCount = "
+    SELECT COUNT(*) FROM gamificacao_metas gm
+    JOIN usuarios u ON gm.usuario_id = u.id
+    WHERE " . implode(" AND ", $filtros);
+
+$stmtCount = $pdo->prepare($sqlCount);
+$stmtCount->execute($params);
+$totalRegistros = $stmtCount->fetchColumn();
+$totalPaginas = ceil($totalRegistros / $limite);
+
+
 $sql = "
     SELECT gm.*, u.nome AS aluno_nome 
     FROM gamificacao_metas gm 
     JOIN usuarios u ON gm.usuario_id = u.id
-    WHERE u.mentor_id = :mentor_id
-    " . (count($filtros) > 1 ? " AND " . implode(" AND ", array_slice($filtros, 1)) : "") . "
+    WHERE " . implode(" AND ", $filtros) . "
     ORDER BY gm.criado_em DESC
+    LIMIT :limite OFFSET :offset
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute($params);
+foreach ($params as $chave => $valor) {
+    $stmt->bindValue(":$chave", $valor);
+}
+$stmt->bindValue(":limite", (int)$limite, PDO::PARAM_INT);
+$stmt->bindValue(":offset", (int)$offset, PDO::PARAM_INT);
+$stmt->execute();
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -260,6 +281,17 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php endif; ?>
                 </tbody>
             </table>
+                <?php if ($totalPaginas > 1): ?>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                            <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                                <a class="page-link" href="?<?= $q ?>&pagina=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
+                <?php endif; ?>
         </div>
     </div>
 </div>
