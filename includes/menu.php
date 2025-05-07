@@ -38,7 +38,7 @@
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
         <li class="nav-item mb-2">
         <a class="nav-link text-white d-flex align-items-center gap-2" href="mentor_dashboard.php">
-          <i class="bi bi-people text-warning"></i> <span class="text-warning">Área do Mentor</span>
+          <i class="bi bi-people text-warning"></i>Área do Mentor
         </a>
         </li>
       <?php endif; ?>
