@@ -106,6 +106,7 @@ if (isset($_GET['mes_descricao'])){
     $mes = $dataAnterior->format('m'); 
     $ano = $dataAnterior->format('Y');
     $mesSelecionado = "$ano-$mes"; 
+    echo $mesSelecionado ;
 }
 
 $sqlDescricao = $pdo->prepare("
