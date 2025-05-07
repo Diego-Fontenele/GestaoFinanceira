@@ -155,7 +155,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </td>
               <td class="text-nowrap">
                 <!-- Formulário de Exclusão (POST) -->
-                <form action="<?= header("Location:excluir_investimento.php"); ?>" method="POST" style="display:inline;">
+                <form action="excluir_investimento.php" method="POST" style="display:inline;">
                                     <input type="hidden" name="id" value="<?= $inv['id']?>">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir este investimento?')"><i class="bi bi-trash"></i></button>
                                 </form>
