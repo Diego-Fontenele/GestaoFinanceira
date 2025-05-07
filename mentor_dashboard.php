@@ -121,24 +121,27 @@ $metasAluno = $sqlMetasAluno->fetchAll(PDO::FETCH_ASSOC);
     height: 100%;
     margin: 0;
   }
-  .d-flex {
-  height: 100vh;
-  overflow: hidden;
+  .wrapper {
+    min-height: 100vh;
+    display: flex;
+  }
+  .sidebar {
+    width: 250px;
+    background-color: white;
+    border-right: 1px solid #dee2e6;
+  }
+  .main-content {
+    flex-grow: 1;
+    padding: 2rem;
   }
 
-.sidebar {
-  height: 100vh;
-  overflow-y: auto;
-  position: sticky;
-  top: 0;
-}
 </style>
 </head>
 <body style="background-color: #f8f9fa;">
 
-<div class="d-flex">
+<div class="wrapper">
   <!-- Inclusão do menu lateral -->
-  <div class="col-auto bg-white border-end sidebar" style="width: 250px;">
+  <div class="sidebar" style="width: 250px;">
     <?php include('includes/menu.php'); ?>
   </div>
   <!-- Conteúdo principal -->
