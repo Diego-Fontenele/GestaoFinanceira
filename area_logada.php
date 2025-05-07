@@ -194,11 +194,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 </head>
 <body style="background-color: #f8f9fa;">
 
-<div class="d-flex" >
+<div class="d-flex" style="width: 250px;">
   <!-- Inclusão do menu lateral -->
-  
-  <?php include('includes/menu.php'); ?>
  
+  <?php include('includes/menu.php'); ?>
+
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4">
     <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
