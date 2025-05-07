@@ -61,18 +61,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data_limite = $_POST['data_limite'] ?? null;
     $grau_dificuldade = $_POST['grau_dificuldade'] ?? '';
     $medalha_url = null;
-    if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
-        $ext = pathinfo($_FILES['medalha_imagem']['name'], PATHINFO_EXTENSION);
-        $nomeArquivo = uniqid('medalha_', true) . '.' . $ext;
-        $caminhoDestino = 'uploads/' . $nomeArquivo;
-    
-    if (!is_dir('uploads')) {
-        mkdir('uploads', 0777, true);
+
+if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
+    $imagem = file_get_contents($_FILES['medalha_imagem']['tmp_name']);
+    $imagem_base64 = base64_encode($imagem);
+
+    $client_id = "448913535a3775d";
+
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => 'https://api.imgur.com/3/image',
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "Authorization: Client-ID $client_id"
+        ],
+        CURLOPT_POSTFIELDS => [
+            'image' => $imagem_base64,
+            'type' => 'base64'
+        ]
+    ]);
+
+    $resposta = curl_exec($ch);
+    $erro = curl_error($ch);
+    curl_close($ch);
+
+    if ($erro) {
+        echo "Erro ao enviar imagem para o Imgur: $erro";
+    } else {
+        $resposta_json = json_decode($resposta, true);
+        if ($resposta_json['success']) {
+            $medalha_url = $resposta_json['data']['link']; // aqui vai o link direto da imagem
+        } else {
+            echo "Erro ao salvar imagem no Imgur.";
+        }
     }
 
-    if (move_uploaded_file($_FILES['medalha_imagem']['tmp_name'], $caminhoDestino)) {
-        $medalha_url = $caminhoDestino;
-    }
 }
 
     if ($usuario_id && $titulo && $valor && $data_limite && $grau_dificuldade) {
