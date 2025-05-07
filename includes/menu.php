@@ -25,7 +25,7 @@
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
     </li>
-    <li class="nav-item mb-4">
+    <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
     </li>
     <!-- Gamificação: visível para todos, mas com funções diferentes -->
