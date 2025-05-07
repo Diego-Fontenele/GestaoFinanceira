@@ -99,12 +99,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Erro ao enviar imagem para o Imgur: $erro";
         } else {
             $resposta_json = json_decode($resposta, true);
-            if ($resposta_json['success']) {
-                $medalha_url = $resposta_json['data']['link']; // Link direto da imagem
+    
+            // Verifique se a resposta JSON contém as chaves esperadas
+            if (isset($resposta_json['success']) && $resposta_json['success'] === true) {
+                // Se a chave 'data' existir e contiver 'link'
+                if (isset($resposta_json['data']['link'])) {
+                    $medalha_url = $resposta_json['data']['link']; // Link direto da imagem
+                    echo "Imagem enviada com sucesso! URL: $medalha_url";
+                } else {
+                    echo "Erro: 'link' não encontrado na resposta.";
+                }
             } else {
-                echo "Erro ao salvar imagem no Imgur: " . $resposta_json['data']['error'];
+                // Se a chave 'success' não for verdadeira ou não existir
+                if (isset($resposta_json['data']['error'])) {
+                    echo "Erro ao salvar imagem no Imgur: " . $resposta_json['data']['error'];
+                } else {
+                    echo "Erro desconhecido ao salvar imagem no Imgur.";
+                }
             }
         }
+    } else {
+        echo "Nenhuma imagem foi enviada ou houve um erro no envio.";
     }
 
     if ($usuario_id && $titulo && $valor && $data_limite && $grau_dificuldade) {
