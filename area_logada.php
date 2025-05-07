@@ -94,10 +94,12 @@ foreach ($resultado as $linha) {
 }
 
 if (isset($_GET['mes_descricao'])){
+  echo "aqui".$mesSelecionado ;
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 
 }else{
+  echo "aqui2".$mesSelecionado ;
     $dataAnterior = new DateTime();
     $dataAnterior->modify('-1 month');
 
