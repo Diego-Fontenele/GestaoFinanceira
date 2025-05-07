@@ -93,6 +93,34 @@ foreach ($resultado as $linha) {
   $valores[] = $linha['total'];
 }
 
+if (isset($_GET['mes_descricao'])){
+  $mesSelecionado = $_GET['mes_descricao'];
+  list($ano, $mes) = explode('-', $mesSelecionado);
+
+}
+
+$sqlDescricao = $pdo->prepare("
+  SELECT 
+    descricao,
+    SUM(valor) as total
+  FROM despesas
+  WHERE usuario_id = ?
+  AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?
+  GROUP BY descricao
+  ORDER BY total DESC
+  LIMIT 10
+");
+$sqlDescricao->execute([$usuarioId,$mes,$ano]);
+$descricoes = [];
+$valoresDescricao = [];
+
+foreach ($sqlDescricao->fetchAll() as $linha) {
+  $descricoes[] = $linha['descricao'];
+  $valoresDescricao[] = $linha['total'];
+}
+
+
+
 //
 $sqlMetasUsuario = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasUsuario->execute([$usuarioId]);
@@ -211,7 +239,21 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       </div>
     </div>
   </div>
-
+    <!-- Gráfico de Pizza de Despesas por Descrição -->
+  <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body">
+      <form  id="formFiltroMes" method="GET" class="mb-0">
+          <label class="form-label">Mês</label>
+          <input type="month" name="mes_descricao" class="form-control" value="<?= $mesSelecionado ?>">
+      </form>
+        <h5 class="card-title mb-3"><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</h5>
+        <div style="height: 300px;">
+          <canvas id="graficoDescricao" class="w-100 h-100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
   <div class="col-md-6 mb-4 d-flex">
     <div class="card w-100 h-100">
@@ -408,6 +450,38 @@ const graficoReceitasDespesas = new Chart(ctxComparativo, {
     }
   }
 });
+
+const ctxDescricao = document.getElementById('graficoDescricao');
+const graficoDescricao = new Chart(ctxDescricao, {
+  type: 'pie',
+  data: {
+    labels: <?= json_encode($descricoes); ?>,
+    datasets: [{
+      label: 'Despesas',
+      data: <?= json_encode($valoresDescricao); ?>,
+      backgroundColor: [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+        '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+        '#e74c3c', '#3498db'
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      title: {
+        display: false
+      }
+    }
+  }
+});
+
+document.querySelector('input[name="mes_descricao"]').addEventListener('change', function () {
+    document.getElementById('formFiltroMes').submit();
+  });
+
 </script>
 
 </body>
