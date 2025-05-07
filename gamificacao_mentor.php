@@ -60,64 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valor = str_replace(',', '.', $_POST['valor'] ?? 0);
     $data_limite = $_POST['data_limite'] ?? null;
     $grau_dificuldade = $_POST['grau_dificuldade'] ?? '';
-    $medalha_url = null;
-
-    if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
-        // Obtenha a extensão do arquivo
-        $ext = pathinfo($_FILES['medalha_imagem']['name'], PATHINFO_EXTENSION);
-        
-        // Defina tipos permitidos de imagens
-        $tiposPermitidos = ['jpg', 'jpeg', 'png', 'gif'];
-        
-        // Verifique se a extensão do arquivo é válida
-        if (!in_array(strtolower($ext), $tiposPermitidos)) {
-            echo "Tipo de arquivo inválido. Apenas imagens JPG, PNG ou GIF são permitidas.";
-            exit;
-        }
-    
-        // Nome único para o arquivo
-        $nomeArquivo = uniqid('medalha_', true) . '.' . $ext;
-        
-        // Configurações do Cloudinary
-        $cloud_name = 'df91crmkk';
-        $api_key = '636761291816716';
-        $api_secret = 'V6j_M87IejGrbcISiH54HmdGRg4';
-        $upload_preset = 'uploadGestaoFinanceira'; // Nome do preset que você criou
-        
-        // Verifique se a pasta "uploads" existe, senão cria
-        if (!is_dir('uploads')) {
-            mkdir('uploads', 0777, true);
-        }
-    
-        // Suba o arquivo diretamente para o Cloudinary
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => "https://api.cloudinary.com/v1_1/$cloud_name/image/upload",
-            CURLOPT_POST => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => [
-                'file' => new CURLFile($_FILES['medalha_imagem']['tmp_name']),
-                'upload_preset' => $upload_preset
-            ]
-        ]);
-        
-        $resposta = curl_exec($ch);
-        $erro = curl_error($ch);
-        curl_close($ch);
-    
-        if ($erro) {
-            echo "Erro ao enviar imagem para o Cloudinary: $erro";
-        } else {
-            $resposta_json = json_decode($resposta, true);
-            
-            if (isset($resposta_json['secure_url'])) {
-                $medalha_url = $resposta_json['secure_url']; // URL segura da imagem no Cloudinary
-                echo "Imagem enviada com sucesso! URL: $medalha_url";
-            } else {
-                echo "Erro ao salvar imagem no Cloudinary: " . $resposta_json['error']['message'];
-            }
-        }
-    }
+    $medalha_url = trim($_POST['medalha_url'] ?? '');
 
     if ($usuario_id && $titulo && $valor && $data_limite && $grau_dificuldade) {
         $stmt = $pdo->prepare("INSERT INTO gamificacao_metas 
@@ -205,7 +148,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <i class="bi bi-trophy"></i> Ranking de Alunos
             </a>
             </div>
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST">
                 <div class="row">
                     <div class="col-md-4">
                         <label>Aluno</label>
@@ -242,8 +185,8 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </select>
                     </div>
                     <div class="col-md-6">
-                    <label>Medalha (Upload de imagem)</label>
-                    <input type="file" name="medalha_imagem" class="form-control" accept="image/*">
+                        <label>Medalha (URL da imagem)</label>
+                        <input type="text" name="medalha_url" class="form-control">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success mt-3">Salvar Meta</button>
