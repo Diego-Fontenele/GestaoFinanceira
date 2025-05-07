@@ -154,9 +154,11 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     : '<span class="text-muted">Sem vencimento</span>' ?>
                 </td>
               <td class="text-nowrap">
-                <a href="excluir_investimento.php?id=<?= $inv['id'] ?>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Deseja excluir este investimento?')">
-                    <i class="bi bi-trash"></i>
-                </a>
+                <!-- Formulário de Exclusão (POST) -->
+                <form action="<?= header("Location:excluir_investimento.php"); ?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="<?= $inv['id']?>">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir este investimento?')"><i class="bi bi-trash"></i></button>
+                                </form>
 
                 <button class="btn btn-sm btn-secondary" title="Movimentar" onclick="abrirModalMovimentacao(<?= $inv['id'] ?>, '<?= htmlspecialchars($inv['nome']) ?>')">
                     <i class="bi bi-arrow-left-right"></i>

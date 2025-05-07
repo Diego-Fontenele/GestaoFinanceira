@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario_id'])) {
   exit;
 }
 
-$id = $_GET['id'] ?? null;
+$id = $_POST['id'] ?? null;
 
 if ($id) {
   try {
