@@ -62,43 +62,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $grau_dificuldade = $_POST['grau_dificuldade'] ?? '';
     $medalha_url = null;
 
-if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
-    $imagem = file_get_contents($_FILES['medalha_imagem']['tmp_name']);
-    $imagem_base64 = base64_encode($imagem);
-
-    $client_id = "448913535a3775d";
-
-    $ch = curl_init();
-
-    curl_setopt_array($ch, [
-        CURLOPT_URL => 'https://api.imgur.com/3/image',
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            "Authorization: Client-ID $client_id"
-        ],
-        CURLOPT_POSTFIELDS => [
-            'image' => $imagem_base64,
-            'type' => 'base64'
-        ]
-    ]);
-
-    $resposta = curl_exec($ch);
-    $erro = curl_error($ch);
-    curl_close($ch);
-
-    if ($erro) {
-        echo "Erro ao enviar imagem para o Imgur: $erro";
-    } else {
-        $resposta_json = json_decode($resposta, true);
-        if ($resposta_json['success']) {
-            $medalha_url = $resposta_json['data']['link']; // aqui vai o link direto da imagem
+    if (isset($_FILES['medalha_imagem']) && $_FILES['medalha_imagem']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['medalha_imagem']['tmp_name'];
+        $fileName = $_FILES['medalha_imagem']['name'];
+        $fileSize = $_FILES['medalha_imagem']['size'];
+        $fileType = $_FILES['medalha_imagem']['type'];
+    
+        // Validações do arquivo (tipos de imagens permitidos)
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($fileType, $allowedTypes)) {
+            echo "Tipo de arquivo não permitido. Apenas JPEG, PNG e GIF são aceitos.";
+            exit;
+        }
+    
+        $client_id = "448913535a3775d";
+        $ch = curl_init();
+    
+        // Usar 'CURLOPT_POSTFIELDS' diretamente com o arquivo sem base64
+        curl_setopt_array($ch, [
+            CURLOPT_URL => 'https://api.imgur.com/3/image',
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Client-ID $client_id"
+            ],
+            CURLOPT_POSTFIELDS => [
+                'image' => new CURLFile($fileTmpPath, $fileType, $fileName) // Envia o arquivo diretamente
+            ]
+        ]);
+    
+        $resposta = curl_exec($ch);
+        $erro = curl_error($ch);
+        curl_close($ch);
+    
+        if ($erro) {
+            echo "Erro ao enviar imagem para o Imgur: $erro";
         } else {
-            echo "Erro ao salvar imagem no Imgur.";
+            $resposta_json = json_decode($resposta, true);
+            if ($resposta_json['success']) {
+                $medalha_url = $resposta_json['data']['link']; // Link direto da imagem
+            } else {
+                echo "Erro ao salvar imagem no Imgur: " . $resposta_json['data']['error'];
+            }
         }
     }
-
-}
 
     if ($usuario_id && $titulo && $valor && $data_limite && $grau_dificuldade) {
         $stmt = $pdo->prepare("INSERT INTO gamificacao_metas 
