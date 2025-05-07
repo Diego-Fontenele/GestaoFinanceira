@@ -36,9 +36,9 @@ $q = http_build_query([
   ]);
 
 // Excluir
-if (isset($_GET['excluirId'])){
-    $idExcluir = $_GET['excluirId'];
-    $idAluno = $_GET['aluno'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluirId'])) {
+    $idExcluir = $_POST['excluirId'];
+    $idAluno = $_POST['alunoId'];
     $sql = "DELETE FROM gamificacao_metas WHERE id = ? AND usuario_id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$idExcluir, $idAluno]);
@@ -247,10 +247,12 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="?excluirId=<?= $meta['id'] ?>&aluno=<?= $meta['usuario_id']?>" class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir esta meta?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
+                                <!-- Formulário de Exclusão (POST) -->
+                                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="excluirId" value="<?= $meta['id'] ?>">
+                                    <input type="hidden" name="alunoId" value="<?= $meta['usuario_id'] ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                </form>
                         </tr>
                     <?php endforeach; ?>
                     <?php if (empty($metas)): ?>
