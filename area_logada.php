@@ -199,10 +199,11 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 
 <div class="d-flex">
   <!-- Inclusão do menu lateral -->
-  <?php include('includes/menu.php'); ?>
+ 
  
   <!-- Conteúdo principal -->
   <div class="flex-grow-1 p-4" >
+  <?php include('includes/menu.php'); ?>
     <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
     <!-- Cards de Resumo -->

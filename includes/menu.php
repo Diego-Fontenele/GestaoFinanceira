@@ -1,4 +1,3 @@
-  <!-- conteúdo do menu -->
 
 <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
   <h4 class="mb-4"><i class="bi bi-piggy-bank"></i> Financeiro</h4>
