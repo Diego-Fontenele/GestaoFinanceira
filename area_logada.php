@@ -106,7 +106,6 @@ if (isset($_GET['mes_descricao'])){
     $mes = $dataAnterior->format('m'); 
     $ano = $dataAnterior->format('Y');
     $mesSelecionado = "$ano-$mes"; 
-    echo $mesSelecionado ;
 }
 
 $sqlDescricao = $pdo->prepare("
@@ -254,7 +253,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
       <div class="card-body">
       <form  id="formFiltroMes" method="GET" class="mb-0">
           <label class="form-label">Mês</label>
-          <input type="month" name="mes_descricao" class="form-control" value="<?= isset($_GET['mes_descricao']) ? $mesSelecionado : ($ano."-".$mes)  ?>">
+          <input type="month" name="mes_descricao" class="form-control" value="<?= $mesSelecionado  ?>">
       </form>
         <h5 class="card-title mb-3"><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</h5>
         <div style="height: 300px;">
