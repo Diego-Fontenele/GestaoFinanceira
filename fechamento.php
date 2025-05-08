@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
     header("Location: fechamento.php$queryString");
   } else {
-    $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores em meta e/ou investimento'];
+    $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores em meta e/ou investimento. Valor que está atribuindo é maior que o saldo.'];
     header("Location: fechamento.php$queryString");
     exit;
   }
@@ -135,8 +135,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
         <p><strong>Total Alocado em Metas:</strong> R$ <?= number_format($total_alocacao_m, 2, ',', '.') ?></p>
         <p><strong>Total Alocado em Investimentos:</strong> R$ <?= number_format($total_alocacao_i, 2, ',', '.') ?></p>
         <p><strong>Saldo:</strong> R$ <?= number_format($saldo, 2, ',', '.') ?></p>
-        
-        <?php 
+
+        <?php
         $saldo = round($saldo, 2);
         if ($saldo > 0): ?>
           <form method="POST" class="mt-4">
