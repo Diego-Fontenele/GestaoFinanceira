@@ -239,6 +239,10 @@ foreach ($resultados as $row) {
 <html lang="pt-br">
 
 <head>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <!--FIM PWA -->
   <meta charset="UTF-8">
   <title>Área Logada - Gestão Financeira</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -411,7 +415,7 @@ foreach ($resultados as $row) {
         </div>
 
 
-        
+
         <script>
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
@@ -699,8 +703,8 @@ foreach ($resultados as $row) {
                     const index = context.dataIndex;
                     if (context.datasetIndex === 0) {
                       return 'Total: R$ ' + <?= json_encode($totais) ?>[index].toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2
-                        });
+                        minimumFractionDigits: 2
+                      });
                     }
                     return null;
                   }
@@ -727,6 +731,12 @@ foreach ($resultados as $row) {
             },
             plugins: [ChartDataLabels]
           });
+
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+              .then(reg => console.log('Service Worker registrado'))
+              .catch(err => console.error('Erro ao registrar o Service Worker:', err));
+          }
         </script>
 
 </body>

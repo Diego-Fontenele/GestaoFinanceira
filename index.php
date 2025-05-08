@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <!--FIM PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestão Financeira</title>
@@ -12,16 +19,19 @@
       object-fit: cover;
       border-radius: 10px;
     }
+
     .header-right {
       position: absolute;
       top: 20px;
       right: 30px;
     }
+
     .hero-text {
       margin-top: 30px;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Header com botão "Área Logada" -->
@@ -35,12 +45,12 @@
   <!-- Imagem de destaque -->
   <div class="container mt-4">
     <img src="img/principalIndex.jpg" alt="Imagem sobre finanças" class="hero-image">
-    
+
     <!-- Texto inspirador -->
     <div class="hero-text">
       <h2>Por que a Gestão Financeira é tão importante?</h2>
       <p class="lead">
-        Uma gestão financeira eficiente é essencial para garantir a saúde econômica, tanto de empresas quanto de pessoas. 
+        Uma gestão financeira eficiente é essencial para garantir a saúde econômica, tanto de empresas quanto de pessoas.
         Com controle adequado dos gastos, planejamento estratégico e disciplina, é possível alcançar objetivos, evitar dívidas
         e conquistar estabilidade e crescimento financeiro.
       </p>
@@ -48,4 +58,5 @@
   </div>
 
 </body>
+
 </html>
