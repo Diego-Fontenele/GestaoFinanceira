@@ -275,7 +275,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <!-- Os dados serão carregados via AJAX -->
             </tbody>
           </table>
-          <button type="submit" name="excluir_selecionados" class="btn btn-danger mt-2">Excluir Selecionadosf</button>
+          <button type="submit" name="excluir_selecionados" class="btn btn-danger mt-2">Excluir Selecionados</button>
         </form>
       </div>
     </div>
