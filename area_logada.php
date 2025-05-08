@@ -216,6 +216,7 @@ $dados_aporte = [];
 $dados_rendimento = [];
 $dados_alocacao = [];
 $dados_retirada = [];
+$totais = [];
 
 foreach ($resultados as $row) {
   $labels[] = $row['nome'];
@@ -223,6 +224,9 @@ foreach ($resultados as $row) {
   $dados_rendimento[] = round($row['rendimentos'], 2);
   $dados_alocacao[] = round($row['alocacoes'], 2);
   $dados_retirada[] = round($row['retiradas'], 2) * -1;
+
+  $total = $row['saldo_inicial'] + $row['aportes'] + $row['rendimentos'] + $row['alocacoes'] - $row['retiradas'];
+  $totais[] = round($total, 2);
 }
 ?>
 
@@ -235,6 +239,7 @@ foreach ($resultados as $row) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 
 </head>
@@ -644,8 +649,10 @@ foreach ($resultados as $row) {
               }
             });
           <?php endforeach; ?>
-          const ctxSaldos = document.getElementById('graficoSaldosInvestimentos');
+
           //gráfico investimento   
+          const ctxSaldos = document.getElementById('graficoSaldosInvestimentos');
+
           new Chart(ctxSaldos, {
             type: 'bar',
             data: {
@@ -676,6 +683,18 @@ foreach ($resultados as $row) {
               indexAxis: 'y',
               responsive: true,
               plugins: {
+                datalabels: {
+                  anchor: 'end',
+                  align: 'right',
+                  color: '#000',
+                  formatter: function(value, context) {
+                    const index = context.dataIndex;
+                    if (context.datasetIndex === 0) {
+                      return 'Total: R$ <?= json_encode($totais) ?>' [index];
+                    }
+                    return null;
+                  }
+                },
                 tooltip: {
                   callbacks: {
                     label: function(context) {
@@ -695,7 +714,8 @@ foreach ($resultados as $row) {
                   stacked: true
                 }
               }
-            }
+            },
+            plugins: [ChartDataLabels]
           });
         </script>
 
