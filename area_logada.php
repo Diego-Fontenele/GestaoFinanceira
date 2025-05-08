@@ -193,20 +193,18 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 $query = $pdo->prepare("
-  SELECT 
+    SELECT 
     i.nome,
     i.saldo_inicial,
-    i.saldo_inicial +
-      COALESCE(SUM(CASE 
-        WHEN m.tipo IN ('aporte', 'rendimento', 'alocacao') THEN m.valor
-        WHEN m.tipo = 'retirada' THEN -m.valor
-        ELSE 0
-      END), 0) AS saldo_atual
+    COALESCE(SUM(CASE WHEN m.tipo = 'aporte' THEN m.valor ELSE 0 END), 0) AS aportes,
+    COALESCE(SUM(CASE WHEN m.tipo = 'rendimento' THEN m.valor ELSE 0 END), 0) AS rendimentos,
+    COALESCE(SUM(CASE WHEN m.tipo = 'alocacao' THEN m.valor ELSE 0 END), 0) AS alocacoes,
+    COALESCE(SUM(CASE WHEN m.tipo = 'retirada' THEN m.valor ELSE 0 END), 0) AS retiradas
   FROM investimentos i
   LEFT JOIN investimentos_movimentacoes m ON i.id = m.investimento_id
   WHERE i.usuario_id = :usuario_id
   GROUP BY i.id, i.nome, i.saldo_inicial
-  ORDER BY saldo_atual DESC
+  ORDER BY i.nome
 ");
 
 $query->bindValue(':usuario_id', $usuarioId);
@@ -214,15 +212,18 @@ $query->execute();
 $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
 $labels = [];
-$valores = [];
+$dados_aporte = [];
+$dados_rendimento = [];
+$dados_alocacao = [];
+$dados_retirada = [];
 
 foreach ($resultados as $row) {
   $labels[] = $row['nome'];
-  $valores[] = round($row['saldo_atual'], 2);
+  $dados_aporte[] = round($row['aportes'], 2);
+  $dados_rendimento[] = round($row['rendimentos'], 2);
+  $dados_alocacao[] = round($row['alocacoes'], 2);
+  $dados_retirada[] = round($row['retiradas'], 2) * -1;
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -606,7 +607,7 @@ foreach ($resultados as $row) {
           document.querySelector('input[name="mes_descricao"]').addEventListener('change', function() {
             document.getElementById('formFiltroMes').submit();
           });
-
+          //gráfico rosca de metas
           <?php foreach ($metas as $index => $meta):
             $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
             $percentual = round($percentual, 1);
@@ -644,38 +645,54 @@ foreach ($resultados as $row) {
             });
           <?php endforeach; ?>
           const ctxSaldos = document.getElementById('graficoSaldosInvestimentos');
-
+          //gráfico investimento   
           new Chart(ctxSaldos, {
             type: 'bar',
             data: {
               labels: <?= json_encode($labels) ?>,
               datasets: [{
-                label: 'Saldo Atual (R$)',
-                data: <?= json_encode($valores) ?>,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-              }]
+                  label: 'Aportes',
+                  data: <?= json_encode($dados_aporte) ?>,
+                  backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                },
+                {
+                  label: 'Rendimentos',
+                  data: <?= json_encode($dados_rendimento) ?>,
+                  backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                },
+                {
+                  label: 'Alocações',
+                  data: <?= json_encode($dados_alocacao) ?>,
+                  backgroundColor: 'rgba(255, 206, 86, 0.7)'
+                },
+                {
+                  label: 'Retiradas',
+                  data: <?= json_encode($dados_retirada) ?>,
+                  backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+              ]
             },
             options: {
               indexAxis: 'y',
-              scales: {
-                x: {
-                  beginAtZero: true
-                }
-              },
+              responsive: true,
               plugins: {
-                legend: {
-                  display: false
-                },
                 tooltip: {
                   callbacks: {
                     label: function(context) {
-                      return 'R$ ' + context.raw.toLocaleString('pt-BR', {
+                      return context.dataset.label + ': R$ ' + context.raw.toLocaleString('pt-BR', {
                         minimumFractionDigits: 2
                       });
                     }
                   }
+                }
+              },
+              scales: {
+                x: {
+                  stacked: true,
+                  beginAtZero: true
+                },
+                y: {
+                  stacked: true
                 }
               }
             }
