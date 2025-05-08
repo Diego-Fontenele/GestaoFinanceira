@@ -83,29 +83,28 @@ $sqlCategoria = $pdo->prepare('select ca.nome ,
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
                                 group by ca.nome');
-                
+
 $sqlCategoria->execute([$usuarioId]);
 $resultado = $sqlCategoria->fetchAll();
-$categorias=[];
-$valores=[];
+$categorias = [];
+$valores = [];
 foreach ($resultado as $linha) {
   $categorias[] = $linha['nome'];
   $valores[] = $linha['total'];
 }
 
-if (isset($_GET['mes_descricao'])){
- 
+if (isset($_GET['mes_descricao'])) {
+
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
+} else {
 
-}else{
-    
-    $dataAnterior = new DateTime();
-    $dataAnterior->modify('-1 month');
+  $dataAnterior = new DateTime();
+  $dataAnterior->modify('-1 month');
 
-    $mes = $dataAnterior->format('m'); 
-    $ano = $dataAnterior->format('Y');
-    $mesSelecionado = "$ano-$mes"; 
+  $mes = $dataAnterior->format('m');
+  $ano = $dataAnterior->format('Y');
+  $mesSelecionado = "$ano-$mes";
 }
 
 $sqlDescricao = $pdo->prepare("
@@ -119,7 +118,7 @@ $sqlDescricao = $pdo->prepare("
   ORDER BY total DESC
   LIMIT 10
 ");
-$sqlDescricao->execute([$usuarioId,$mes,$ano]);
+$sqlDescricao->execute([$usuarioId, $mes, $ano]);
 $descricoes = [];
 $valoresDescricao = [];
 
@@ -200,384 +199,411 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Área Logada - Gestão Financeira</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+
 
 </head>
+
 <body class="bg-light">
 
-<div class="d-flex" >
-  <!-- Inclusão do menu lateral -->
-  <?php include('includes/menu.php'); ?>
- 
-  <!-- Conteúdo principal -->
-  <div class="flex-grow-1 p-4" >
-  
-    <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
+  <div class="d-flex">
+    <!-- Inclusão do menu lateral -->
+    <?php include('includes/menu.php'); ?>
 
-    <!-- Cards de Resumo -->
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
+    <!-- Conteúdo principal -->
+    <div class="flex-grow-1 p-4">
+
+      <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
+
+      <!-- Cards de Resumo -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Saldo</h5>
+              <p class="card-text fs-4">R$ <?= number_format($saldo, 2, ',', '.'); ?></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-arrow-down-circle"></i> Receitas</h5>
+              <p class="card-text fs-4">R$ <?= number_format($receitas, 2, ',', '.'); ?></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas</h5>
+              <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficos lado a lado -->
+      <div class="row mt-4">
+        <!-- Gráfico de Pizza -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
+              <!-- Definindo altura fixa para o gráfico de pizza -->
+              <div style="height: 300px;">
+                <canvas id="graficoDespesas" class="w-100 h-100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Gráfico de Pizza de Despesas por Descrição -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
+                <form id="formFiltroMes" method="GET" class="mb-0">
+                  <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
+                </form>
+              </h5>
+              <div style="height: 300px;">
+                <canvas id="graficoDescricao" class="w-100 h-100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
+              <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+              <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 200px;">
+                  <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico de Comparativo de Receitas vs Despesas -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
+              <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
+              <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 300px;">
+                  <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico de Linha de Progresso de Meta -->
+      <div class="col-md-6 mb-4 d-flex">
+        <div class="card w-100 h-100">
           <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Saldo</h5>
-            <p class="card-text fs-4">R$ <?= number_format($saldo, 2, ',', '.'); ?></p>
+            <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
+              <!-- Select dentro do título do card -->
+              <form method="get" class="mb-0">
+                <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                  <?php
+                  foreach ($metasUsuario as $meta) {
+                    $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
+                    echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
+                  }
+                  ?>
+                </select>
+              </form>
+            </h5>
+            <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+              <div style="width: 1200px; height: 300px;">
+                <!-- Ajustando o gráfico de progresso para ter altura fixa -->
+                <canvas id="graficoProgressoMeta" class="w-100" style="height: 300px;"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-          <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-arrow-down-circle"></i> Receitas</h5>
-            <p class="card-text fs-4">R$ <?= number_format($receitas, 2, ',', '.'); ?></p>
+
+      <!-- Gráfico de Roscas - Progresso Geral das Metas -->
+      <div class="row">
+        <?php foreach ($metas as $index => $meta):
+          $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+          $percentual = round($percentual, 1);
+          $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+          $canvasId = "meta_chart_$index";
+        ?>
+          <div class="col-md-3 mb-4 d-flex">
+            <div class="card w-100">
+              <div class="card-body text-center">
+                <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
+                <div style="height: 200px;">
+                  <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
+                </div>
+                <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
+              </div>
+            </div>
           </div>
-        </div>
+        <?php endforeach; ?>
       </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-danger mb-3">
-          <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas</h5>
-            <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  <!-- Gráficos lado a lado -->
-  <div class="row mt-4">
-  <!-- Gráfico de Pizza -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3"><i class="bi bi-pie-chart-fill"></i> Despesas por Categoria</h5>
-        <!-- Definindo altura fixa para o gráfico de pizza -->
-        <div style="height: 300px;">
-        <canvas id="graficoDespesas" class="w-100 h-100"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-    <!-- Gráfico de Pizza de Despesas por Descrição -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
-          <form  id="formFiltroMes" method="GET" class="mb-0">
-            <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
-          </form>
-        </h5>
-        <div style="height: 300px;">
-          <canvas id="graficoDescricao" class="w-100 h-100"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
-        <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-          <div style="width: 1200px; height: 200px;">
-            <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Gráfico de Comparativo de Receitas vs Despesas -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
-        <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
-        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-        <div style="width: 1200px; height: 300px;">
-        <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
- <!-- Gráfico de Linha de Progresso de Meta -->
-<div class="col-md-6 mb-4 d-flex">
-  <div class="card w-100 h-100">
-    <div class="card-body">
-      <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
-        <form method="get" class="mb-0">
-          <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
-            <?php foreach ($metasUsuario as $meta): ?>
-              <option value="<?= $meta['id'] ?>" <?= $meta['id'] == $metaIdSelecionada ? 'selected' : '' ?>>
-                <?= htmlspecialchars($meta['titulo']) ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </form>
-      </h5>
-      <!-- Altura e largura consistentes com os outros -->
-      
-        <canvas id="graficoProgressoMeta" class="w-100 h-100"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Gráfico de Roscas - Progresso Geral das Metas -->
-<div class="row">
-  <?php foreach ($metas as $index => $meta):
-    $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-    $percentual = round($percentual, 1);
-    $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-    $canvasId = "meta_chart_$index";
-  ?>
-  <div class="col-md-3 mb-4 d-flex">
-    <div class="card w-100">
-      <div class="card-body text-center">
-        <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
-        <div style="height: 200px;">
-          <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
-        </div>
-        <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
-      </div>
-    </div>
-  </div>
-  <?php endforeach; ?>
-</div>
-<script>
-  const ctx = document.getElementById('graficoDespesas');
-  const grafico = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: <?= json_encode($categorias); ?>,
-      datasets: [{
-        label: 'Despesas',
-        data: <?= json_encode($valores); ?>,
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                            '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
-                            '#e74c3c', '#3498db', '#9b59b6', '#f1c40f']
-      }]
-    },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false, // <- ESSENCIAL!
-    plugins: {
-      legend: { position: 'bottom' },
-      title: {
-        display: true,
-        text: 'Distribuição das Despesas'
-      }
-    }
-  }
-  });
-
-
-  const ctxDespesasMes = document.getElementById('graficoDespesasMes');
-  const graficoDespesasMes = new Chart(ctxDespesasMes, {
-    type: 'line',
-    data: {
-      labels: <?= json_encode($mesesDespesas); ?>, // Meses
-      datasets: [{
-        label: 'Despesas Mensais',
-        data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
-        borderColor: '#dc3545',
-        backgroundColor: 'rgba(220, 53, 69, 0.2)',
-        fill: true,
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Gastos Mensais' }
-      },
-      scales: {
-        x: {
-          type: 'category', // Tipo do eixo X para categorias (meses)
-          ticks: {
-            maxRotation: 90, // Girar as labels para melhorar a visibilidade
-            minRotation: 45,
-            autoSkip: false // Permite todas as labels serem exibidas
+      <script>
+        const ctx = document.getElementById('graficoDespesas');
+        const grafico = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: <?= json_encode($categorias); ?>,
+            datasets: [{
+              label: 'Despesas',
+              data: <?= json_encode($valores); ?>,
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                '#e74c3c', '#3498db', '#9b59b6', '#f1c40f'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false, // <- ESSENCIAL!
+            plugins: {
+              legend: {
+                position: 'bottom'
+              },
+              title: {
+                display: true,
+                text: 'Distribuição das Despesas'
+              }
+            }
           }
-        },
-        y: {
-          beginAtZero: true
-        }
-      },
-      elements: {
-        line: {
-          tension: 0.4 // Suaviza as linhas
-        }
-      }
-    }
-  });
-  const ctxMeta = document.getElementById('graficoProgressoMeta');
-  const graficoProgressoMeta = new Chart(ctxMeta, {
-  type: 'line',
-  data: {
-    labels: <?= json_encode($labels); ?>,
-    datasets: [
-      {
-        label: 'Valor Acumulado',
-        data: <?= json_encode($valoresAportes); ?>,
-        borderColor: '#0d6efd',
-        backgroundColor: 'rgba(13, 110, 253, 0.1)',
-        fill: true,
-        tension: 0.3
-      },
-      {
-        label: 'Meta Final',
-        data: new Array(<?= count($labels); ?>).fill(<?= $valorMeta; ?>),
-        borderColor: '#ffc107',
-        borderDash: [5, 5],
-        pointRadius: 0,
-        fill: false
-      }
-    ]
-  },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        title: {
-          display: true,
-          text: 'Evolução do Aporte em Meta'
-        }
-      }
-    }
-  });
-  const ctxComparativo = document.getElementById('graficoReceitasDespesas');
-const graficoReceitasDespesas = new Chart(ctxComparativo, {
-  type: 'line',
-  data: {
-    labels: <?= json_encode($mesesTotais); ?>,
-    datasets: [
-      {
-        label: 'Receitas',
-        data: <?= json_encode($valoresReceitasUnificadas); ?>,
-        borderColor: '#198754',
-        backgroundColor: 'rgba(25, 135, 84, 0.1)',
-        fill: true,
-        tension: 0.3
-      },
-      {
-        label: 'Despesas',
-        data: <?= json_encode($valoresDespesasUnificadas); ?>,
-        borderColor: '#dc3545',
-        backgroundColor: 'rgba(220, 53, 69, 0.1)',
-        fill: true,
-        tension: 0.3
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: {
-        display: true,
-        text: 'Comparativo Mensal de Receitas e Despesas'
-      }
-    }
-  }
-});
-
-const ctxDescricao = document.getElementById('graficoDescricao');
-const graficoDescricao = new Chart(ctxDescricao, {
-  type: 'pie',
-  data: {
-    labels: <?= json_encode($descricoes); ?>,
-    datasets: [{
-      label: 'Despesas',
-      data: <?= json_encode($valoresDescricao); ?>,
-      backgroundColor: [
-        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-        '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
-        '#e74c3c', '#3498db'
-      ]
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'bottom' },
-      title: {
-        display: false
-      }
-    }
-  }
-});
-//Plugin para aparecer o % dentro do gráfico
-Chart.register({
-  id: 'centerTextPlugin',
-  beforeDraw(chart) {
-    if (chart.config.options.plugins.centerText) {
-      const { ctx, chartArea: { width, height } } = chart;
-      const text = chart.config.options.plugins.centerText.text;
-      const fontSize = chart.config.options.plugins.centerText.fontSize || '18';
-      const fontColor = chart.config.options.plugins.centerText.color || '#000';
-
-      ctx.save();
-      ctx.font = `bold ${fontSize}px sans-serif`;
-      ctx.fillStyle = fontColor;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, width / 2, height / 2);
-      ctx.restore();
-    }
-  }
-});
+        });
 
 
-    document.querySelector('input[name="mes_descricao"]').addEventListener('change', function () {
-    document.getElementById('formFiltroMes').submit();
-  });
-  
-<?php foreach ($metas as $index => $meta):
-  $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-  $percentual = round($percentual, 1);
-  $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-  $canvasId = "meta_chart_$index";
-  $atingido = $meta['acumulado'];
-  $restante = max(0, $meta['objetivo'] - $meta['acumulado']);
-?>
-new Chart(document.getElementById("<?= $canvasId ?>"), {
-  type: 'doughnut',
-  data: {
-    labels: ['Atingido', 'Restante'],
-    datasets: [{
-      data: [<?= $atingido ?>, <?= $restante ?>],
-      backgroundColor: ['<?= $cor ?>', '#e9ecef'],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    cutout: '70%',
-    plugins: {
-      legend: { display: false },
-      tooltip: { enabled: true },
-      centerText: {
-        text: '<?= $percentual ?>%',
-        fontSize: 20,
-        color: '<?= $cor ?>'
-      }
-    }
-  }
-});
-<?php endforeach; ?>
+        const ctxDespesasMes = document.getElementById('graficoDespesasMes');
+        const graficoDespesasMes = new Chart(ctxDespesasMes, {
+          type: 'line',
+          data: {
+            labels: <?= json_encode($mesesDespesas); ?>, // Meses
+            datasets: [{
+              label: 'Despesas Mensais',
+              data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
+              borderColor: '#dc3545',
+              backgroundColor: 'rgba(220, 53, 69, 0.2)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top'
+              },
+              title: {
+                display: true,
+                text: 'Gastos Mensais'
+              }
+            },
+            scales: {
+              x: {
+                type: 'category', // Tipo do eixo X para categorias (meses)
+                ticks: {
+                  maxRotation: 90, // Girar as labels para melhorar a visibilidade
+                  minRotation: 45,
+                  autoSkip: false // Permite todas as labels serem exibidas
+                }
+              },
+              y: {
+                beginAtZero: true
+              }
+            },
+            elements: {
+              line: {
+                tension: 0.4 // Suaviza as linhas
+              }
+            }
+          }
+        });
+        const ctxMeta = document.getElementById('graficoProgressoMeta');
+        const graficoProgressoMeta = new Chart(ctxMeta, {
+          type: 'line',
+          data: {
+            labels: <?= json_encode($labels); ?>,
+            datasets: [{
+                label: 'Valor Acumulado',
+                data: <?= json_encode($valoresAportes); ?>,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.3
+              },
+              {
+                label: 'Meta Final',
+                data: new Array(<?= count($labels); ?>).fill(<?= $valorMeta; ?>),
+                borderColor: '#ffc107',
+                borderDash: [5, 5],
+                pointRadius: 0,
+                fill: false
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top'
+              },
+              title: {
+                display: true,
+                text: 'Evolução do Aporte em Meta'
+              }
+            }
+          }
+        });
+        const ctxComparativo = document.getElementById('graficoReceitasDespesas');
+        const graficoReceitasDespesas = new Chart(ctxComparativo, {
+          type: 'line',
+          data: {
+            labels: <?= json_encode($mesesTotais); ?>,
+            datasets: [{
+                label: 'Receitas',
+                data: <?= json_encode($valoresReceitasUnificadas); ?>,
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                fill: true,
+                tension: 0.3
+              },
+              {
+                label: 'Despesas',
+                data: <?= json_encode($valoresDespesasUnificadas); ?>,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                fill: true,
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top'
+              },
+              title: {
+                display: true,
+                text: 'Comparativo Mensal de Receitas e Despesas'
+              }
+            }
+          }
+        });
+
+        const ctxDescricao = document.getElementById('graficoDescricao');
+        const graficoDescricao = new Chart(ctxDescricao, {
+          type: 'pie',
+          data: {
+            labels: <?= json_encode($descricoes); ?>,
+            datasets: [{
+              label: 'Despesas',
+              data: <?= json_encode($valoresDescricao); ?>,
+              backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                '#e74c3c', '#3498db'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              },
+              title: {
+                display: false
+              }
+            }
+          }
+        });
+        //Plugin para aparecer o % dentro do gráfico
+        Chart.register({
+          id: 'centerTextPlugin',
+          beforeDraw(chart) {
+            if (chart.config.options.plugins.centerText) {
+              const {
+                ctx,
+                chartArea: {
+                  width,
+                  height
+                }
+              } = chart;
+              const text = chart.config.options.plugins.centerText.text;
+              const fontSize = chart.config.options.plugins.centerText.fontSize || '18';
+              const fontColor = chart.config.options.plugins.centerText.color || '#000';
+
+              ctx.save();
+              ctx.font = `bold ${fontSize}px sans-serif`;
+              ctx.fillStyle = fontColor;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(text, width / 2, height / 2);
+              ctx.restore();
+            }
+          }
+        });
 
 
-</script>
+        document.querySelector('input[name="mes_descricao"]').addEventListener('change', function() {
+          document.getElementById('formFiltroMes').submit();
+        });
+
+        <?php foreach ($metas as $index => $meta):
+          $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+          $percentual = round($percentual, 1);
+          $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+          $canvasId = "meta_chart_$index";
+          $atingido = $meta['acumulado'];
+          $restante = max(0, $meta['objetivo'] - $meta['acumulado']);
+        ?>
+          new Chart(document.getElementById("<?= $canvasId ?>"), {
+            type: 'doughnut',
+            data: {
+              labels: ['Atingido', 'Restante'],
+              datasets: [{
+                data: [<?= $atingido ?>, <?= $restante ?>],
+                backgroundColor: ['<?= $cor ?>', '#e9ecef'],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              cutout: '70%',
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  enabled: true
+                },
+                centerText: {
+                  text: '<?= $percentual ?>%',
+                  fontSize: 20,
+                  color: '<?= $cor ?>'
+                }
+              }
+            }
+          });
+        <?php endforeach; ?>
+      </script>
 
 </body>
+
 </html>
