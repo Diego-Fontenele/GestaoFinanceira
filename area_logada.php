@@ -127,8 +127,6 @@ foreach ($sqlDescricao->fetchAll() as $linha) {
   $valoresDescricao[] = $linha['total'];
 }
 
-
-
 //
 $sqlMetasUsuario = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
 $sqlMetasUsuario->execute([$usuarioId]);
@@ -192,6 +190,36 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$usuarioId]);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$query = $pdo->prepare("
+  SELECT 
+    i.nome,
+    i.saldo_inicial,
+    i.saldo_inicial +
+      COALESCE(SUM(CASE 
+        WHEN m.tipo IN ('aporte', 'rendimento', 'alocacao') THEN m.valor
+        WHEN m.tipo = 'retirada' THEN -m.valor
+        ELSE 0
+      END), 0) AS saldo_atual
+  FROM investimentos i
+  LEFT JOIN investimentos_movimentacoes m ON i.id = m.investimento_id
+  WHERE i.usuario_id = :usuario_id
+  GROUP BY i.id, i.nome, i.saldo_inicial
+  ORDER BY saldo_atual DESC
+");
+
+$query->bindValue(':usuario_id', $usuarioId);
+$query->execute();
+$resultados = $query->fetchAll(PDO::FETCH_ASSOC);
+
+$labels = [];
+$valores = [];
+
+foreach ($resultados as $row) {
+  $labels[] = $row['nome'];
+  $valores[] = round($row['saldo_atual'], 2);
+}
 
 
 
@@ -335,6 +363,19 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
           </div>
         </div>
+        <!-- Gráfico de Saldos dos Investimentos -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3"><i class="bi bi-bar-chart-line-fill"></i> Saldos dos Investimentos</h5>
+              <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 300px;">
+                  <canvas id="graficoSaldosInvestimentos" class="w-100" style="height: 100%;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
@@ -374,7 +415,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             },
             options: {
               responsive: true,
-              maintainAspectRatio: false, // <- ESSENCIAL!
+              maintainAspectRatio: false,
               plugins: {
                 legend: {
                   position: 'bottom'
@@ -602,6 +643,43 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
               }
             });
           <?php endforeach; ?>
+          const ctxSaldos = document.getElementById('graficoSaldosInvestimentos');
+
+          new Chart(ctxSaldos, {
+            type: 'bar',
+            data: {
+              labels: <?= json_encode($labels) ?>,
+              datasets: [{
+                label: 'Saldo Atual (R$)',
+                data: <?= json_encode($valores) ?>,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              scales: {
+                x: {
+                  beginAtZero: true
+                }
+              },
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return 'R$ ' + context.raw.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2
+                      });
+                    }
+                  }
+                }
+              }
+            }
+          });
         </script>
 
 </body>
