@@ -133,8 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
         <p><strong>Total Alocado em Metas:</strong> R$ <?= number_format($total_alocacao_m, 2, ',', '.') ?></p>
         <p><strong>Total Alocado em Investimentos:</strong> R$ <?= number_format($total_alocacao_i, 2, ',', '.') ?></p>
         <p><strong>Saldo:</strong> R$ <?= number_format($saldo, 2, ',', '.') ?></p>
-
-        <?php if ($saldo > 0): ?>
+        
+        <?php 
+        $saldo = round($saldo, 2);
+        if ($saldo > 0): ?>
           <form method="POST" class="mt-4">
             <h5>Direcionar saldo para uma meta ou investimento</h5>
             <?php if (!empty($erro)): ?>
