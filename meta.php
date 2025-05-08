@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
   $dataini = $_POST['dataini'];
   $datafim = $_POST['datafim'];
-  $valorinicial = $_POST['valor_inicial'];
+  $valorinicial = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inicial'])));
 
   if (!empty($_POST['id'])) {
     // Atualização
