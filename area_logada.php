@@ -311,7 +311,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
  <div class="col-md-6 mb-4 d-flex">
     <div class="card w-100 h-100">
       <div class="card-body">
-        <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-3">
           <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
           <!-- Select dentro do título do card -->
           <form method="get" class="mb-0">
