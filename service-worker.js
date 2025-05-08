@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-cache-v3"; // Atualize a versão quando mudar arquivos
+const CACHE_NAME = "app-cache-v4"; // Atualize a versão quando mudar arquivos
 
 const URLS_TO_CACHE = [
   "/index.php",
