@@ -194,17 +194,22 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $query = $pdo->prepare("
     SELECT 
-    i.nome,
-    i.saldo_inicial,
-    COALESCE(SUM(CASE WHEN m.tipo = 'aporte' THEN m.valor ELSE 0 END), 0) AS aportes,
-    COALESCE(SUM(CASE WHEN m.tipo = 'rendimento' THEN m.valor ELSE 0 END), 0) AS rendimentos,
-    COALESCE(SUM(CASE WHEN m.tipo = 'alocacao' THEN m.valor ELSE 0 END), 0) AS alocacoes,
-    COALESCE(SUM(CASE WHEN m.tipo = 'retirada' THEN m.valor ELSE 0 END), 0) AS retiradas
-  FROM investimentos i
-  LEFT JOIN investimentos_movimentacoes m ON i.id = m.investimento_id
-  WHERE i.usuario_id = :usuario_id
-  GROUP BY i.id, i.nome, i.saldo_inicial
-  ORDER BY i.nome
+        i.nome,
+        i.saldo_inicial,
+        COALESCE(SUM(CASE WHEN m.tipo = 'aporte' THEN m.valor ELSE 0 END), 0) AS aportes,
+        COALESCE(SUM(CASE WHEN m.tipo = 'rendimento' THEN m.valor ELSE 0 END), 0) AS rendimentos,
+        COALESCE(SUM(CASE WHEN m.tipo = 'alocacao' THEN m.valor ELSE 0 END), 0) AS alocacoes,
+        COALESCE(SUM(CASE WHEN m.tipo = 'retirada' THEN m.valor ELSE 0 END), 0) AS retiradas,
+        i.saldo_inicial
+          + COALESCE(SUM(CASE WHEN m.tipo = 'aporte' THEN m.valor ELSE 0 END), 0)
+          + COALESCE(SUM(CASE WHEN m.tipo = 'rendimento' THEN m.valor ELSE 0 END), 0)
+          + COALESCE(SUM(CASE WHEN m.tipo = 'alocacao' THEN m.valor ELSE 0 END), 0)
+          - COALESCE(SUM(CASE WHEN m.tipo = 'retirada' THEN m.valor ELSE 0 END), 0) AS saldo_atual
+      FROM investimentos i
+      LEFT JOIN investimentos_movimentacoes m ON i.id = m.investimento_id
+      WHERE i.usuario_id = :usuario_id
+      GROUP BY i.id, i.nome, i.saldo_inicial
+      ORDER BY saldo_atual DESC;
 ");
 
 $query->bindValue(':usuario_id', $usuarioId);
