@@ -409,6 +409,9 @@ foreach ($resultados as $row) {
             </div>
           <?php endforeach; ?>
         </div>
+
+
+        
         <script>
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
