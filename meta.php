@@ -123,6 +123,10 @@ foreach ($metas as $m) {
 <html lang="pt-br">
 
 <head>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <!--FIM PWA -->
   <meta charset="UTF-8">
   <title>Metas Financeiras</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -190,12 +194,15 @@ foreach ($metas as $m) {
             <label class="form-label">Fim</label>
             <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
           </div>
-          <div class="col-md-3 d-flex align-items-end">
+          <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary">
               <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="meta.php" class="btn btn-outline-secondary">Limpar</a>
           </div>
+
+
+
         </form>
 
         <table class="table table-bordered table-striped">
