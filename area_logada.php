@@ -188,11 +188,10 @@ $stmt = $pdo->prepare("
            COALESCE(SUM(a.valor), 0) AS acumulado
     FROM metas m
     LEFT JOIN metas_aportes a ON a.meta_id = m.id
-    WHERE m.usuario_id = :usuario_id
+    WHERE m.usuario_id = ?
     GROUP BY m.id, m.titulo, m.valor
 ");
-$stmt->bindParam(':usuario_id', [$usuarioId]);
-$stmt->execute();
+$stmt->execute([$usuario_id]);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
