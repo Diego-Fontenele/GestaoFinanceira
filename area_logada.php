@@ -321,60 +321,26 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
  
 <!-- Gráfico de Roscas - Progresso Geral das Metas -->
-    <div class="col-12 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title mb-3"><i class="bi bi-bullseye"></i> Progresso Geral das Metas</h5>
-          <div class="row">
-            <?php foreach ($metas as $index => $meta):
-              $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-              $percentual = round($percentual, 1);
-              $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-              $canvasId = "meta_chart_$index";
-            ?>
-            <div class="col-md-4 mb-4 d-flex">
-              <div class="card w-100">
-                <div class="card-body text-center">
-                  <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
-                  <div style="height: 200px;">
-                    <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
-                  </div>
-                  <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
-                </div>
-              </div>
-            </div>
-            <script>
-              new Chart(document.getElementById("<?= $canvasId ?>"), {
-                type: 'doughnut',
-                data: {
-                  labels: ['Atingido', 'Restante'],
-                  datasets: [{
-                    data: [<?= $meta['acumulado'] ?>, <?= max(0, $meta['objetivo'] - $meta['acumulado']) ?>],
-                    backgroundColor: ['<?= $cor ?>', '#e9ecef'],
-                    borderWidth: 1
-                  }]
-                },
-                options: {
-                  cutout: '70%',
-                  plugins: {
-                    tooltip: { enabled: true },
-                    legend: { display: false },
-                    title: {
-                      display: true,
-                      text: '<?= $percentual ?>%',
-                      position: 'center',
-                      color: '#000',
-                      font: { size: 16, weight: 'bold' }
-                    }
-                  }
-                }
-              });
-            </script>
-            <?php endforeach; ?>
-          </div>
+<div class="row">
+  <?php foreach ($metas as $index => $meta):
+    $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+    $percentual = round($percentual, 1);
+    $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+    $canvasId = "meta_chart_$index";
+  ?>
+  <div class="col-md-4 mb-4 d-flex">
+    <div class="card w-100">
+      <div class="card-body text-center">
+        <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
+        <div style="height: 200px;">
+          <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
         </div>
+        <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
       </div>
     </div>
+  </div>
+  <?php endforeach; ?>
+</div>
 
   <!-- Gráfico de Comparativo de Receitas vs Despesas -->
   <div class="col-md-6 mb-4 d-flex">
@@ -561,6 +527,42 @@ const graficoDescricao = new Chart(ctxDescricao, {
 document.querySelector('input[name="mes_descricao"]').addEventListener('change', function () {
     document.getElementById('formFiltroMes').submit();
   });
+  document.addEventListener("DOMContentLoaded", function () {
+  <?php foreach ($metas as $index => $meta):
+    $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+    $percentual = round($percentual, 1);
+    $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+    $canvasId = "meta_chart_$index";
+  ?>
+  new Chart(document.getElementById("<?= $canvasId ?>"), {
+    type: 'doughnut',
+    data: {
+      labels: ['Atingido', 'Restante'],
+      datasets: [{
+        data: [<?= $meta['acumulado'] ?>, <?= max(0, $meta['objetivo'] - $meta['acumulado']) ?>],
+        backgroundColor: ['<?= $cor ?>', '#e9ecef'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true },
+        title: {
+          display: true,
+          text: '<?= $percentual ?>%',
+          position: 'center',
+          color: '#000',
+          font: { size: 16, weight: 'bold' }
+        }
+      }
+    }
+  });
+  <?php endforeach; ?>
+});
+
+
 
 </script>
 
