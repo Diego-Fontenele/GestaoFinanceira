@@ -522,45 +522,64 @@ const graficoDescricao = new Chart(ctxDescricao, {
     }
   }
 });
+//Plugin para aparecer o % dentro do gráfico
+Chart.register({
+  id: 'centerTextPlugin',
+  beforeDraw(chart) {
+    if (chart.config.options.plugins.centerText) {
+      const { ctx, chartArea: { width, height } } = chart;
+      const text = chart.config.options.plugins.centerText.text;
+      const fontSize = chart.config.options.plugins.centerText.fontSize || '18';
+      const fontColor = chart.config.options.plugins.centerText.color || '#000';
 
-document.querySelector('input[name="mes_descricao"]').addEventListener('change', function () {
-    document.getElementById('formFiltroMes').submit();
-  });
-  document.addEventListener("DOMContentLoaded", function () {
-  <?php foreach ($metas as $index => $meta):
-    $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-    $percentual = round($percentual, 1);
-    $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-    $canvasId = "meta_chart_$index";
-  ?>
-  new Chart(document.getElementById("<?= $canvasId ?>"), {
-    type: 'doughnut',
-    data: {
-      labels: ['Atingido', 'Restante'],
-      datasets: [{
-        data: [<?= $meta['acumulado'] ?>, <?= max(0, $meta['objetivo'] - $meta['acumulado']) ?>],
-        backgroundColor: ['<?= $cor ?>', '#e9ecef'],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      cutout: '70%',
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: true },
-        title: {
-          display: true,
-          text: '<?= $percentual ?>%',
-          position: 'center',
-          color: '#000',
-          font: { size: 16, weight: 'bold' }
-        }
-      }
+      ctx.save();
+      ctx.font = `bold ${fontSize}px sans-serif`;
+      ctx.fillStyle = fontColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, width / 2, height / 2);
+      ctx.restore();
     }
-  });
-  <?php endforeach; ?>
+  }
 });
 
+
+    document.querySelector('input[name="mes_descricao"]').addEventListener('change', function () {
+    document.getElementById('formFiltroMes').submit();
+  });
+  
+<?php foreach ($metas as $index => $meta):
+  $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+  $percentual = round($percentual, 1);
+  $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+  $canvasId = "meta_chart_$index";
+  $atingido = $meta['acumulado'];
+  $restante = max(0, $meta['objetivo'] - $meta['acumulado']);
+?>
+new Chart(document.getElementById("<?= $canvasId ?>"), {
+  type: 'doughnut',
+  data: {
+    labels: ['Atingido', 'Restante'],
+    datasets: [{
+      data: [<?= $atingido ?>, <?= $restante ?>],
+      backgroundColor: ['<?= $cor ?>', '#e9ecef'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    cutout: '70%',
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true },
+      centerText: {
+        text: '<?= $percentual ?>%',
+        fontSize: 20,
+        color: '<?= $cor ?>'
+      }
+    }
+  }
+});
+<?php endforeach; ?>
 
 
 </script>
