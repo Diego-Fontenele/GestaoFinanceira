@@ -324,7 +324,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </form>
       </h5>
       <!-- Altura e largura consistentes com os outros -->
-      <div style="height: 300px;">
+      
         <canvas id="graficoProgressoMeta" class="w-100 h-100"></canvas>
       </div>
     </div>
