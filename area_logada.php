@@ -306,303 +306,303 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Gráfico de Linha de Progresso de Meta -->
-      <div class="col-md-6 mb-4 d-flex">
-        <div class="card w-100 h-100">
-          <div class="card-body">
-            <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
-              <!-- Select dentro do título do card -->
-              <form method="get" class="mb-0">
-                <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
-                  <?php
-                  foreach ($metasUsuario as $meta) {
-                    $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
-                    echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
-                  }
-                  ?>
-                </select>
-              </form>
-            </h5>
-            <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-              <div style="width: 1200px; height: 300px;">
-                <!-- Ajustando o gráfico de progresso para ter altura fixa -->
-                <canvas id="graficoProgressoMeta" class="w-100" style="height: 100%;"></canvas>
+
+        <!-- Gráfico de Linha de Progresso de Meta -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
+                <!-- Select dentro do título do card -->
+                <form method="get" class="mb-0">
+                  <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <?php
+                    foreach ($metasUsuario as $meta) {
+                      $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
+                      echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
+                    }
+                    ?>
+                  </select>
+                </form>
+              </h5>
+              <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 300px;">
+                  <!-- Ajustando o gráfico de progresso para ter altura fixa -->
+                  <canvas id="graficoProgressoMeta" class="w-100" style="height: 100%;"></canvas>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Gráfico de Roscas - Progresso Geral das Metas -->
-      <div class="row">
-        <?php foreach ($metas as $index => $meta):
-          $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-          $percentual = round($percentual, 1);
-          $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-          $canvasId = "meta_chart_$index";
-        ?>
-          <div class="col-md-3 mb-4 d-flex">
-            <div class="card w-100">
-              <div class="card-body text-center">
-                <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
-                <div style="height: 200px;">
-                  <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
+        <!-- Gráfico de Roscas - Progresso Geral das Metas -->
+        <div class="row">
+          <?php foreach ($metas as $index => $meta):
+            $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+            $percentual = round($percentual, 1);
+            $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+            $canvasId = "meta_chart_$index";
+          ?>
+            <div class="col-md-3 mb-4 d-flex">
+              <div class="card w-100">
+                <div class="card-body text-center">
+                  <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
+                  <div style="height: 200px;">
+                    <canvas id="<?= $canvasId ?>" width="200" height="200"></canvas>
+                  </div>
+                  <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
                 </div>
-                <small><?= number_format($meta['acumulado'], 2, ',', '.') ?> de <?= number_format($meta['objetivo'], 2, ',', '.') ?></small>
               </div>
             </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-      <script>
-        const ctx = document.getElementById('graficoDespesas');
-        const grafico = new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: <?= json_encode($categorias); ?>,
-            datasets: [{
-              label: 'Despesas',
-              data: <?= json_encode($valores); ?>,
-              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
-                '#e74c3c', '#3498db', '#9b59b6', '#f1c40f'
-              ]
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false, // <- ESSENCIAL!
-            plugins: {
-              legend: {
-                position: 'bottom'
-              },
-              title: {
-                display: true,
-                text: 'Distribuição das Despesas'
-              }
-            }
-          }
-        });
-
-
-        const ctxDespesasMes = document.getElementById('graficoDespesasMes');
-        const graficoDespesasMes = new Chart(ctxDespesasMes, {
-          type: 'line',
-          data: {
-            labels: <?= json_encode($mesesDespesas); ?>, // Meses
-            datasets: [{
-              label: 'Despesas Mensais',
-              data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
-              borderColor: '#dc3545',
-              backgroundColor: 'rgba(220, 53, 69, 0.2)',
-              fill: true,
-              tension: 0.3
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top'
-              },
-              title: {
-                display: true,
-                text: 'Gastos Mensais'
-              }
-            },
-            scales: {
-              x: {
-                type: 'category', // Tipo do eixo X para categorias (meses)
-                ticks: {
-                  maxRotation: 90, // Girar as labels para melhorar a visibilidade
-                  minRotation: 45,
-                  autoSkip: false // Permite todas as labels serem exibidas
-                }
-              },
-              y: {
-                beginAtZero: true
-              }
-            },
-            elements: {
-              line: {
-                tension: 0.4 // Suaviza as linhas
-              }
-            }
-          }
-        });
-        const ctxMeta = document.getElementById('graficoProgressoMeta');
-        const graficoProgressoMeta = new Chart(ctxMeta, {
-          type: 'line',
-          data: {
-            labels: <?= json_encode($labels); ?>,
-            datasets: [{
-                label: 'Valor Acumulado',
-                data: <?= json_encode($valoresAportes); ?>,
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                fill: true,
-                tension: 0.3
-              },
-              {
-                label: 'Meta Final',
-                data: new Array(<?= count($labels); ?>).fill(<?= $valorMeta; ?>),
-                borderColor: '#ffc107',
-                borderDash: [5, 5],
-                pointRadius: 0,
-                fill: false
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top'
-              },
-              title: {
-                display: true,
-                text: 'Evolução do Aporte em Meta'
-              }
-            }
-          }
-        });
-        const ctxComparativo = document.getElementById('graficoReceitasDespesas');
-        const graficoReceitasDespesas = new Chart(ctxComparativo, {
-          type: 'line',
-          data: {
-            labels: <?= json_encode($mesesTotais); ?>,
-            datasets: [{
-                label: 'Receitas',
-                data: <?= json_encode($valoresReceitasUnificadas); ?>,
-                borderColor: '#198754',
-                backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                fill: true,
-                tension: 0.3
-              },
-              {
-                label: 'Despesas',
-                data: <?= json_encode($valoresDespesasUnificadas); ?>,
-                borderColor: '#dc3545',
-                backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                fill: true,
-                tension: 0.3
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top'
-              },
-              title: {
-                display: true,
-                text: 'Comparativo Mensal de Receitas e Despesas'
-              }
-            }
-          }
-        });
-
-        const ctxDescricao = document.getElementById('graficoDescricao');
-        const graficoDescricao = new Chart(ctxDescricao, {
-          type: 'pie',
-          data: {
-            labels: <?= json_encode($descricoes); ?>,
-            datasets: [{
-              label: 'Despesas',
-              data: <?= json_encode($valoresDescricao); ?>,
-              backgroundColor: [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
-                '#e74c3c', '#3498db'
-              ]
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom'
-              },
-              title: {
-                display: false
-              }
-            }
-          }
-        });
-        //Plugin para aparecer o % dentro do gráfico
-        Chart.register({
-          id: 'centerTextPlugin',
-          beforeDraw(chart) {
-            if (chart.config.options.plugins.centerText) {
-              const {
-                ctx,
-                chartArea: {
-                  width,
-                  height
-                }
-              } = chart;
-              const text = chart.config.options.plugins.centerText.text;
-              const fontSize = chart.config.options.plugins.centerText.fontSize || '18';
-              const fontColor = chart.config.options.plugins.centerText.color || '#000';
-
-              ctx.save();
-              ctx.font = `bold ${fontSize}px sans-serif`;
-              ctx.fillStyle = fontColor;
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(text, width / 2, height / 2);
-              ctx.restore();
-            }
-          }
-        });
-
-
-        document.querySelector('input[name="mes_descricao"]').addEventListener('change', function() {
-          document.getElementById('formFiltroMes').submit();
-        });
-
-        <?php foreach ($metas as $index => $meta):
-          $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
-          $percentual = round($percentual, 1);
-          $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
-          $canvasId = "meta_chart_$index";
-          $atingido = $meta['acumulado'];
-          $restante = max(0, $meta['objetivo'] - $meta['acumulado']);
-        ?>
-          new Chart(document.getElementById("<?= $canvasId ?>"), {
-            type: 'doughnut',
+          <?php endforeach; ?>
+        </div>
+        <script>
+          const ctx = document.getElementById('graficoDespesas');
+          const grafico = new Chart(ctx, {
+            type: 'pie',
             data: {
-              labels: ['Atingido', 'Restante'],
+              labels: <?= json_encode($categorias); ?>,
               datasets: [{
-                data: [<?= $atingido ?>, <?= $restante ?>],
-                backgroundColor: ['<?= $cor ?>', '#e9ecef'],
-                borderWidth: 1
+                label: 'Despesas',
+                data: <?= json_encode($valores); ?>,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                  '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                  '#e74c3c', '#3498db', '#9b59b6', '#f1c40f'
+                ]
               }]
             },
             options: {
-              cutout: '70%',
+              responsive: true,
+              maintainAspectRatio: false, // <- ESSENCIAL!
               plugins: {
                 legend: {
-                  display: false
+                  position: 'bottom'
                 },
-                tooltip: {
-                  enabled: true
-                },
-                centerText: {
-                  text: '<?= $percentual ?>%',
-                  fontSize: 20,
-                  color: '<?= $cor ?>'
+                title: {
+                  display: true,
+                  text: 'Distribuição das Despesas'
                 }
               }
             }
           });
-        <?php endforeach; ?>
-      </script>
+
+
+          const ctxDespesasMes = document.getElementById('graficoDespesasMes');
+          const graficoDespesasMes = new Chart(ctxDespesasMes, {
+            type: 'line',
+            data: {
+              labels: <?= json_encode($mesesDespesas); ?>, // Meses
+              datasets: [{
+                label: 'Despesas Mensais',
+                data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top'
+                },
+                title: {
+                  display: true,
+                  text: 'Gastos Mensais'
+                }
+              },
+              scales: {
+                x: {
+                  type: 'category', // Tipo do eixo X para categorias (meses)
+                  ticks: {
+                    maxRotation: 90, // Girar as labels para melhorar a visibilidade
+                    minRotation: 45,
+                    autoSkip: false // Permite todas as labels serem exibidas
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              },
+              elements: {
+                line: {
+                  tension: 0.4 // Suaviza as linhas
+                }
+              }
+            }
+          });
+          const ctxMeta = document.getElementById('graficoProgressoMeta');
+          const graficoProgressoMeta = new Chart(ctxMeta, {
+            type: 'line',
+            data: {
+              labels: <?= json_encode($labels); ?>,
+              datasets: [{
+                  label: 'Valor Acumulado',
+                  data: <?= json_encode($valoresAportes); ?>,
+                  borderColor: '#0d6efd',
+                  backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                  fill: true,
+                  tension: 0.3
+                },
+                {
+                  label: 'Meta Final',
+                  data: new Array(<?= count($labels); ?>).fill(<?= $valorMeta; ?>),
+                  borderColor: '#ffc107',
+                  borderDash: [5, 5],
+                  pointRadius: 0,
+                  fill: false
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top'
+                },
+                title: {
+                  display: true,
+                  text: 'Evolução do Aporte em Meta'
+                }
+              }
+            }
+          });
+          const ctxComparativo = document.getElementById('graficoReceitasDespesas');
+          const graficoReceitasDespesas = new Chart(ctxComparativo, {
+            type: 'line',
+            data: {
+              labels: <?= json_encode($mesesTotais); ?>,
+              datasets: [{
+                  label: 'Receitas',
+                  data: <?= json_encode($valoresReceitasUnificadas); ?>,
+                  borderColor: '#198754',
+                  backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                  fill: true,
+                  tension: 0.3
+                },
+                {
+                  label: 'Despesas',
+                  data: <?= json_encode($valoresDespesasUnificadas); ?>,
+                  borderColor: '#dc3545',
+                  backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                  fill: true,
+                  tension: 0.3
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top'
+                },
+                title: {
+                  display: true,
+                  text: 'Comparativo Mensal de Receitas e Despesas'
+                }
+              }
+            }
+          });
+
+          const ctxDescricao = document.getElementById('graficoDescricao');
+          const graficoDescricao = new Chart(ctxDescricao, {
+            type: 'pie',
+            data: {
+              labels: <?= json_encode($descricoes); ?>,
+              datasets: [{
+                label: 'Despesas',
+                data: <?= json_encode($valoresDescricao); ?>,
+                backgroundColor: [
+                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                  '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                  '#e74c3c', '#3498db'
+                ]
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom'
+                },
+                title: {
+                  display: false
+                }
+              }
+            }
+          });
+          //Plugin para aparecer o % dentro do gráfico
+          Chart.register({
+            id: 'centerTextPlugin',
+            beforeDraw(chart) {
+              if (chart.config.options.plugins.centerText) {
+                const {
+                  ctx,
+                  chartArea: {
+                    width,
+                    height
+                  }
+                } = chart;
+                const text = chart.config.options.plugins.centerText.text;
+                const fontSize = chart.config.options.plugins.centerText.fontSize || '18';
+                const fontColor = chart.config.options.plugins.centerText.color || '#000';
+
+                ctx.save();
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                ctx.fillStyle = fontColor;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, width / 2, height / 2);
+                ctx.restore();
+              }
+            }
+          });
+
+
+          document.querySelector('input[name="mes_descricao"]').addEventListener('change', function() {
+            document.getElementById('formFiltroMes').submit();
+          });
+
+          <?php foreach ($metas as $index => $meta):
+            $percentual = $meta['objetivo'] > 0 ? ($meta['acumulado'] / $meta['objetivo']) * 100 : 0;
+            $percentual = round($percentual, 1);
+            $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
+            $canvasId = "meta_chart_$index";
+            $atingido = $meta['acumulado'];
+            $restante = max(0, $meta['objetivo'] - $meta['acumulado']);
+          ?>
+            new Chart(document.getElementById("<?= $canvasId ?>"), {
+              type: 'doughnut',
+              data: {
+                labels: ['Atingido', 'Restante'],
+                datasets: [{
+                  data: [<?= $atingido ?>, <?= $restante ?>],
+                  backgroundColor: ['<?= $cor ?>', '#e9ecef'],
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                cutout: '70%',
+                plugins: {
+                  legend: {
+                    display: false
+                  },
+                  tooltip: {
+                    enabled: true
+                  },
+                  centerText: {
+                    text: '<?= $percentual ?>%',
+                    fontSize: 20,
+                    color: '<?= $cor ?>'
+                  }
+                }
+              }
+            });
+          <?php endforeach; ?>
+        </script>
 
 </body>
 
