@@ -290,9 +290,25 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </div>
   </div>
-
-  <!-- Gráfico de Linha de Progresso de Meta -->
+ 
+  <!-- Gráfico de Comparativo de Receitas vs Despesas -->
   <div class="col-md-6 mb-4 d-flex">
+    <div class="card w-100 h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
+        <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
+        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+        <div style="width: 1200px; height: 300px;">
+        <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!-- Gráfico de Linha de Progresso de Meta -->
+ <div class="col-md-6 mb-4 d-flex">
     <div class="card w-100 h-100">
       <div class="card-body">
         <h5 class="card-title mb-3 d-flex justify-content-between align-items-center">
@@ -318,7 +334,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </div>
   </div>
- 
+
 <!-- Gráfico de Roscas - Progresso Geral das Metas -->
 <div class="row">
   <?php foreach ($metas as $index => $meta):
@@ -340,23 +356,6 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
   <?php endforeach; ?>
 </div>
-
-  <!-- Gráfico de Comparativo de Receitas vs Despesas -->
-  <div class="col-md-6 mb-4 d-flex">
-    <div class="card w-100 h-100">
-      <div class="card-body">
-        <h5 class="card-title mb-3"><i class="bi bi-cash-stack"></i> Comparativo de Receitas vs Despesas</h5>
-        <!-- Ajustando o gráfico de comparativo para ter altura fixa -->
-        <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-        <div style="width: 1200px; height: 300px;">
-        <canvas id="graficoReceitasDespesas" class="w-100" style="height: 300px;"></canvas>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
   const ctx = document.getElementById('graficoDespesas');
   const grafico = new Chart(ctx, {
