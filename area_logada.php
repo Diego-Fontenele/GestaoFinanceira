@@ -698,7 +698,9 @@ foreach ($resultados as $row) {
                   formatter: function(value, context) {
                     const index = context.dataIndex;
                     if (context.datasetIndex === 0) {
-                      return 'Total: R$ <?= json_encode($totais) ?>' [index];
+                      return 'Total: R$ ' + <?= json_encode($totais) ?>[index].toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2
+                        });
                     }
                     return null;
                   }
