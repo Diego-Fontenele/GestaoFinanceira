@@ -73,7 +73,7 @@ $stmt->execute([$usuario_id]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Direcionar valor para uma meta
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['valor'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $meta_id = $_POST['meta_id'];
   $inv_id = $_POST['inv_id'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
@@ -85,10 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
   $saldo = round($saldo, 2);
 
   if ($valorTotal > 0 && $valorTotal <= $saldo) {
+    if (!empty($_POST['meta_id'])){
     $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     $stmt->execute([$meta_id, "$ano-$mes-01", $valor]);
+    }
+    if (!empty($_POST['inv_id'])){
     $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor,data) VALUES (?, ?, ?,?)");
     $stmt->execute([$inv_id, 'alocacao', $valorinv, "$ano-$mes-01"]);
+    }
     $saldo -= $valorTotal;
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
     header("Location: fechamento.php$queryString");
@@ -146,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
             <?php endif; ?>
             <div class="mb-3">
               <label class="form-label">Meta</label>
-              <select name="meta_id" class="form-select" required>
+              <select name="meta_id" class="form-select" >
                 <option value="">Selecione</option>
                 <?php foreach ($metas as $meta): ?>
                   <option value="<?= $meta['id'] ?>"><?= $meta['titulo'] ?></option>
@@ -155,11 +159,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
             </div>
             <div class="mb-3">
               <label class="form-label">Valor</label>
-              <input type="text" name="valor" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" required>
+              <input type="text" name="valor" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" >
             </div>
             <div class="mb-3">
               <label class="form-label">Investimento</label>
-              <select name="inv_id" class="form-select" required>
+              <select name="inv_id" class="form-select" >
                 <option value="">Selecione</option>
                 <?php foreach ($investimentos as $inv): ?>
                   <option value="<?= $inv['id'] ?>"><?= $inv['nome'] ?></option>
@@ -168,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
             </div>
             <div class="mb-3">
               <label class="form-label">Valor</label>
-              <input type="text" name="valor_inv" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" required>
+              <input type="text" name="valor_inv" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" >
             </div>
             <button type="submit" class="btn btn-success">Direcionar</button>
           </form>
