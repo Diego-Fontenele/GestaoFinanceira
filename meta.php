@@ -157,7 +157,7 @@ foreach ($metas as $m) {
             <label class="form-label">Valor inicial
               <i class="bi bi-question-circle-fill text-muted" data-bs-toggle="tooltip" title="Se você já tem algum valor guardado para essa meta, pode adicionar aqui."></i>
             </label>
-            <input type="text" name="valor_inicial" class="form-control valor" value="<?= $valorinicial = '' ? 0 : $valorinicial ?>" required>
+            <input type="text" name="valor_inicial" class="form-control valor" value="<?= empty($valorinicial) ? 0 : $valorinicial  ?>" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Valor do objetivo</label>
