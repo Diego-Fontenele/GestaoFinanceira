@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     $stmt->execute([$meta_id, "$ano-$mes-01", $valor]);
     $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor,data) VALUES (?, ?, ?,?)");
-    $stmt->execute([$inv_id, "$ano-$mes-01", $valorinv]);
+    $stmt->execute([$inv_id, 'aporte', $valorinv, "$ano-$mes-01"]);
     $saldo -= $valorTotal;
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
     header("Location: fechamento.php$queryString");
@@ -181,7 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
         title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
         text: '<?= $flash['mensagem'] ?>'
       });
-
     <?php endif; ?>
   </script>
 </body>
