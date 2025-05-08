@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor,data) VALUES (?, ?, ?,?)");
     $stmt->execute([$inv_id, 'aporte', $valorinv, "$ano-$mes-01"]);
     $saldo -= $valorTotal;
-    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
+    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
     header("Location: fechamento.php$queryString");
   } else {
     $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores em meta e/ou investimento'];
