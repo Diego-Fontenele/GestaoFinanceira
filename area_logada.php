@@ -575,7 +575,7 @@ foreach ($resultados as $row) {
               }
             }
           });
-          //Plugin para aparecer o % dentro do gráfico
+          //Plugin para aparecer o % dentro do  gráfico
           Chart.register({
             id: 'centerTextPlugin',
             beforeDraw(chart) {
