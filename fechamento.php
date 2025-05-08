@@ -50,9 +50,9 @@ $total_alocacao_m = $stmt->fetchColumn() ?? 0;
 // Buscar total de alocação em investimentos
 $stmt = $pdo->prepare("select COALESCE(SUM(im.valor), 0) AS alocado
                         from investimentos i
-                        left join investimentos_movimentacoes im on i.id = ma.investimento_id 
+                        left join investimentos_movimentacoes im on i.id = im.investimento_id 
                         where usuario_id = ?
-                        and tipo = 'alocacao'
+                        and im.tipo = 'alocacao'
                         and im.data  = ?
     					");
 $stmt->execute([$usuario_id, "$ano-$mes-01"]);
