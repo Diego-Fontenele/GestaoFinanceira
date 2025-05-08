@@ -94,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     header("Location: fechamento.php$queryString");
   } else {
     $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores em meta e/ou investimento'];
+    header("Location: fechamento.php$queryString");
+    exit;
   }
 }
 ?>
