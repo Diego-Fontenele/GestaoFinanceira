@@ -327,7 +327,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $cor = $percentual >= 100 ? '#28a745' : ($percentual >= 70 ? '#ffc107' : '#dc3545');
     $canvasId = "meta_chart_$index";
   ?>
-  <div class="col-md-4 mb-4 d-flex">
+  <div class="col-md-3 mb-4 d-flex">
     <div class="card w-100">
       <div class="card-body text-center">
         <h6 class="mb-2"><?= htmlspecialchars($meta['nome']) ?></h6>
