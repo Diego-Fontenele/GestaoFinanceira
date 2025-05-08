@@ -46,8 +46,21 @@ $stmt = $pdo->prepare("select COALESCE(SUM(ma.valor), 0) AS alocado
                         and ma.data  = ?
     					");
 $stmt->execute([$usuario_id, "$ano-$mes-01"]);
+$total_alocacao_m = $stmt->fetchColumn() ?? 0;
+// Buscar total de alocação em investimentos
+$stmt = $pdo->prepare("select COALESCE(SUM(im.valor), 0) AS alocado
+                        from investimentos i
+                        left join investimentos_movimentacoes im on i.id = ma.investimento_id 
+                        where usuario_id = ?
+                        and tipo = 'alocacao'
+                        and im.data  = ?
+    					");
+$stmt->execute([$usuario_id, "$ano-$mes-01"]);
+$total_alocacao_i = $stmt->fetchColumn() ?? 0;
+
+
 $total_alocacao = $stmt->fetchColumn() ?? 0;
-$saldo = $total_receitas - $total_despesas - $total_alocacao;
+$saldo = $total_receitas - $total_despesas - $total_alocacao_i - $total_alocacao_m;
 
 // Buscar metas
 $stmt = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
@@ -75,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_id'], $_POST['va
     $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
     $stmt->execute([$meta_id, "$ano-$mes-01", $valor]);
     $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor,data) VALUES (?, ?, ?,?)");
-    $stmt->execute([$inv_id, 'aporte', $valorinv, "$ano-$mes-01"]);
+    $stmt->execute([$inv_id, 'alocacao', $valorinv, "$ano-$mes-01"]);
     $saldo -= $valorTotal;
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
     header("Location: fechamento.php$queryString");
