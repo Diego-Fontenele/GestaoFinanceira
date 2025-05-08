@@ -329,7 +329,7 @@ $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
               <div style="width: 1200px; height: 300px;">
                 <!-- Ajustando o gráfico de progresso para ter altura fixa -->
-                <canvas id="graficoProgressoMeta" class="w-100" style="height: 300px;"></canvas>
+                <canvas id="graficoProgressoMeta" class="w-100" style="height: 100%;"></canvas>
               </div>
             </div>
           </div>
