@@ -123,10 +123,6 @@ foreach ($metas as $m) {
 <html lang="pt-br">
 
 <head>
-  <!-- PWA -->
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d6efd">
-  <!--FIM PWA -->
   <meta charset="UTF-8">
   <title>Metas Financeiras</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
