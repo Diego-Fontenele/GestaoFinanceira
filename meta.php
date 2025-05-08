@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   } else {
     // Inserção
-    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor,val_inicial data_inicio,data_fim) VALUES (?, ?,?, ?, ?, ?,?)");
+    $stmt = $pdo->prepare("INSERT INTO metas (usuario_id, titulo, descricao, valor,val_inicial ,data_inicio,data_fim) VALUES (?, ?,?, ?, ?, ?,?)");
     if ($stmt->execute([$_SESSION['usuario_id'], $titulo, $descricao, $valor, $valorinicial, $dataini, $datafim])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Meta cadastrada com sucesso!'];
       header("Location: meta.php");;
