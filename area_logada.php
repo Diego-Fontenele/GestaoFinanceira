@@ -191,7 +191,7 @@ $stmt = $pdo->prepare("
     WHERE m.usuario_id = ?
     GROUP BY m.id, m.titulo, m.valor
 ");
-$stmt->execute([$usuario_id]);
+$stmt->execute([$usuarioId]);
 $metas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
