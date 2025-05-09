@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = 'smtps.uol.com.br';
         $mail->SMTPAuth   = true;
-        $mail->Username   = getenv('EMAIL_USER');
-        $mail->Password   = getenv('EMAIL_PASS');
+        $mail->Username   = 'contato@domineseubolso.com.br';
+        $mail->Password   = 'Dcfs1984@';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mail->setFrom($mail->Username, 'Fale Conosco');
         $mail->addReplyTo($email, $nome);
-        $mail->addAddress('equilibriofinanceirogestao@gmail.com', 'Diego');
+        $mail->addAddress('contato@domineseubolso.com.br', 'Diego');
 
         $mail->isHTML(false);
         $mail->Subject = "Fale Conosco - $assunto";
