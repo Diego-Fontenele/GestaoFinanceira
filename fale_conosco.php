@@ -17,12 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $mail->isSMTP();
-        $mail->Host       = 'smtps.uol.com.br';
+        $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'contato@domineseubolso.com.br';
-        $mail->Password   = 'Dcfs1984@';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
+        $mail->Username   = getenv('EMAIL_USER');
+        $mail->Password   = getenv('EMAIL_PASS');
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
 
         $nome     = $_POST['nome'] ?? '';
         $email    = $_POST['email'] ?? '';
