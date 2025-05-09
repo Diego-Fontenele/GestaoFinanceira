@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mail->setFrom($mail->Username, 'Fale Conosco');
         $mail->addReplyTo($email, $nome);
-        $mail->addAddress('contato@domineseubolso.com.br', 'Diego');
+        $mail->addAddress('equilibriofinanceirogestao@gmail.com', 'Diego');
 
         $mail->isHTML(false);
         $mail->Subject = "Fale Conosco - $assunto";
@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: fale_conosco.php");
         exit;
     } catch (Exception $e) {
-      
         $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao enviar e-mail!'. $mail->ErrorInfo];
     }
 }
