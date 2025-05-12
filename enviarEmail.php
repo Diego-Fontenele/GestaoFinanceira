@@ -18,8 +18,8 @@ function enviarEmail($destinatarioEmail, $destinatarioNome, $assunto, $mensagemH
         $mail->Port       = 465;                         // Porta correta com SSL
 
         // Remetente e destinatário
-        $mail->setFrom('contato@domineseubolso.com.br', 'Domine Seu Bolso');
-        $mail->addAddress($destinatarioEmail, $destinatarioNome);
+        $mail->setFrom($mail->Username, 'Novo usuário');
+        $mail->addAddress($mail->Username, $destinatarioNome);
 
         // Conteúdo
         $mail->isHTML(true);
