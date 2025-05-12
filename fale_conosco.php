@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $assunto  = $_POST['assunto'] ?? '';
         $mensagem = $_POST['mensagem'] ?? '';
 
-        $mail->setFrom($mail->Username, 'Fale Conosco');
-        $mail->addReplyTo($email, $nome);
-        $mail->addAddress('diegocfontenele@gmail.com', 'Diego');
+        $mail->setFrom($email, $nome );
+      
+        $mail->addAddress($mail->Username, 'Diego');
 
         $mail->isHTML(false);
         $mail->Subject = "Fale Conosco - $assunto";
