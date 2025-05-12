@@ -10,15 +10,15 @@ function enviarEmail($destinatarioEmail, $destinatarioNome, $assunto, $mensagemH
     try {
         // Configurações do servidor SMTP
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
+        $mail->Host       = 'smtps.uhserver.com';       // Novo servidor SMTP
+        $mail->SMTPAuth   = true;
         $mail->Username = getenv('EMAIL_USER'); // Variável de ambiente
         $mail->Password = getenv('EMAIL_PASS'); // Variável de ambiente
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // IMPORTANTE: Usa SMTPS (SSL)
+        $mail->Port       = 465;                         // Porta correta com SSL
 
         // Remetente e destinatário
-        $mail->setFrom('equilibriofinanceirogestao@gmail.com', 'Gestao Financeira');
+        $mail->setFrom('contato@domineseubolso.com.br', 'Domine Seu Bolso');
         $mail->addAddress($destinatarioEmail, $destinatarioNome);
 
         // Conteúdo

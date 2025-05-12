@@ -17,12 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = 'smtps.uhserver.com';       // Novo servidor SMTP
         $mail->SMTPAuth   = true;
-        $mail->Username   = getenv('EMAIL_USER');
-        $mail->Password   = getenv('EMAIL_PASS');
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Username = getenv('EMAIL_USER'); // Variável de ambiente
+        $mail->Password = getenv('EMAIL_PASS'); // Variável de ambiente
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // IMPORTANTE: Usa SMTPS (SSL)
+        $mail->Port       = 465;                         // Porta correta com SSL
 
         $nome     = $_POST['nome'] ?? '';
         $email    = $_POST['email'] ?? '';
