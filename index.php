@@ -37,7 +37,7 @@
   <!-- Header com botão "Área Logada" -->
   <nav class="navbar bg-light shadow-sm">
     <div class="container">
-      <h4 class="mb-0">Gestão Financeira</h4>
+      <h4 class="mb-0">Domine Seu Bolso</h4>
       <a href="login.php" class="btn btn-outline-primary">Área Logada</a>
     </div>
   </nav>
