@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $mail->isSMTP();
+        $mail->CharSet = 'UTF-8'; // GARANTE ACENTOS
         $mail->Host       = 'smtps.uhserver.com';       // Novo servidor SMTP
         $mail->SMTPAuth   = true;
         $mail->Username = getenv('EMAIL_USER'); // Variável de ambiente

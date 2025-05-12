@@ -9,6 +9,7 @@ function enviarEmail($destinatarioEmail, $destinatarioNome, $assunto, $mensagemH
 
     try {
         // Configurações do servidor SMTP
+        $mail->CharSet = 'UTF-8'; // GARANTE ACENTOS
         $mail->isSMTP();
         $mail->Host       = 'smtps.uhserver.com';       // Novo servidor SMTP
         $mail->SMTPAuth   = true;
