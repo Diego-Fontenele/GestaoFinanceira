@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->execute();
             $mensagem = "Usuário cadastrado com sucesso!";
             $resultado = enviarEmail(
-              'contato@domineseudinheiro.com.br',
+              $email,
               'Diego',
               'Usuário Novo',
               'Usuário novo cadastrado '.$nome.' seu e-mail '.$email
