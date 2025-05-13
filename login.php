@@ -56,6 +56,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-light bg-white shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand" href="#">Domine Seu Bolso</a>
+      <a href="login.php" class="btn btn-outline-primary">
+        <i class="bi bi-box-arrow-in-right"></i> Área Logada
+      </a>
+    </div>
+  </nav>
 
   <div class="login-container">
     <h3 class="text-center mb-4">Entrar na sua conta</h3>
