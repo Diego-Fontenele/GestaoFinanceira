@@ -1,5 +1,11 @@
 <?php
-include("Conexao.php");
+session_start();
+require 'Conexao.php';
+
+if (!isset($_SESSION['usuario_id'])) {
+  header("Location: login.php");
+  exit;
+}
 
 // Função para formatar valor
 function formatarValor($valor)
@@ -46,13 +52,13 @@ if (isset($_GET['id'])) {
 }
 
 // Listar categorias (globais e do mentor)
-$stmt = $conn->prepare("SELECT * FROM categoria WHERE usuario_id IS NULL OR usuario_id = ?");
-$stmt->execute([$_SESSION['id']]);
+$stmt = $conn->prepare("SELECT * FROM categorias WHERE usuario_id IS NULL OR usuario_id = ?");
+$stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listar alunos
 $stmt = $conn->prepare("SELECT * FROM usuarios WHERE mentor_id = ?");
-$stmt->execute([$_SESSION['id']]);
+$stmt->execute([$_SESSION['usuario_id']]);
 $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listar valores esperados
@@ -63,7 +69,7 @@ $sql = "SELECT cve.*, cat.nome AS categoria_nome, u.nome AS aluno_nome
         WHERE cat.usuario_id IS NULL OR cat.usuario_id = ?
         ORDER BY u.nome, cat.nome";
 $stmt = $conn->prepare($sql);
-$stmt->execute([$_SESSION['id']]);
+$stmt->execute([$_SESSION['usuario_id']]);
 $valoresEsperados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="d-flex">
