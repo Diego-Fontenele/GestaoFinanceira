@@ -34,14 +34,13 @@
 
     .hero-image {
       width: 100%;
-      height: auto;
-      max-height: none; /* remova o limite */
-      display: block;
-      margin: 0 auto;
+      max-height: 400px;
+      object-fit: cover;
       border-radius: 10px;
       transition: transform 0.4s ease;
-    }  
-      .hero-image:hover {
+    }
+
+    .hero-image:hover {
       transform: scale(1.01);
     }
 
@@ -78,7 +77,7 @@
 
   <!-- Conteúdo principal -->
   <div class="container mt-5 hero-section">
-    <img src="img/principalIndex.jpg" alt="Imagem sobre finanças" class="hero-image mb-4">
+    <img src="img/imagemPrincipal.png" alt="Banner sobre finanças pessoais" class="hero-image mb-4">
 
     <div class="hero-text">
       <h2>Por que a Gestão Financeira é tão importante?</h2>
