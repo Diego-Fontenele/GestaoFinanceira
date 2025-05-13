@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor = ?, mes_ano=?  WHERE id = ?");
         if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $mes_ano, $id])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado atualizado com sucesso!'];
-            header("Location: categoria_valores.php");
+            header("Location: add_valor_espereado.php");
             exit;
         } else {
             $erro = "Erro ao atualizar valor.";
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id,mentor_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
         if ($stmt->execute([$categoria_id, $aluno_id,$_SESSION['usuario_id'], $valor_esperado,$mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
-            header("Location: categoria_valores.php");
+            header("Location: add_valor_espereado.php");
             exit;
         } else {
             $erro = "Erro ao salvar valor.";
@@ -63,7 +63,7 @@ if (isset($_GET['excluir'])) {
     $stmt = $pdo->prepare("DELETE FROM categoria_valores_esperados WHERE id = ?");
     $stmt->execute([$id_excluir]);
     $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado excluído com sucesso!'];
-    header("Location: categoria_valores.php");
+    header("Location: add_valor_espereado.php");
     exit;
 }
 
@@ -158,7 +158,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
 
                     <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
-                    <a href="categoria_valores.php" class="btn btn-secondary">Limpar</a>
+                    <a href="add_valor_esperado.php" class="btn btn-secondary">Limpar</a>
                 </form>
             </div>
 
