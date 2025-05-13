@@ -98,7 +98,7 @@ $stmt = $pdo->prepare("
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
     JOIN usuarios u ON cve.aluno_id = u.id
-    WHERE c.usuario_id = ?
+    WHERE cve.mentor_id = ?
 ");
 $stmt->execute([$_SESSION['usuario_id']]);
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
