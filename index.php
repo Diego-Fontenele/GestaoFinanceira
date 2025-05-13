@@ -34,7 +34,7 @@
 
     .hero-image {
       width: 100%;
-      max-width: 500px;   /* Tamanho máximo que você deseja */
+      max-width: 800px;   /* Tamanho máximo que você deseja */
       height: auto;       /* Mantém a proporção da imagem */
       display: block;
       margin: 0 auto;     /* Centraliza horizontalmente */
