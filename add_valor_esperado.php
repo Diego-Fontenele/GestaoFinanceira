@@ -120,7 +120,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php include('includes/menu.php'); ?>
         <div class="flex-grow-1 p-4">
             <div class="card p-4 mb-4">
-                <h4 class="mb-4"><?= $editando ? 'Editar Valor Esperado' : 'Adicionar Valor Esperado' ?></h4>
+                <h4 class="mb-4"><?= $editando ? 'Editar Valor Esperado da Categoria' : 'Adicionar Valor Esperado a Categoria' ?></h4>
 
                 <?php if (!empty($erro)): ?>
                     <div class="alert alert-danger"><?= $erro ?></div>
