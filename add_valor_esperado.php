@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($id) {
         // Atualizar
-        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor_esperado = ? WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor = ? WHERE id = ?");
         if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $id])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado atualizado com sucesso!'];
             header("Location: categoria_valores.php");
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     } else {
         // Inserir
-        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id, valor_esperado) VALUES (?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id, valor) VALUES (?, ?, ?)");
         if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: categoria_valores.php");
@@ -73,7 +73,7 @@ if (isset($_GET['editar'])) {
     if ($registro) {
         $categoria_id = $registro['categoria_id'];
         $aluno_id = $registro['aluno_id'];
-        $valor_esperado = number_format($registro['valor_esperado'], 2, ',', '.');
+        $valor_esperado = number_format($registro['valor'], 2, ',', '.');
         $editando = true;
     }
 }
@@ -90,7 +90,7 @@ $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listagem geral
 $stmt = $pdo->prepare("
-    SELECT cve.id, cve.valor_esperado, c.nome as categoria, u.nome as aluno
+    SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
     JOIN usuarios u ON cve.aluno_id = u.id
@@ -170,7 +170,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <tr>
                                 <td><?= $v['categoria'] ?></td>
                                 <td><?= $v['aluno'] ?></td>
-                                <td>R$ <?= number_format($v['valor_esperado'], 2, ',', '.') ?></td>
+                                <td>R$ <?= number_format($v['valor'], 2, ',', '.') ?></td>
                                 <td>
                                     <a href="?editar=<?= $v['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?excluir=<?= $v['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir este valor?')"><i class="bi bi-trash"></i></a>
