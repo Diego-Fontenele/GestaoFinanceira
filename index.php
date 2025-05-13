@@ -78,7 +78,7 @@
 
   <!-- Conteúdo principal -->
   <div class="container mt-5 hero-section">
-    <img src="img/principalIndex2.png" alt="Imagem sobre finanças" class="hero-image mb-4">
+    <img src="img/principalIndex.jpg" alt="Imagem sobre finanças" class="hero-image mb-4">
 
     <div class="hero-text">
       <h2>Por que a Gestão Financeira é tão importante?</h2>
