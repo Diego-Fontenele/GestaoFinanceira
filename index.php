@@ -34,12 +34,11 @@
 
     .hero-image {
       width: 100%;
-      max-height: 600px;
-      object-fit: cover;
+      height: auto; /* Mantém proporção */
+      object-fit: contain; /* Garante que a imagem não será cortada */
       border-radius: 10px;
       transition: transform 0.4s ease;
     }
-
     .hero-image:hover {
       transform: scale(1.01);
     }
