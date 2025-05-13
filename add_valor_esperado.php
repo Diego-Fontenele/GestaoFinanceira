@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     } else {
         // Inserir
-        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id,mentor_id, valor,mes_ano) VALUES (?, ?, ?,?)");
+        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id,mentor_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
         if ($stmt->execute([$categoria_id, $aluno_id,$_SESSION['usuario_id'], $valor_esperado,$mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: categoria_valores.php");
