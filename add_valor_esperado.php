@@ -170,6 +170,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Categoria</th>
                             <th>Aluno</th>
                             <th>Valor Esperado</th>
+                            <th>Mês/Ano</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -179,6 +180,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?= $v['categoria'] ?></td>
                                 <td><?= $v['aluno'] ?></td>
                                 <td>R$ <?= number_format($v['valor'], 2, ',', '.') ?></td>
+                                <td><?= $v['mes_ano'] ?></td>
                                 <td>
                                     <a href="?editar=<?= $v['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?excluir=<?= $v['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir este valor?')"><i class="bi bi-trash"></i></a>
