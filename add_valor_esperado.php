@@ -77,7 +77,7 @@ if (isset($_GET['editar'])) {
         $categoria_id = $registro['categoria_id'];
         $aluno_id = $registro['aluno_id'];
         $valor_esperado = number_format($registro['valor'], 2, ',', '.');
-        $mes_ano = $dados['mes_ano'];
+        $mes_ano = $registro['mes_ano'];
         $editando = true;
     }
 }
