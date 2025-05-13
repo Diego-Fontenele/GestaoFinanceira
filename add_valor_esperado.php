@@ -25,11 +25,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $categoria_id = $_POST['categoria_id'];
     $aluno_id = $_POST['aluno_id'];
     $valor_esperado = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_esperado'])));
-
+    $mes_ano = $_POST['mes_ano'] ?? '';
+    if ($mes_ano != '') {
+        $mes_ano .= '-01'; // Converte para o formato DATE (YYYY-MM-01)
+    }
     if ($id) {
         // Atualizar
-        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor = ? WHERE id = ?");
-        if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $id])) {
+        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor = ?, mes_ano=?  WHERE id = ?");
+        if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $mes_ano, $id])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado atualizado com sucesso!'];
             header("Location: categoria_valores.php");
             exit;
@@ -38,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     } else {
         // Inserir
-        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id, valor) VALUES (?, ?, ?)");
-        if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado])) {
+        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id, valor,mes_ano) VALUES (?, ?, ?,?)");
+        if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado,$mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: categoria_valores.php");
             exit;
@@ -74,6 +77,7 @@ if (isset($_GET['editar'])) {
         $categoria_id = $registro['categoria_id'];
         $aluno_id = $registro['aluno_id'];
         $valor_esperado = number_format($registro['valor'], 2, ',', '.');
+        $mes_ano = $dados['mes_ano'];
         $editando = true;
     }
 }
@@ -147,6 +151,10 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="mb-3">
                         <label class="form-label">Valor Esperado</label>
                         <input type="text" name="valor_esperado" class="form-control valor" value="<?= $valor_esperado ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mês/Ano</label>
+                        <input type="month" name="mes_ano" class="form-control" value="<?= isset($mes_ano) ? substr($mes_ano, 0, 7) : '' ?>" required>
                     </div>
 
                     <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
