@@ -23,7 +23,7 @@
       <a class="nav-link text-white d-flex align-items-center gap-2" href="fechamento.php"><i class="bi bi-archive"></i> Fechamento</a>
     </li>
     <li class="nav-item mb-2">
-      <a class="nav-link text-white d-flex align-items-center gap-2" href="configuracoes.php"><i class="bi bi-folder-plus"></i> Cadastrar Categorias</a>
+      <a class="nav-link text-white d-flex align-items-center gap-2" href="configuracoes.php"><i class="bi bi-folder-plus"></i>&nbsp;Cadastrar Categorias</a>
     </li>
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
