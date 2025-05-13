@@ -22,11 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($id) {
         $sql = "UPDATE categoria_valores_esperados SET categoria_id=?, aluno_id=?, valor_esperado=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $id]);
     } else {
         $sql = "INSERT INTO categoria_valores_esperados (categoria_id, aluno_id, valor_esperado) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$categoria_id, $aluno_id, $valor_esperado]);
     }
 
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Exclusão
 if (isset($_GET['excluir'])) {
     $id = $_GET['excluir'];
-    $stmt = $conn->prepare("DELETE FROM categoria_valores_esperados WHERE id=?");
+    $stmt = $pdo->prepare("DELETE FROM categoria_valores_esperados WHERE id=?");
     $stmt->execute([$id]);
     header("Location: add_valor_esperado.php");
     exit;
@@ -46,18 +46,18 @@ if (isset($_GET['excluir'])) {
 // Busca para edição
 $edit = null;
 if (isset($_GET['id'])) {
-    $stmt = $conn->prepare("SELECT * FROM categoria_valores_esperados WHERE id=?");
+    $stmt = $pdo->prepare("SELECT * FROM categoria_valores_esperados WHERE id=?");
     $stmt->execute([$_GET['id']]);
     $edit = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Listar categorias (globais e do mentor)
-$stmt = $conn->prepare("SELECT * FROM categorias WHERE usuario_id IS NULL OR usuario_id = ?");
+$stmt = $pdo->prepare("SELECT * FROM categorias WHERE usuario_id IS NULL OR usuario_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listar alunos
-$stmt = $conn->prepare("SELECT * FROM usuarios WHERE mentor_id = ?");
+$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE mentor_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -68,7 +68,7 @@ $sql = "SELECT cve.*, cat.nome AS categoria_nome, u.nome AS aluno_nome
         JOIN usuarios u ON u.id = cve.aluno_id
         WHERE cat.usuario_id IS NULL OR cat.usuario_id = ?
         ORDER BY u.nome, cat.nome";
-$stmt = $conn->prepare($sql);
+$stmt = $pdo->prepare($sql);
 $stmt->execute([$_SESSION['usuario_id']]);
 $valoresEsperados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
