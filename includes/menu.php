@@ -40,8 +40,7 @@
         <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="mentor_dashboard.php"><i class="bi bi-people"></i>&nbsp;Área do Mentor</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" href="add_valor_esperado.php">
-            <i class="bi bi-tags"></i>&nbsp;Vincular Categoria</a>
+        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="add_valor_esperado.php"><i class="bi bi-tags"></i>&nbsp;Vincular Categoria</a>
         </li>
       <?php endif; ?>
     <li class="nav-item mt-5">
