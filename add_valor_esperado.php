@@ -64,7 +64,7 @@ $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Listar valores esperados
 $sql = "SELECT cve.*, cat.nome AS categoria_nome, u.nome AS aluno_nome
         FROM categoria_valores_esperados cve
-        JOIN categoria cat ON cat.id = cve.categoria_id
+        JOIN categorias cat ON cat.id = cve.categoria_id
         JOIN usuarios u ON u.id = cve.aluno_id
         WHERE cat.usuario_id IS NULL OR cat.usuario_id = ?
         ORDER BY u.nome, cat.nome";
