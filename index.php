@@ -34,11 +34,13 @@
 
     .hero-image {
       width: 100%;
-      height: auto; /* Mantém proporção */
-      object-fit: contain; /* Garante que a imagem não será cortada */
+      max-width: 600px;   /* Tamanho máximo que você deseja */
+      height: auto;       /* Mantém a proporção da imagem */
+      display: block;
+      margin: 0 auto;     /* Centraliza horizontalmente */
       border-radius: 10px;
       transition: transform 0.4s ease;
-    }
+  }
     .hero-image:hover {
       transform: scale(1.01);
     }
