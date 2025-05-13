@@ -34,7 +34,7 @@
 
     .hero-image {
       width: 100%;
-      max-height: 400px;
+      max-height: 600px;
       object-fit: cover;
       border-radius: 10px;
       transition: transform 0.4s ease;
