@@ -77,7 +77,7 @@
 
   <!-- Conteúdo principal -->
   <div class="container mt-5 hero-section">
-    <img src="img/imagemPrincipal.png" alt="Banner sobre finanças pessoais" class="hero-image mb-4">
+    <img src="img/imagemPrincipal.webp" alt="Banner sobre finanças pessoais" class="hero-image mb-4">
 
     <div class="hero-text">
       <h2>Por que a Gestão Financeira é tão importante?</h2>
