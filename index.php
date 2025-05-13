@@ -33,16 +33,15 @@
     }
 
     .hero-image {
-        width: 100%;
-        max-width: 1000px;  /* Ajuste conforme a largura ideal do seu banner */
-        max-height: 300px;
-        height: auto;       /* Mantém a proporção sem cortar */
-        display: block;
-        margin: 0 auto;     /* Centraliza o banner */
-        border-radius: 10px;
-        transition: transform 0.4s ease;
-      }
-    .hero-image:hover {
+      width: 100%;
+      height: auto;
+      max-height: none; /* remova o limite */
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      transition: transform 0.4s ease;
+    }  
+      .hero-image:hover {
       transform: scale(1.01);
     }
 
