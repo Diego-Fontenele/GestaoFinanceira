@@ -79,7 +79,7 @@ if (isset($_GET['editar'])) {
 }
 
 // Buscar categorias
-$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE usuario_id = ?");
+$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE (usuario_id = ? or usuario_id is null)");
 $stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
