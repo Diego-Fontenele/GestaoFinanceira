@@ -94,7 +94,7 @@ $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listagem geral
 $stmt = $pdo->prepare("
-    SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno
+    SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno, cve.mes_ano 
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
     JOIN usuarios u ON cve.aluno_id = u.id
