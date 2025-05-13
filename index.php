@@ -35,6 +35,7 @@
     .hero-image {
         width: 100%;
         max-width: 1000px;  /* Ajuste conforme a largura ideal do seu banner */
+        max-height: 300px;
         height: auto;       /* Mantém a proporção sem cortar */
         display: block;
         margin: 0 auto;     /* Centraliza o banner */
