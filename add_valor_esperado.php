@@ -20,7 +20,7 @@ $aluno_id = '';
 $valor_esperado = '';
 
 // Cadastro ou edição
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id']))){
     $id = $_POST['id'] ?? '';
     $categoria_id = $_POST['categoria_id'];
     $aluno_id = $_POST['aluno_id'];
@@ -84,7 +84,7 @@ if (isset($_GET['editar'])) {
 
 // Buscar categorias
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE (usuario_id = ? or usuario_id is null)");
-$stmt->execute([$_SESSION['usuario_id']]);
+$stmt->execute([$_POST['aluno_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar alunos vinculados ao mentor
@@ -127,6 +127,16 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
 
                 <form method="POST">
+
+                <div class="mb-3">
+                        <label class="form-label">Aluno</label>
+                        <select name="aluno_id" class="form-control" onchange="this.form.submit()" required>
+                            <option value="">Selecione</option>
+                            <?php foreach ($alunos as $a): ?>
+                                <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>    
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -134,16 +144,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="">Selecione</option>
                             <?php foreach ($categorias as $c): ?>
                                 <option value="<?= $c['id'] ?>" <?= $categoria_id == $c['id'] ? 'selected' : '' ?>><?= $c['nome'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Aluno</label>
-                        <select name="aluno_id" class="form-control" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($alunos as $a): ?>
-                                <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
