@@ -24,7 +24,7 @@ $mes_ano = isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])
 
 
 $aluno_id = $usuario_id;
-if ($is_mentor && isset($_GET['aluno_id'])) {
+if ((isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor') && (isset($_GET['aluno_id']))) {
     $aluno_id = $_GET['aluno_id'];
 }
 
@@ -104,7 +104,7 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                 <h4 class="mb-4">Orçamento por Categoria</h4>
 
                 <form method="GET" class="row g-3 mb-4">
-                    <?php if ($is_mentor): ?>
+                    <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
                         <div class="col-md-4">
                             <label class="form-label">Aluno</label>
                             <select name="aluno_id" class="form-select" required>
