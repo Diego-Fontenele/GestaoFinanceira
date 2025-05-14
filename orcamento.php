@@ -62,7 +62,6 @@ foreach ($categorias as $categoria) {
     $dados[] = [
         'categoria' => $categoria['nome'],
         'esperado' => $valor_esperado,
-        'receitas' => $total_receitas,
         'despesas' => $total_despesas,
     ];
 }
