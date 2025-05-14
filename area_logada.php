@@ -233,7 +233,57 @@ foreach ($resultados as $row) {
   $total = $row['saldo_inicial'] + $row['aportes'] + $row['rendimentos'] + $row['alocacoes'] - $row['retiradas'];
   $totais[] = round($total, 2);
 }
+
+// Conexão com o banco
+require_once 'conexao.php';
+
+$aluno_id = $_SESSION['usuario_id'];
+$mesFiltro = $_GET['mes_comparativo'] ?? date('Y-m');
+
+// Pega início e fim do mês
+$inicioMes = $mesFiltro . '-01';
+$fimMes = date('Y-m-t', strtotime($inicioMes));
+
+// Consulta SQL
+$sql = "
+  SELECT 
+    c.nome AS categoria,
+    COALESCE(SUM(cve.valor_esperado), 0) AS valor_esperado,
+    COALESCE((
+      SELECT SUM(d.valor)
+      FROM despesas d
+      WHERE 
+        (d.categoria_id = c.id)
+        AND d.usuario_id = :aluno_id
+        AND d.data BETWEEN :inicio AND :fim
+    ), 0) AS gasto_real
+  FROM categoria c
+  LEFT JOIN categoria_valores_esperados cve
+    ON c.id = cve.categoria_id AND cve.aluno_id = :aluno_id
+  WHERE c.usuario_id IS NULL OR c.usuario_id = :aluno_id
+  GROUP BY c.nome
+  ORDER BY c.nome
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+  ':aluno_id' => $usuarioId,
+  ':inicio' => '2025-04-01',
+  ':fim' => '2025-04-30'
+]);
+
+$categorias = [];
+$valoresEsperados = [];
+$gastosReais = [];
+
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+  $categorias[] = $row['categoria'];
+  $valoresEsperados[] = $row['valor_esperado'];
+  $gastosReais[] = $row['gasto_real'];
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -387,7 +437,19 @@ foreach ($resultados as $row) {
             </div>
           </div>
         </div>
-
+        <!-- Gráfico de Barras: Esperado vs Real por Categoria -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-3">
+                <i class="bi bi-bar-chart-line-fill"></i> Comparativo de Gastos vs Valores Esperados
+              </h5>
+              <div style="height: 350px;">
+                <canvas id="graficoComparativoCategorias" class="w-100 h-100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>            
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -727,7 +789,39 @@ foreach ($resultados as $row) {
             },
             plugins: [ChartDataLabels]
           });
-
+          
+        const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
+        const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
+          type: 'bar',
+          data: {
+            labels: <?= json_encode($categorias); ?>,
+            datasets: [
+              {
+                label: 'Valor Esperado',
+                data: <?= json_encode($valoresEsperados); ?>,
+                backgroundColor: '#0d6efd'
+              },
+              {
+                label: 'Gasto Real',
+                data: <?= json_encode($gastosReais); ?>,
+                backgroundColor: '#dc3545'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'R$ ' + value.toLocaleString('pt-BR');
+                  }
+                }
+              }
+            }
+          }
+        });
          
         </script>
 
