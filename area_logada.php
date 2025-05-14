@@ -236,7 +236,8 @@ foreach ($resultados as $row) {
 
 // Consulta SQL
 $sql = "
-  SELECT 
+  with categoriaEsperado as (
+SELECT 
     c.nome AS categoria,
     COALESCE(SUM(cve.valor), 0) AS valor_esperado,
     COALESCE((
@@ -251,8 +252,14 @@ $sql = "
   LEFT JOIN categoria_valores_esperados cve
     ON c.id = cve.categoria_id AND cve.aluno_id = :aluno_id
   WHERE c.usuario_id IS NULL OR c.usuario_id = :aluno_id
+
   GROUP BY c.id,c.nome
   ORDER BY c.nome
+  
+)
+
+select * from categoriaEsperado
+where gasto_real <> 0
 ";
 
 $stmt = $pdo->prepare($sql);
