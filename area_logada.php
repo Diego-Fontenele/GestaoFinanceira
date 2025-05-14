@@ -234,16 +234,6 @@ foreach ($resultados as $row) {
   $totais[] = round($total, 2);
 }
 
-// Conexão com o banco
-require_once 'conexao.php';
-
-$aluno_id = $_SESSION['usuario_id'];
-$mesFiltro = $_GET['mes_comparativo'] ?? date('Y-m');
-
-// Pega início e fim do mês
-$inicioMes = $mesFiltro . '-01';
-$fimMes = date('Y-m-t', strtotime($inicioMes));
-
 // Consulta SQL
 $sql = "
   SELECT 
