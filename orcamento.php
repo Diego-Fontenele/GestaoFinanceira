@@ -50,14 +50,15 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Montar dados para cada categoria
 $dados = [];
 
-$mes = (new DateTime($mes_ano))->format('m');
-$ano = (new DateTime($mes_ano))->format('Y');
+
 
 $dados = [];
 $total_receitas = 0;
 
 if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
 
+    $mes = (new DateTime($mes_ano))->format('m');
+    $ano = (new DateTime($mes_ano))->format('Y');
     foreach ($categorias as $categoria) {
         $categoria_id = $categoria['id'];
 
