@@ -238,7 +238,7 @@ foreach ($resultados as $row) {
 $sql = "
   SELECT 
     c.nome AS categoria,
-    COALESCE(SUM(cve.valor_esperado), 0) AS valor_esperado,
+    COALESCE(SUM(cve.valor), 0) AS valor_esperado,
     COALESCE((
       SELECT SUM(d.valor)
       FROM despesas d
@@ -247,11 +247,11 @@ $sql = "
         AND d.usuario_id = :aluno_id
         AND d.data BETWEEN :inicio AND :fim
     ), 0) AS gasto_real
-  FROM categoria c
+  FROM categorias c
   LEFT JOIN categoria_valores_esperados cve
     ON c.id = cve.categoria_id AND cve.aluno_id = :aluno_id
   WHERE c.usuario_id IS NULL OR c.usuario_id = :aluno_id
-  GROUP BY c.nome
+  GROUP BY c.id,c.nome
   ORDER BY c.nome
 ";
 
