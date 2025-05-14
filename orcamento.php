@@ -18,7 +18,9 @@ $is_mentor = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Filtros
 $dataAtual = new DateTime();
-$mes_ano= $_GET['mes_ano'] ?"$mes_ano-01":$dataAtual;
+$mes_ano = isset($_GET['mes_ano']) && !empty($_GET['mes_ano']) 
+    ? $_GET['mes_ano'] . '-01' 
+    : $dataAtual->format('Y-m-01');
 
 
 $aluno_id = $usuario_id;
