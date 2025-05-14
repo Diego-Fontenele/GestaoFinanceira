@@ -43,6 +43,9 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Montar dados para cada categoria
 $dados = [];
 
+$mes = (new DateTime($mes_ano))->format('m');
+$ano = (new DateTime($mes_ano))->format('Y');
+
 foreach ($categorias as $categoria) {
     $categoria_id = $categoria['id'];
 
@@ -52,13 +55,13 @@ foreach ($categorias as $categoria) {
     $valor_esperado = $stmt->fetchColumn() ?: 0;
 
     // Total de receitas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE categoria_id = ? AND usuario_id = ? and  EXTRACT(MONTH FROM data) = EXTRACT(MONTH FROM date ?) AND EXTRACT(YEAR FROM data) = EXTRACT(YEAR FROM date ?)");
-    $stmt->execute([$categoria_id, $aluno_id, $mes_ano, $mes_ano]);
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+    $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
     $total_receitas = $stmt->fetchColumn() ?: 0;
 
     // Total de despesas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = EXTRACT(MONTH FROM date ?) AND EXTRACT(YEAR FROM data) = EXTRACT(YEAR FROM date ?)");
-    $stmt->execute([$categoria_id, $aluno_id, $mes_ano, $mes_ano]);
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+    $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
     $total_despesas = $stmt->fetchColumn() ?: 0;
 
     $dados[] = [
