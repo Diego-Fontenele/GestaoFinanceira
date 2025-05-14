@@ -28,6 +28,11 @@
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
     </li>
+    <li class="nav-item">
+    <a class="nav-link" href="orcamento.php">
+        <i class="bi bi-wallet2 me-2"></i> Orçamento
+    </a>
+    </li>
     <!-- Gamificação: visível para todos, mas com funções diferentes -->
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="gamificacao.php">
