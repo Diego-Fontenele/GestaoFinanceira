@@ -84,7 +84,7 @@ if (isset($_GET['editar'])) {
 
 // Buscar categorias
 $aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
-$alunoParaCategorias = $aluno_id ?: '';
+$alunoParaCategorias = $aluno_id ?: 0;
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE usuario_id = ? OR usuario_id IS NULL");
 $stmt->execute([$alunoParaCategorias]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
