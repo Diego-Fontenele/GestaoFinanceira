@@ -35,6 +35,8 @@ if (!empty($is_mentor)) {
     $stmt->execute([$usuario_id]);
     $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+$mes = (new DateTime($mes_ano))->format('m');
+$ano = (new DateTime($mes_ano))->format('Y');
 
 // Buscar todas as categorias
 $stmt = $pdo->prepare("
@@ -57,8 +59,6 @@ $total_receitas = 0;
 
 if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
 
-    $mes = (new DateTime($mes_ano))->format('m');
-    $ano = (new DateTime($mes_ano))->format('Y');
     foreach ($categorias as $categoria) {
         $categoria_id = $categoria['id'];
 
