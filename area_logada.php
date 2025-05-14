@@ -430,8 +430,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <h5 class="card-title mb-3">
                 <i class="bi bi-bar-chart-line-fill"></i> Comparativo de Gastos vs Valores Esperados
               </h5>
-              <div style="height: 350px;">
-                <canvas id="graficoComparativoCategorias" class="w-100 h-100"></canvas>
+              <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 300px;">
+                  <canvas id="graficoComparativoCategorias" class="w-100" style="height: 100%;"></canvas>
+                </div>
               </div>
             </div>
           </div>
