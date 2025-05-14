@@ -83,8 +83,10 @@ if (isset($_GET['editar'])) {
 }
 
 // Buscar categorias
-$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE (usuario_id = ? or usuario_id is null)");
-$stmt->execute([$_POST['aluno_id']]);
+$aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
+$alunoParaCategorias = $aluno_id ?: $_SESSION['usuario_id'];
+$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE usuario_id = ? OR usuario_id IS NULL");
+$stmt->execute([$alunoParaCategorias]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar alunos vinculados ao mentor
