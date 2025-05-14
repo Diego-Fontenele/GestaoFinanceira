@@ -46,7 +46,7 @@ foreach ($categorias as $categoria) {
     $categoria_id = $categoria['id'];
 
     // Valor esperado
-    $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes = ? AND ano = ?");
+    $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes_ano = ? AND ano = ?");
     $stmt->execute([$categoria_id, $aluno_id, $filtro_mes, $filtro_ano]);
     $valor_esperado = $stmt->fetchColumn() ?: 0;
 
