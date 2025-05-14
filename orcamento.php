@@ -18,8 +18,8 @@ $is_mentor = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Filtros
 
-$mes_ano= $_GET['mes_ano'] ?? '';
-$mes_ano = "$mes_ano-01";
+$mes_ano= $_GET['mes_ano'] ?"$mes_ano-01":'';
+
 
 $aluno_id = $usuario_id;
 if ($is_mentor && isset($_GET['aluno_id'])) {
