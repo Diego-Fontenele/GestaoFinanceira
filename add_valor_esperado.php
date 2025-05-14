@@ -20,7 +20,7 @@ $aluno_id = '';
 $valor_esperado = '';
 
 // Cadastro ou edição
-if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id']))){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $_POST['id'] ?? '';
     $categoria_id = $_POST['categoria_id'];
     $aluno_id = $_POST['aluno_id'];
@@ -83,10 +83,9 @@ if (isset($_GET['editar'])) {
 }
 
 // Buscar categorias
-$aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
-$alunoParaCategorias = $aluno_id ?: 0;
+
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE usuario_id = ? OR usuario_id IS NULL");
-$stmt->execute([$alunoParaCategorias]);
+$stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar alunos vinculados ao mentor
@@ -129,16 +128,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
 
                 <form method="POST">
-
-                <div class="mb-3">
-                        <label class="form-label">Aluno</label>
-                        <select name="aluno_id" class="form-control" onchange="this.form.submit()" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($alunos as $a): ?>
-                                <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>    
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -170,7 +159,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <thead>
                         <tr>
                             <th>Categoria</th>
-                            <th>Aluno</th>
                             <th>Valor Esperado</th>
                             <th>Mês/Ano</th>
                             <th>Ações</th>
@@ -180,7 +168,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php foreach ($valores as $v): ?>
                             <tr>
                                 <td><?= $v['categoria'] ?></td>
-                                <td><?= $v['aluno'] ?></td>
                                 <td>R$ <?= number_format($v['valor'], 2, ',', '.') ?></td>
                                 <td><?= $v['mes_ano'] ?></td>
                                 <td>
