@@ -18,8 +18,8 @@ $is_mentor = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Filtros
 $dataAtual = new DateTime();
-$mes_ano = isset($_GET['mes_ano']) && !empty($_GET['mes_ano']) 
-    ? $_GET['mes_ano'] . '-01' 
+$mes_ano = isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])
+    ? $_GET['mes_ano'] . '-01'
     : $dataAtual->format('Y-m-01');
 
 
@@ -37,49 +37,63 @@ if (!empty($is_mentor)) {
 }
 
 // Buscar todas as categorias
-$stmt = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome");
+$stmt = $pdo->prepare("
+    SELECT DISTINCT c.id, c.nome
+    FROM categorias c
+    LEFT JOIN categoria_valores_esperados ce ON ce.categoria_id = c.id AND ce.aluno_id = ? AND ce.mes_ano = ?
+    LEFT JOIN despesas d ON d.categoria_id = c.id AND d.usuario_id = ? AND EXTRACT(MONTH FROM d.data) = ? AND EXTRACT(YEAR FROM d.data) = ?
+    WHERE ce.valor IS NOT NULL OR d.valor IS NOT NULL
+    ORDER BY c.nome
+");
+$stmt->execute([$aluno_id, $mes_ano, $aluno_id, $mes, $ano]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 // Montar dados para cada categoria
 $dados = [];
 
 $mes = (new DateTime($mes_ano))->format('m');
 $ano = (new DateTime($mes_ano))->format('Y');
 
-foreach ($categorias as $categoria) {
-    $categoria_id = $categoria['id'];
+$dados = [];
+$total_receitas = 0;
 
-    // Valor esperado
-    $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes_ano = ? ");
-    $stmt->execute([$categoria_id, $aluno_id, $mes_ano]);
-    $valor_esperado = $stmt->fetchColumn() ?: 0;
+if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
 
-    // Total de despesas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-    $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
-    $total_despesas = $stmt->fetchColumn() ?: 0;
+    foreach ($categorias as $categoria) {
+        $categoria_id = $categoria['id'];
 
-    $dados[] = [
-        'categoria' => $categoria['nome'],
-        'esperado' => $valor_esperado,
-        'despesas' => $total_despesas,
-    ];
+        // Valor esperado
+        $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes_ano = ? ");
+        $stmt->execute([$categoria_id, $aluno_id, $mes_ano]);
+        $valor_esperado = $stmt->fetchColumn() ?: 0;
+
+        // Total de despesas
+        $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+        $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
+        $total_despesas = $stmt->fetchColumn() ?: 0;
+
+        $dados[] = [
+            'categoria' => $categoria['nome'],
+            'esperado' => $valor_esperado,
+            'despesas' => $total_despesas,
+        ];
+    }
+
+    // Total de receitas
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE  usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+    $stmt->execute([$aluno_id, $mes, $ano]);
+    $total_receitas = $stmt->fetchColumn() ?: 0;
 }
-
-// Total de receitas
-$stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE  usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-$stmt->execute([$aluno_id, $mes, $ano]);
-$total_receitas = $stmt->fetchColumn() ?: 0;
-
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Orçamento por Categoria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="d-flex">
         <?php include('includes/menu.php'); ?>
@@ -109,8 +123,14 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
 
                     <div class="col-md-2 align-self-end">
                         <button type="submit" class="btn btn-danger w-100">Filtrar</button>
-                        <label class="form-label"><?=$total_receitas?></label>
+
                     </div>
+                    <?php if ($total_receitas): ?>
+                        <div class="col-md-2 align-self-end">
+                            <label class="form-label">Total de Receitas</label>
+                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas, 2, ',', '.') ?>" readonly>
+                        </div>
+                    <?php endif; ?>
                 </form>
 
                 <div class="table-responsive">
@@ -120,7 +140,7 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
                                 <th>Categoria</th>
                                 <th>Valor Estimado (R$)</th>
                                 <th>Total de Despesas (R$)</th>
-                               
+
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +149,7 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
                                     <td><?= $d['categoria'] ?></td>
                                     <td><?= number_format($d['esperado'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['despesas'], 2, ',', '.') ?></td>
-                                   
+
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -140,4 +160,5 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
         </div>
     </div>
 </body>
+
 </html>
