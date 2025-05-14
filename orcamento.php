@@ -54,11 +54,6 @@ foreach ($categorias as $categoria) {
     $stmt->execute([$categoria_id, $aluno_id, $mes_ano]);
     $valor_esperado = $stmt->fetchColumn() ?: 0;
 
-    // Total de receitas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-    $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
-    $total_receitas = $stmt->fetchColumn() ?: 0;
-
     // Total de despesas
     $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
     $stmt->execute([$categoria_id, $aluno_id, $mes, $ano]);
@@ -71,6 +66,12 @@ foreach ($categorias as $categoria) {
         'despesas' => $total_despesas,
     ];
 }
+
+// Total de receitas
+$stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE  usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+$stmt->execute([$aluno_id, $mes, $ano]);
+$total_receitas = $stmt->fetchColumn() ?: 0;
+
 ?>
 
 <!DOCTYPE html>
@@ -109,6 +110,7 @@ foreach ($categorias as $categoria) {
 
                     <div class="col-md-2 align-self-end">
                         <button type="submit" class="btn btn-danger w-100">Filtrar</button>
+                        <label class="form-label"><?=$total_receitas?></label>
                     </div>
                 </form>
 
@@ -117,8 +119,7 @@ foreach ($categorias as $categoria) {
                         <thead class="table-secondary">
                             <tr>
                                 <th>Categoria</th>
-                                <th>Valor Esperado (R$)</th>
-                                <th>Total de Receitas (R$)</th>
+                                <th>Valor Estimado (R$)</th>
                                 <th>Total de Despesas (R$)</th>
                                 <th>Saldo Previsto (Esperado - Receita)</th>
                             </tr>
@@ -128,7 +129,6 @@ foreach ($categorias as $categoria) {
                                 <tr>
                                     <td><?= $d['categoria'] ?></td>
                                     <td><?= number_format($d['esperado'], 2, ',', '.') ?></td>
-                                    <td><?= number_format($d['receitas'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['despesas'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['esperado'] - $d['receitas'], 2, ',', '.') ?></td>
                                 </tr>
