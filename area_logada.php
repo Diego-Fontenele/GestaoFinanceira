@@ -256,11 +256,7 @@ $sql = "
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([
-  ':aluno_id' => $usuarioId,
-  ':inicio' => '2025-04-01',
-  ':fim' => '2025-04-30'
-]);
+$stmt->execute([$usuarioId,'2025-04-01','2025-04-30']);
 
 $categorias = [];
 $valoresEsperados = [];
