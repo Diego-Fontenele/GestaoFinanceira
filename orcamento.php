@@ -17,10 +17,9 @@ $is_mentor = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Filtros
-$filtro_mes = $_GET['mes'] ?? date('m');
-$filtro_ano = $_GET['ano'] ?? date('Y');
-$data_inicio = "$filtro_ano-$filtro_mes-01";
-$data_fim = date("Y-m-t", strtotime($data_inicio));
+
+$mes_ano= $_GET['mes_ano'] ?? '';
+$mes_ano = "$mes_ano-01";
 
 $aluno_id = $usuario_id;
 if ($is_mentor && isset($_GET['aluno_id'])) {
@@ -46,18 +45,18 @@ foreach ($categorias as $categoria) {
     $categoria_id = $categoria['id'];
 
     // Valor esperado
-    $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes_ano = ? AND ano = ?");
-    $stmt->execute([$categoria_id, $aluno_id, $filtro_mes, $filtro_ano]);
+    $stmt = $pdo->prepare("SELECT valor FROM categoria_valores_esperados WHERE categoria_id = ? AND aluno_id = ? AND mes_ano = ? ");
+    $stmt->execute([$categoria_id, $aluno_id, $mes_ano]);
     $valor_esperado = $stmt->fetchColumn() ?: 0;
 
     // Total de receitas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE categoria_id = ? AND usuario_id = ? AND data BETWEEN ? AND ?");
-    $stmt->execute([$categoria_id, $aluno_id, $data_inicio, $data_fim]);
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE categoria_id = ? AND usuario_id = ? and  EXTRACT(MONTH FROM data) = EXTRACT(MONTH FROM date ?) AND EXTRACT(YEAR FROM data) = EXTRACT(YEAR FROM date ?)");
+    $stmt->execute([$categoria_id, $aluno_id, $mes_ano, $mes_ano]);
     $total_receitas = $stmt->fetchColumn() ?: 0;
 
     // Total de despesas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND data BETWEEN ? AND ?");
-    $stmt->execute([$categoria_id, $aluno_id, $data_inicio, $data_fim]);
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE categoria_id = ? AND usuario_id = ? AND EXTRACT(MONTH FROM data) = EXTRACT(MONTH FROM date ?) AND EXTRACT(YEAR FROM data) = EXTRACT(YEAR FROM date ?)");
+    $stmt->execute([$categoria_id, $aluno_id, $mes_ano, $mes_ano]);
     $total_despesas = $stmt->fetchColumn() ?: 0;
 
     $dados[] = [
@@ -98,20 +97,9 @@ foreach ($categorias as $categoria) {
                         </div>
                     <?php endif; ?>
 
-                    <div class="col-md-2">
-                        <label class="form-label">Mês</label>
-                        <select name="mes" class="form-select">
-                            <?php for ($m = 1; $m <= 12; $m++): ?>
-                                <option value="<?= str_pad($m, 2, '0', STR_PAD_LEFT) ?>" <?= $filtro_mes == str_pad($m, 2, '0', STR_PAD_LEFT) ? 'selected' : '' ?>>
-                                    <?= str_pad($m, 2, '0', STR_PAD_LEFT) ?>
-                                </option>
-                            <?php endfor; ?>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label">Ano</label>
-                        <input type="number" name="ano" class="form-control" value="<?= $filtro_ano ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Mês/Ano</label>
+                        <input type="month" name="mes_ano" class="form-control" value="<?= isset($mes_ano) ? substr($mes_ano, 0, 7) : '' ?>" required>
                     </div>
 
                     <div class="col-md-2 align-self-end">
