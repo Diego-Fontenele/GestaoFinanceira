@@ -25,10 +25,6 @@
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="configuracoes.php"><i class="bi bi-folder-plus"></i> Cadastrar Categorias</a>
     </li>
-    </li>
-        <li class="nav-item">
-        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="add_valor_esperado.php"><i class="bi bi-tags"></i> Vincular Categoria</a>
-        </li>
     <li class="nav-item mb-2">
       <a class="nav-link text-white d-flex align-items-center gap-2" href="fale_conosco.php"><i class="bi bi-envelope"></i> Fale Conosco</a>
     </li>
@@ -42,6 +38,10 @@
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
         <li class="nav-item mb-2">
         <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="mentor_dashboard.php"><i class="bi bi-people"></i> Área do Mentor</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="add_valor_esperado.php"><i class="bi bi-tags"></i> Vincular Categoria</a>
+        </li>
       <?php endif; ?>
     <li class="nav-item mt-5">
       <a class="nav-link text-danger d-flex align-items-center gap-2" href="logout.php">
