@@ -120,7 +120,7 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
                                 <th>Categoria</th>
                                 <th>Valor Estimado (R$)</th>
                                 <th>Total de Despesas (R$)</th>
-                                <th>Saldo Previsto (Esperado - Receita)</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +129,7 @@ $total_receitas = $stmt->fetchColumn() ?: 0;
                                     <td><?= $d['categoria'] ?></td>
                                     <td><?= number_format($d['esperado'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['despesas'], 2, ',', '.') ?></td>
-                                    <td><?= number_format($d['esperado'] - $d['receitas'], 2, ',', '.') ?></td>
+                                   
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
