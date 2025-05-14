@@ -803,7 +803,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 beginAtZero: true,
                 ticks: {
                   callback: function(value) {
-                    return 'R$ ' + value.toLocaleString('pt-BR');
+                    return value.toLocaleString('pt-BR');
                   }
                 }
               }
