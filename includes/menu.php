@@ -1,3 +1,14 @@
+<!-- Botão visível só em dispositivos móveis -->
+<button class="btn btn-primary d-md-none m-2" id="menuToggle">
+  <i class="bi bi-list"></i> Menu
+</button>
+
+<!-- Menu lateral dentro de um container que pode ser ocultado -->
+<div id="mobileMenu" class="bg-dark text-white p-3 position-fixed top-0 start-0 h-100" style="width: 250px; display: none; z-index: 1050;">
+  <!-- Botão para fechar -->
+  <button class="btn btn-outline-light mb-3 d-md-none" id="closeMenu">
+    <i class="bi bi-x-lg"></i> Fechar
+  </button>
 
 <nav class="bg-dark text-white p-3">
   <h4 class="mb-4"><i class="bi bi-piggy-bank"></i> Financeiro</h4>
@@ -56,3 +67,20 @@
     </li>
   </ul>
 </nav>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+
+    if (menuToggle && mobileMenu && closeMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.style.display = 'block';
+      });
+
+      closeMenu.addEventListener('click', () => {
+        mobileMenu.style.display = 'none';
+      });
+    }
+  });
+</script>
