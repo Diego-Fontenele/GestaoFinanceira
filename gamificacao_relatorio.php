@@ -55,18 +55,19 @@ $stmt = $pdo->prepare("
                             pontos
                         )
 
-                        select
+                       SELECT
                             id,
                             nome,
-                            sum(total_metas)as total_metas,
-                            sum(metas_concluidas) as metas_concluidas,
-                            round(sum(metas_concluidas)/ COALESCE(sum(total_metas)* 100, 2),1) as pct_conclusao,
-                            sum(pontos) as pontos
-                        from
-                            rankingFinal
-                        group by
+                            SUM(total_metas) AS total_metas,
+                            SUM(metas_concluidas) AS metas_concluidas,
+                            SUM(metas_concluidas) / NULLIF(SUM(total_metas), 0) AS pct_conclusao,
+                            COALESCE(SUM(metas_concluidas), 0) * pontos AS pontos
+                        FROM
+                            ranking
+                        GROUP BY
                             id,
-                            nome
+                            nome,
+                            pontos
                             order by pontos desc, metas_concluidas DESC, pct_conclusao DESC
                         ");
 $stmt->execute(['mentor_id' => $mentor_id]);
