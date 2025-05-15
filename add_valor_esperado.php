@@ -66,7 +66,7 @@ if (isset($_GET['excluir'])) {
     header("Location: add_valor_esperado.php");
     exit;
 }
-
+$categorias = '';
 // Edição
 if (isset($_GET['editar'])) {
     $id_edicao = $_GET['editar'];
@@ -81,7 +81,7 @@ if (isset($_GET['editar'])) {
         $editando = true;
     }
 }
-$categorias = '';
+
 // Buscar categorias
 if (!empty($_POST['aluno_id'])){
     $aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
