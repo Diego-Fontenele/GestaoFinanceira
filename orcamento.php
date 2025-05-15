@@ -83,6 +83,12 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
     $stmt = $pdo->prepare("SELECT SUM(valor) FROM receitas WHERE  usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
     $stmt->execute([$aluno_id, $mes, $ano]);
     $total_receitas = $stmt->fetchColumn() ?: 0;
+
+
+    // Total de estimativa
+    $stmt = $pdo->prepare("SELECT sum(valor) valor FROM categoria_valores_esperados WHERE  aluno_id = ? AND mes_ano = ? ");
+    $stmt->execute([$aluno_id, $mes_ano]);
+    $valor_esperado = $stmt->fetchColumn() ?: 0;
 }
 ?>
 
@@ -131,6 +137,14 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                         <div class="col-md-2 align-self-end">
                             <label class="form-label">Total de Receitas</label>
                             <input type="text" class="form-control text-success" value="<?= number_format($total_receitas, 2, ',', '.') ?>" readonly>
+                        </div>
+                        <div class="col-md-2 align-self-end">
+                            <label class="form-label">Valor Estimado</label>
+                            <input type="text" class="form-control text-success" value="<?= number_format($valor_esperado, 2, ',', '.') ?>" readonly>
+                        </div>
+                        <div class="col-md-2 align-self-end">
+                            <label class="form-label">Receitas - Estimativa </label>
+                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas-$valor_esperado, 2, ',', '.') ?>" readonly>
                         </div>
                     <?php endif; ?>
                 </form>
