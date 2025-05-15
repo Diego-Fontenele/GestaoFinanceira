@@ -81,14 +81,14 @@ if (isset($_GET['editar'])) {
         $editando = true;
     }
 }
-
+$categorias ='';
 // Buscar categorias
-$aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
-$alunoParaCategorias = $aluno_id ?: 0;
-$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo ='despesa' and  (usuario_id = ? OR usuario_id IS NULL)");
-$stmt->execute([$alunoParaCategorias]);
-$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+if (!empty($_POST['aluno_id'])){
+    $alunoParaCategorias = $aluno_id ?: 0;
+    $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo ='despesa' and  (usuario_id = ? OR usuario_id IS NULL)");
+    $stmt->execute([$alunoParaCategorias]);
+    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 // Buscar alunos vinculados ao mentor
 $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
@@ -138,8 +138,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
                             <?php endforeach; ?>
                         </select>
-                    </div>
-                    <?php if (!empty($_POST['aluno_id'])): ?>    
+                    </div>    
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -164,7 +163,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <a href="add_valor_esperado.php" class="btn btn-secondary">Limpar</a>
                 </form>
             </div>
-            <?php endif; ?>
+
             <div class="card p-4">
                 <h5 class="mb-3">Valores Cadastrados</h5>
                 <table class="table table-bordered table-striped">
