@@ -138,7 +138,8 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
                             <?php endforeach; ?>
                         </select>
-                    </div>    
+                    </div>
+                    <?php if (!empty($_POST['aluno_id'])): ?>    
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -163,7 +164,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <a href="add_valor_esperado.php" class="btn btn-secondary">Limpar</a>
                 </form>
             </div>
-
+            <?php endif; ?>
             <div class="card p-4">
                 <h5 class="mb-3">Valores Cadastrados</h5>
                 <table class="table table-bordered table-striped">
