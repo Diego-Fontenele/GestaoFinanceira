@@ -83,13 +83,12 @@ if (isset($_GET['editar'])) {
 }
 
 // Buscar categorias
-if (!empty($_POST['aluno_id'])){
-    $aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
-    $alunoParaCategorias = $aluno_id ?: 0;
-    $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo ='despesa' and  (usuario_id = ? OR usuario_id IS NULL)");
-    $stmt->execute([$alunoParaCategorias]);
-    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+$aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
+$alunoParaCategorias = $aluno_id ?: 0;
+$stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo ='despesa' and  (usuario_id = ? OR usuario_id IS NULL)");
+$stmt->execute([$alunoParaCategorias]);
+$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Buscar alunos vinculados ao mentor
 $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE mentor_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
@@ -133,7 +132,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <div class="mb-3">
                         <label class="form-label">Aluno</label>
-                        <select name="aluno_id" class="form-control" onchange="this.form.submit()" required>
+                        <select name="aluno_id" class="form-control" id="aluno_id" required>
                             <option value="">Selecione</option>
                             <?php foreach ($alunos as $a): ?>
                                 <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
@@ -210,6 +209,22 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 allowMinus: false,
                 removeMaskOnSubmit: true
             }).mask('.valor');
+        });
+        
+        $(document).ready(function() {
+            $('#aluno_id').on('change', function() {
+                let alunoId = $(this).val();
+                if (!alunoId) return;
+
+                $.getJSON('buscar_categorias.php', { aluno_id: alunoId }, function(data) {
+                    let categoriaSelect = $('select[name="categoria_id"]');
+                    categoriaSelect.empty().append('<option value="">Selecione</option>');
+
+                    data.forEach(function(cat) {
+                        categoriaSelect.append('<option value="' + cat.id + '">' + cat.nome + '</option>');
+                    });
+                });
+            });
         });
 
         <?php if (!empty($flash)): ?>
