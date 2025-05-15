@@ -23,12 +23,11 @@ $mes_ano = isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])
     : $dataAtual->format('Y-m-01');
 
 
-
+$aluno_id = null;
 if ((isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor') && (isset($_GET['aluno_id']))) {
     $aluno_id = $_GET['aluno_id'];
-}else{
-
-    $aluno_id = $usuario_id;
+} elseif ($_SESSION['tipo'] !== 'mentor') {
+    $aluno_id = $usuario_id; // Se não for mentor, vê os próprios dados
 }
 
 // Buscar alunos vinculados (somente se for mentor)
