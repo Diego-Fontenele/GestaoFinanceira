@@ -155,7 +155,8 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                             <tr>
                                 <th>Categoria</th>
                                 <th>Valor Estimado (R$)</th>
-                                <th>Total de Despesas (R$)</th>
+                                <th>Despesa realizada (R$)</th>
+                                <th>Resultado (R$)</th>
 
                             </tr>
                         </thead>
@@ -165,6 +166,7 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                                     <td><?= $d['categoria'] ?></td>
                                     <td><?= number_format($d['esperado'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['despesas'], 2, ',', '.') ?></td>
+                                    <td><?= number_format($d['esperado']-$d['despesas'], 2, ',', '.') ?></td>
 
                                 </tr>
                             <?php endforeach; ?>
