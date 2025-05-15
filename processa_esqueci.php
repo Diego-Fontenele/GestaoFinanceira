@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // IMPORTANTE: Usa SMTPS (SSL)
             $mail->Port       = 465;                         // Porta correta com SSL
 
-            $mail->setFrom(getenv('EMAIL_USER'), 'Gestao Financeira');
+            $mail->setFrom(getenv('EMAIL_USER'), 'Domine Seu Bolso');
             $mail->addAddress($email);
 
             $mail->isHTML(true);

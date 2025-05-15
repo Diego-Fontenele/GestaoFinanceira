@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $assunto  = $_POST['assunto'] ?? '';
         $mensagem = $_POST['mensagem'] ?? '';
 
-        $mail->setFrom($mail->Username, 'Fale Conosco');
+        $mail->setFrom($mail->Username, 'Domine Seu Bolso');
         $mail->addReplyTo($email, $nome);
         $mail->addAddress($mail->Username, 'Diego');
 
