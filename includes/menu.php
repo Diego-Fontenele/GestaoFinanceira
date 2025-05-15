@@ -67,6 +67,7 @@
     </li>
   </ul>
 </nav>
+</div> 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const menuToggle = document.getElementById('menuToggle');
