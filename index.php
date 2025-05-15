@@ -30,6 +30,14 @@
       font-weight: 700;
       font-size: 1.5rem;
       color: #0d6efd;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .navbar-brand img {
+      height: 40px;
+      margin-right: 10px;
     }
 
     .hero-image {
@@ -68,7 +76,10 @@
   <!-- Navbar -->
   <nav class="navbar navbar-light bg-white shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
-      <a class="navbar-brand" href="#">Domine Seu Bolso</a>
+      <a class="navbar-brand" href="https://domineseubolso.com.br">
+        <img src="icons/icon-192.png" alt="Domine Seu Bolso">
+        domineseubolso.com.br
+      </a>
       <a href="login.php" class="btn btn-outline-primary">
         <i class="bi bi-box-arrow-in-right"></i> Área Logada
       </a>
