@@ -76,8 +76,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-light bg-white shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
-      <a class="navbar-brand" href="https://domineseubolso.com.br">
-        <img src="icons/icon-192.png" alt="Domine Seu Bolso">
+      <a class="navbar-brand" href="https://www.domineseubolso.com.br">
         domineseubolso.com.br
       </a>
       <a href="login.php" class="btn btn-outline-primary">
