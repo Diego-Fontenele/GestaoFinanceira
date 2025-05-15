@@ -60,7 +60,7 @@ $stmt = $pdo->prepare("
                             nome,
                             sum(total_metas)as total_metas,
                             sum(metas_concluidas) as metas_concluidas,
-                            round(sum(metas_concluidas)/ sum(total_metas)* 100, 2) as pct_conclusao,
+                            round(sum(metas_concluidas)/ COALESCE(sum(total_metas)* 100, 2),1) as pct_conclusao,
                             sum(pontos) as pontos
                         from
                             rankingFinal
