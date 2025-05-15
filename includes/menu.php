@@ -3,9 +3,11 @@
   <i class="bi bi-list"></i> Menu
 </button>
 
-<!-- Menu lateral dentro de um container que pode ser ocultado -->
-<div id="mobileMenu" class="bg-dark text-white p-3 position-fixed top-0 start-0 h-100" style="width: 250px; display: none; z-index: 1050;">
-  <!-- Botão para fechar -->
+<!-- Menu lateral -->
+<div id="mobileMenu" class="bg-dark text-white p-3 position-fixed top-0 start-0 h-100 d-none d-md-block" 
+     style="width: 250px; z-index: 1050;">
+  
+  <!-- Botão para fechar, só mobile -->
   <button class="btn btn-outline-light mb-3 d-md-none" id="closeMenu">
     <i class="bi bi-x-lg"></i> Fechar
   </button>
