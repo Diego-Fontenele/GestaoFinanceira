@@ -34,7 +34,7 @@ $stmt = $pdo->prepare("SELECT
 $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
 $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// --- Lógica do Mentor Virtual
+// --- Lógica do Mentor Virtual 
 $prompt = "Você é um mentor financeiro virtual. Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
 Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
