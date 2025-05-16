@@ -20,7 +20,7 @@ function enviarEmail($destinatarioEmail, $destinatarioNome, $assunto, $mensagemH
 
         // Remetente e destinatário
         $mail->setFrom($mail->Username, 'Domine Seu Bolso');
-        $mail->addAddress($mail->Username, $destinatarioNome);
+        $mail->addAddress($destinatarioEmail, $destinatarioNome);
 
         // Conteúdo
         $mail->isHTML(true);
