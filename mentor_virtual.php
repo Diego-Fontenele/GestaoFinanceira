@@ -43,7 +43,7 @@ $resposta = "";
 
 $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
                        WHERE usuario_id = :uid AND data_referencia = :datareferencia");
-$stmt->execute(['uid' => $usuario_id, 'datareferencia' => $mesSelecionado.'01']);
+$stmt->execute(['uid' => $usuario_id, 'datareferencia' => $mesSelecionado.'-'.'01']);
 $ja_gerado = $stmt->fetchColumn();
 
 if ($ja_gerado) {
@@ -78,7 +78,7 @@ if ($ja_gerado) {
                            VALUES (:uid,  :msg ,:mesSelecionado)");
     $stmt->execute([
         'uid' => $usuario_id,
-        'mesSelecionado' => $mesSelecionado.'01',
+        'mesSelecionado' => $mesSelecionado.'-'.'01',
         'msg' => $resposta
     ]);
 }
