@@ -7,44 +7,44 @@ if (!$usuario_id) {
     header("Location: login.php");
     exit;
 }
+if ($_GET['mes_ano']){
+        $mesSelecionado = $_GET['mes_ano'] ?? date('Y-m');
 
-$mesSelecionado = $_GET['mes_ano'] ?? date('Y-m');
+        list($ano, $mes) = explode('-', $mesSelecionado);
 
-list($ano, $mes) = explode('-', $mesSelecionado);
+        $stmt = $pdo->prepare("SELECT 
+            (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_receitas,
+            (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_despesas
+        ");
+        $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
+        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$stmt = $pdo->prepare("SELECT 
-    (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_receitas,
-    (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_despesas
-");
-$stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
-$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+        $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
+        Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
-$prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
-Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
+        $openai_api_key = getenv('API_GPT');
+        $resposta = "";
 
-$openai_api_key = getenv('API_GPT');
-$resposta = "";
+        $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
+                            WHERE usuario_id = :uid AND data_referencia = :data_referencia");
+        $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
+        $ja_gerado = $stmt->fetchColumn();
 
-$stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
-                       WHERE usuario_id = :uid AND data_referencia = :data_referencia");
-$stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
-$ja_gerado = $stmt->fetchColumn();
+        if ($ja_gerado) {
+            $resposta = $ja_gerado;
+        } else {
+            // chamada curl para OpenAI (mantém igual)
 
-if ($ja_gerado) {
-    $resposta = $ja_gerado;
-} else {
-    // chamada curl para OpenAI (mantém igual)
-
-    // insere resposta no banco
-    $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
-                           VALUES (:uid, :msg, :data_referencia)");
-    $stmt->execute([
-        'uid' => $usuario_id,
-        'msg' => $resposta,
-        'data_referencia' => $mesSelecionado . '-01'
-    ]);
-}
-
+            // insere resposta no banco
+            $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
+                                VALUES (:uid, :msg, :data_referencia)");
+            $stmt->execute([
+                'uid' => $usuario_id,
+                'msg' => $resposta,
+                'data_referencia' => $mesSelecionado . '-01'
+            ]);
+        }
+    }
 
 
 ?>
