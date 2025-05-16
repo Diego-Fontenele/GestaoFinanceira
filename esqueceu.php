@@ -9,9 +9,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
 
     // Verificar se o e-mail já está cadastrado
-    $verifica = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
-    $verifica->bindParam(':email', $email);
-    $verifica->execute();
+    $verifica = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? LIMIT 1");
+    $verifica->execute([$email]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($verifica->rowCount() == 0) {
         $erro = "Este e-mail ainda não está cadastrado em nossa base. <a href='cadastrar.php'>Cadastrar Novo usuário.</a>";
