@@ -7,51 +7,76 @@ if (!$usuario_id) {
     header("Location: login.php");
     exit;
 }
-if ($_GET['mes_ano']){
-        $mesSelecionado = $_GET['mes_ano'] ?? date('Y-m');
 
-        list($ano, $mes) = explode('-', $mesSelecionado);
+$mesSelecionado = $_GET['mes_ano'] ?? null;
+$resposta = '';
+$mes = '';
+$ano = '';
 
-        $stmt = $pdo->prepare("SELECT 
-            (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_receitas,
-            (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_despesas
-        ");
-        $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($mesSelecionado) {
+    list($ano, $mes) = explode('-', $mesSelecionado);
 
-        $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
-        Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
+    $stmt = $pdo->prepare("SELECT 
+        (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_receitas,
+        (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_despesas
+    ");
+    $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
+    $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $openai_api_key = getenv('API_GPT');
-        $resposta = "";
+    $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
+    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
-        $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
-                            WHERE usuario_id = :uid AND data_referencia = :data_referencia");
-        $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
-        $ja_gerado = $stmt->fetchColumn();
+    $openai_api_key = getenv('API_GPT');
 
-        if ($ja_gerado) {
-            $resposta = $ja_gerado;
-        } else {
-            // chamada curl para OpenAI (mantém igual)
+    // Verifica se já existe resposta
+    $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
+                           WHERE usuario_id = :uid AND data_referencia = :data_referencia");
+    $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
+    $ja_gerado = $stmt->fetchColumn();
 
-            // insere resposta no banco
-            $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
-                                VALUES (:uid, :msg, :data_referencia)");
-            $stmt->execute([
-                'uid' => $usuario_id,
-                'msg' => $resposta,
-                'data_referencia' => $mesSelecionado . '-01'
-            ]);
-        }
+    if ($ja_gerado) {
+        $resposta = $ja_gerado;
+    } else {
+        // chamada à API OpenAI
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.openai.com/v1/chat/completions",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/json",
+                "Authorization: Bearer $openai_api_key"
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                "model" => "gpt-3.5-turbo",
+                "messages" => [
+                    ["role" => "system", "content" => "Você é um mentor financeiro atencioso e motivador."],
+                    ["role" => "user", "content" => $prompt]
+                ],
+                "max_tokens" => 150,
+                "temperature" => 0.7
+            ])
+        ]);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $data = json_decode($response, true);
+        $resposta = $data['choices'][0]['message']['content'] ?? 'Erro ao gerar resposta.';
+
+        // salvar resposta no banco
+        $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
+                               VALUES (:uid, :msg, :data_referencia)");
+        $stmt->execute([
+            'uid' => $usuario_id,
+            'msg' => $resposta,
+            'data_referencia' => $mesSelecionado . '-01'
+        ]);
     }
-
-
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8" />
     <title>Mentor Virtual</title>
@@ -59,7 +84,6 @@ if ($_GET['mes_ano']){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body class="bg-light">
     <div class="d-flex">
         <?php include('includes/menu.php'); ?>
@@ -68,23 +92,25 @@ if ($_GET['mes_ano']){
 
             <form method="get" class="row g-3 mb-4">
                 <div class="col-md-3">
-
                     <label class="form-label">Mês/Ano</label>
-                    <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado) ?>" required>
+                    <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado ?? '') ?>" required>
+                </div>
+                <div class="col-md-3 align-self-end">
                     <button type="submit" class="btn btn-primary">Consultar</button>
                 </div>
             </form>
 
+            <?php if ($resposta): ?>
             <div class="card">
                 <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
                 <div class="card-body">
                     <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 </body>
-
 </html>
