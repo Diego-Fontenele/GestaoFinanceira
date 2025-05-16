@@ -9,11 +9,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
 
     // Verificar se o e-mail já está cadastrado
-    $verifica = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? LIMIT 1");
-    $verifica->execute([$email]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? LIMIT 1");
+    $stmt->execute([$email]);
+    $verifica = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($verifica->rowCount() == 0) {
+    if (empty($verifica)) {
         $erro = "Este e-mail ainda não está cadastrado em nossa base. <a href='cadastrar.php'>Cadastrar Novo usuário.</a>";
     } else {
         // Gera nova senha aleatória
