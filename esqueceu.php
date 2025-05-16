@@ -19,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Gera nova senha aleatória
           $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
           $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
+          echo "Olá, {$verifica['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login.";
          try {
             $mensagem = "E-mail enviado com sucesso!";
             $resultado = enviarEmail(
