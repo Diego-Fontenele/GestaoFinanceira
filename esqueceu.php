@@ -1,3 +1,43 @@
+<?php
+require_once 'Conexao.php';
+include 'enviarEmail.php';
+$mensagem = "";
+$erro = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST['email'];
+    
+
+    // Verificar se o e-mail já está cadastrado
+    $verifica = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
+    $verifica->bindParam(':email', $email);
+    $verifica->execute();
+
+    if ($verifica->rowCount() == 0) {
+        $erro = "Este e-mail ainda não está cadastrado em nossa base. <a href='cadastrar.php'>Cadastrar Novo usuário.</a>";
+    } else {
+        // Gera nova senha aleatória
+          $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
+          $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
+         try {
+            $stmt->execute();
+            $mensagem = "E-mail enviado com sucesso!";
+            $resultado = enviarEmail(
+              $email,
+              'Diego',
+              'Nova senha para sua conta',
+              'Usuário novo cadastrado '.$nome.' seu e-mail '.$email,
+              "Olá, {$verifica['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login."
+              
+          );
+            header("refresh:2;url=login.php");
+        } catch (PDOException $e) {
+            $erro = "Erro ao cadastrar: " . $e->getMessage();
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -22,7 +62,14 @@
 
 <div class="recuperar-container">
   <h4 class="text-center mb-4">Recuperar Senha</h4>
-  <form method="POST" action="processa_esqueci.php">
+  <?php if ($mensagem): ?>
+    <div class="alert alert-success text-center"><?php echo $mensagem; ?><br>Redirecionando para login...</div>
+  <?php endif; ?>
+
+  <?php if ($erro): ?>
+    <div class="alert alert-danger text-center"><?php echo $erro; ?></div>
+  <?php endif; ?>
+  <form method="POST" action="">
     <div class="mb-3">
       <label for="email" class="form-label">Informe seu e-mail</label>
       <input type="email" name="email" class="form-control" id="email" required>
