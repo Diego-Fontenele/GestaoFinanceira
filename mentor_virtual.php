@@ -41,7 +41,7 @@ Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}
 $openai_api_key = getenv('OPENAI_API_KEY');
 $resposta = "";
 
-$stmt = $pdo->prepare("SELECT mensagem_gerada FROM mentor_virtual_respostas 
+$stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
                        WHERE usuario_id = :uid AND data_referencia = :datareferencia");
 $stmt->execute(['uid' => $usuario_id, 'datareferencia' => $mesSelecionado]);
 $ja_gerado = $stmt->fetchColumn();
