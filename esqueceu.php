@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               $email,
               'Diego',
               'Nova senha para sua conta',
-              'Usuário novo cadastrado '.$nome.' seu e-mail '.$email,
               "Olá, {$verifica['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login."
               
           );
