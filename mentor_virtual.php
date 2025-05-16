@@ -35,7 +35,7 @@ $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
 $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // --- Lógica do Mentor Virtual
-$prompt = "Você é um mentor financeiro virtual. Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
+$prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
 Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
 $openai_api_key = getenv('OPENAI_API_KEY');
@@ -43,7 +43,7 @@ $resposta = "";
 
 $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
                        WHERE usuario_id = :uid AND data_referencia = :datareferencia");
-$stmt->execute(['uid' => $usuario_id, 'datareferencia' => $mesSelecionado]);
+$stmt->execute(['uid' => $usuario_id, 'datareferencia' => $mesSelecionado.'01']);
 $ja_gerado = $stmt->fetchColumn();
 
 if ($ja_gerado) {
@@ -74,12 +74,11 @@ if ($ja_gerado) {
     $data = json_decode($response, true);
     $resposta = $data['choices'][0]['message']['content'] ?? 'Erro ao gerar resposta.';
 
-    $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, mes, ano, mensagem_gerada) 
-                           VALUES (:uid, :mes, :ano, :msg)");
+    $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
+                           VALUES (:uid,  :msg ,:mesSelecionado)");
     $stmt->execute([
         'uid' => $usuario_id,
-        'mes' => $mes,
-        'ano' => $ano,
+        'mesSelecionado' => $mesSelecionado.'01',
         'msg' => $resposta
     ]);
 }
