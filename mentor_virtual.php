@@ -38,7 +38,7 @@ $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
 Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
-$openai_api_key = getenv('OPENAI_API_KEY');
+$openai_api_key = getenv('API_GPT');
 $resposta = "";
 
 $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
@@ -84,20 +84,25 @@ if ($ja_gerado) {
 }
 
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard Financeiro com Mentor Virtual</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <title>Mentor Virtual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="container py-5">
 
-    <h1 class="mb-4">Dashboard Financeiro</h1>
+<body class="bg-light">
+    <div class="d-flex">
+        <?php include('includes/menu.php'); ?>
+        <div class="flex-grow-1 p-4">
+            <h1 class="mb-4">Mentor Virtual</h1>
 
-    <!-- Formulário seleção mês/ano -->
-    <form method="get" class="row g-3 mb-4">
+            <form method="get" class="row g-3 mb-4">
         <div class="col-md-3">
         <div class="mb-3">
                         <label class="form-label">Mês/Ano</label>
@@ -109,22 +114,16 @@ if ($ja_gerado) {
         </div>
     </form>
 
-    <!-- Exibição dos dados financeiros resumidos -->
-    <div class="mb-4">
-        <h3>Resumo Financeiro - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></h3>
-        <ul>
-            <li>Total Receitas: R$ <?= number_format($dados['total_receitas'], 2, ',', '.') ?></li>
-            <li>Total Despesas: R$ <?= number_format($dados['total_despesas'], 2, ',', '.') ?></li>
-        </ul>
-    </div>
-
-    <!-- Mentor Virtual -->
-    <div class="card">
-        <div class="card-header">Dica do Mentor Virtual</div>
-        <div class="card-body">
-            <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
+            <div class="card">
+                <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
+                <div class="card-body">
+                    <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
+                </div>
+            </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 </body>
+
 </html>
