@@ -36,7 +36,7 @@
     <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="orcamento.php"><i class="bi bi-wallet2"></i> Orçamento</a>
     </li>
     <li class="nav-item mb-2">
-    <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="mentor_virtual.php"><i class="fas fa-robot"></i> Mentor Virtual</a>
+    <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="mentor_virtual.php"><i class="bi bi-robot"></i> Mentor Virtual</a>
     </li>
     <!-- Gamificação: visível para todos, mas com funções diferentes -->
     <li class="nav-item mb-2">
