@@ -22,7 +22,7 @@ $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
 Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
-$openai_api_key = getenv('OPENAI_API_KEY');
+$openai_api_key = getenv('API_GPT');
 $resposta = "";
 
 $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
@@ -67,16 +67,13 @@ if ($ja_gerado) {
             <h1 class="mb-4">Mentor Virtual</h1>
 
             <form method="get" class="row g-3 mb-4">
-        <div class="col-md-3">
-        <div class="mb-3">
-                        <label class="form-label">Mês/Ano</label>
-                        <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado) ?>" required>
-                    </div>
-        </div>
-        <div class="col-md-3 align-self-end">
-            <button type="submit" class="btn btn-primary">Consultar</button>
-        </div>
-    </form>
+                <div class="col-md-3">
+
+                    <label class="form-label">Mês/Ano</label>
+                    <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado) ?>" required>
+                    <button type="submit" class="btn btn-primary">Consultar</button>
+                </div>
+            </form>
 
             <div class="card">
                 <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
