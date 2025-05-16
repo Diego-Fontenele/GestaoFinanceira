@@ -20,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
           $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
          try {
-            $stmt->execute();
             $mensagem = "E-mail enviado com sucesso!";
             $resultado = enviarEmail(
               $email,
