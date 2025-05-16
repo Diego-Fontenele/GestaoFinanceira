@@ -34,45 +34,65 @@ if ($mesSelecionado) {
     $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
     $ja_gerado = $stmt->fetchColumn();
 
-    if ($ja_gerado) {
-        $resposta = $ja_gerado;
-    } else {
-        // chamada à API OpenAI
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.openai.com/v1/chat/completions",
+    if (!$ja_gerado) {
+        $ch = curl_init();
+    
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $openai_api_key,
+        ];
+    
+        $data = [
+            'model' => 'gpt-4',
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ],
+            'temperature' => 0.7,
+            'max_tokens' => 300,
+        ];
+    
+        curl_setopt_array($ch, [
+            CURLOPT_URL => 'https://api.openai.com/v1/chat/completions',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json",
-                "Authorization: Bearer $openai_api_key"
-            ],
-            CURLOPT_POSTFIELDS => json_encode([
-                "model" => "gpt-3.5-turbo",
-                "messages" => [
-                    ["role" => "system", "content" => "Você é um mentor financeiro atencioso e motivador."],
-                    ["role" => "user", "content" => $prompt]
-                ],
-                "max_tokens" => 150,
-                "temperature" => 0.7
-            ])
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_POSTFIELDS => json_encode($data),
         ]);
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        $data = json_decode($response, true);
-        $resposta = $data['choices'][0]['message']['content'] ?? 'Erro ao gerar resposta.';
-
-        // salvar resposta no banco
-        $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
-                               VALUES (:uid, :msg, :data_referencia)");
-        $stmt->execute([
-            'uid' => $usuario_id,
-            'msg' => $resposta,
-            'data_referencia' => $mesSelecionado . '-01'
-        ]);
+    
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+    
+        $dataReferencia = $mesSelecionado . '-01';
+    
+        if ($result && $httpCode === 200) {
+            $json = json_decode($result, true);
+            $resposta = $json['choices'][0]['message']['content'] ?? 'Resposta não encontrada.';
+    
+            // insere a resposta no banco
+            $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia) 
+                                   VALUES (:uid, :msg, :data_referencia)");
+            $stmt->execute([
+                'uid' => $usuario_id,
+                'msg' => $resposta,
+                'data_referencia' => $dataReferencia
+            ]);
+        } else {
+            $erro = $curlError ?: $result; // Pega o erro do curl ou da resposta
+            $resposta = "Ocorreu um erro ao gerar a resposta.";
+    
+            // salva o erro no banco
+            $stmt = $pdo->prepare("INSERT INTO mentor_virtual_respostas (usuario_id, resposta, data_referencia, erro) 
+                                   VALUES (:uid, '', :data_referencia, :erro)");
+            $stmt->execute([
+                'uid' => $usuario_id,
+                'data_referencia' => $dataReferencia,
+                'erro' => $erro
+            ]);
+        }
     }
-}
+}    
 ?>
 
 <!DOCTYPE html>
