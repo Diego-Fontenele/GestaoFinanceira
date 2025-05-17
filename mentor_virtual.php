@@ -26,7 +26,7 @@ if ($mesSelecionado) {
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
     Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
-    $openai_api_key = getenv('API_GPT_3');
+    $openai_api_key = getenv('API_GPT');
 
     // Verifica se já existe resposta
     $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
