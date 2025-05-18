@@ -27,7 +27,8 @@ if ($mesSelecionado) {
     Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
 
     $openai_api_key = getenv('API_GPT');
-
+    $groq_api_key  = getenv('API_GROQ');
+    
     // Verifica se já existe resposta
     $stmt = $pdo->prepare("SELECT resposta FROM mentor_virtual_respostas 
                            WHERE usuario_id = :uid AND data_referencia = :data_referencia");
@@ -35,15 +36,26 @@ if ($mesSelecionado) {
     $ja_gerado = $stmt->fetchColumn();
 
     if (!$ja_gerado) {
-        $ch = curl_init();
+        // Define o provedor ativo: 'openai' ou 'groq'
+        $provedor_api = 'groq'; // altere para 'openai' quando quiser usar a OpenAI
+    
+        if ($provedor_api === 'openai') {
+            $api_key = $openai_api_key;
+            $api_url = 'https://api.openai.com/v1/chat/completions';
+            $model = 'gpt-3.5-turbo';
+        } elseif ($provedor_api === 'groq') {
+            $api_key = $groq_api_key; // crie essa variável com sua chave Groq
+            $api_url = 'https://api.groq.com/openai/v1/chat/completions';
+            $model = 'llama3-70b-8192'; // ou outro modelo suportado pela Groq
+        }
     
         $headers = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $openai_api_key,
+            'Authorization: Bearer ' . $api_key,
         ];
     
         $data = [
-            'model' => 'gpt-3.5-turbo',
+            'model' => $model,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ],
@@ -51,8 +63,9 @@ if ($mesSelecionado) {
             'max_tokens' => 300,
         ];
     
+        $ch = curl_init();
         curl_setopt_array($ch, [
-            CURLOPT_URL => 'https://api.openai.com/v1/chat/completions',
+            CURLOPT_URL => $api_url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => $headers,
@@ -79,7 +92,7 @@ if ($mesSelecionado) {
                 'data_referencia' => $dataReferencia
             ]);
         } else {
-            $erro = $curlError ?: $result; // Pega o erro do curl ou da resposta
+            $erro = $curlError ?: $result;
             $resposta = "Ocorreu um erro ao gerar a resposta.";
     
             // salva o erro no banco
@@ -92,6 +105,7 @@ if ($mesSelecionado) {
             ]);
         }
     }
+    
 }    
 ?>
 
