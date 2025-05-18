@@ -108,13 +108,13 @@ if ($mesSelecionado) {
     else{
         // Se já existe resposta para aquele mês, busca resposta no Banco de dados
         $stmt = $pdo->prepare("
-                                select resposta, data_referencia, data_resposta from mentor_virtual_respostas
+                                select resposta, to_char(data_referencia,'dd/mm/yyyy') as data_referencia, to_char(data_resposta,'dd/mm/yyyy hh:mm:ss') as data_resposta from mentor_virtual_respostas
                             where usuario_id = ? and data_referencia = ?");
 
         $stmt->execute([$usuario_id, $dataReferencia]);
         $mentorVirtualBD = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($mentorVirtualBD as $mV_lBD) {
-            $resposta = $mV_lBD['resposta'];
+            $respostaBd = $mV_lBD['resposta'];
             $data_refe_bd = $mV_lBD['data_referencia'];
             $data_resp_bd = $mV_lBD['data_resposta'];
         }
@@ -156,9 +156,9 @@ if ($mesSelecionado) {
                 </div>
             </div>
             <?php endif; ?>
-            <?php if ($resposta): ?>
+            <?php if ($respostaBd): ?>
             <div class="card">
-                <div class="card-header">Dica do Mentor - Histórico -  <?= $data_refe_bd.' - Data resposta IA - '.$data_resp_bd ?></div>
+                <div class="card-header">Histórico - Dica do Mentor<?= $data_refe_bd.' - Data resposta IA - '.$data_resp_bd ?></div>
                 <div class="card-body">
                     <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
                 </div>
