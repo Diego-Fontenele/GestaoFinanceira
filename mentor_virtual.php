@@ -12,6 +12,7 @@ $mesSelecionado = $_GET['mes_ano'] ?? null;
 $resposta = '';
 $mes = '';
 $ano = '';
+$respostaBd = '';
 
 if ($mesSelecionado) {
     list($ano, $mes) = explode('-', $mesSelecionado);
@@ -35,7 +36,7 @@ if ($mesSelecionado) {
     $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
     $ja_gerado = $stmt->fetchColumn();
     $dataReferencia = $mesSelecionado . '-01';
-    $respostaBd = '';
+    
 
     if (!$ja_gerado) {
         // Define o provedor ativo: 'openai' ou 'groq'
@@ -160,9 +161,9 @@ if ($mesSelecionado) {
             <?php endif; ?>
             <?php if ($respostaBd): ?>
                 <div class="card">
-                    <div class="card-header">Histórico - Dica do Mentor<?= $data_refe_bd . ' - Data resposta IA - ' . $data_resp_bd ?></div>
+                    <div class="card-header">Histórico - Dica do Mentor&nbsp;<?= $data_refe_bd . ' - Data resposta IA - ' . $data_resp_bd ?></div>
                     <div class="card-body">
-                        <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
+                        <p><?= nl2br(htmlspecialchars($respostaBd)) ?></p>
                     </div>
                 </div>
             <?php endif; ?>
