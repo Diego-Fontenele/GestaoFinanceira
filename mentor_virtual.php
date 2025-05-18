@@ -34,7 +34,7 @@ if ($mesSelecionado) {
                            WHERE usuario_id = :uid AND data_referencia = :data_referencia");
     $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado . '-01']);
     $ja_gerado = $stmt->fetchColumn();
-
+    $dataReferencia = $mesSelecionado . '-01';
     if (!$ja_gerado) {
         // Define o provedor ativo: 'openai' ou 'groq'
         $provedor_api = 'groq'; // altere para 'openai' quando quiser usar a OpenAI
@@ -77,7 +77,7 @@ if ($mesSelecionado) {
         $curlError = curl_error($ch);
         curl_close($ch);
     
-        $dataReferencia = $mesSelecionado . '-01';
+        
     
         if ($result && $httpCode === 200) {
             $json = json_decode($result, true);
@@ -113,10 +113,11 @@ if ($mesSelecionado) {
 
         $stmt->execute([$usuario_id, $dataReferencia]);
         $mentorVirtualBD = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $resposta = $mentorVirtualBD['resposta'];
-        $data_refe_bd = $mentorVirtualBD['data_referencia'];
-        $data_resp_bd = $mentorVirtualBD['data_resposta'];
+        foreach ($mentorVirtualBD as $mV_lBD) {
+            $resposta = $mV_lBD['resposta'];
+            $data_refe_bd = $mV_lBD['data_referencia'];
+            $data_resp_bd = $mV_lBD['data_resposta'];
+        }
     }
     
 }    
