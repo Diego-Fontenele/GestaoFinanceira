@@ -109,7 +109,7 @@ if ($mesSelecionado) {
         // Se já existe resposta para aquele mês, busca resposta no Banco de dados
         $stmt = $pdo->prepare("
                                 select resposta, data_referencia, data_resposta from mentor_virtual_respostas
-                            where id = ? and data_referencia = ?");
+                            where usuario_id = ? and data_referencia = ?");
 
         $stmt->execute([$usuario_id, $dataReferencia]);
         $mentorVirtualBD = $stmt->fetchAll(PDO::FETCH_ASSOC);
