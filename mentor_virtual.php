@@ -105,6 +105,19 @@ if ($mesSelecionado) {
             ]);
         }
     }
+    else{
+        // Se já existe resposta para aquele mês, busca resposta no Banco de dados
+        $stmt = $pdo->prepare("
+                                select resposta, data_referencia, data_resposta from mentor_virtual_respostas
+                            where id = ? and data_referencia = ?");
+
+        $stmt->execute([$usuario_id, $dataReferencia]);
+        $mentorVirtualBD = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $resposta = $mentorVirtualBD['resposta'];
+        $data_refe_bd = $mentorVirtualBD['data_referencia'];
+        $data_resp_bd = $mentorVirtualBD['data_resposta'];
+    }
     
 }    
 ?>
@@ -137,6 +150,14 @@ if ($mesSelecionado) {
             <?php if ($resposta): ?>
             <div class="card">
                 <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
+                <div class="card-body">
+                    <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
+                </div>
+            </div>
+            <?php endif; ?>
+            <?php if ($resposta): ?>
+            <div class="card">
+                <div class="card-header">Dica do Mentor - Histórico -  <?= $data_refe_bd.' - Data resposta IA - '.$data_resp_bd ?></div>
                 <div class="card-body">
                     <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
                 </div>
