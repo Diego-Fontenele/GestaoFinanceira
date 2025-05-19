@@ -65,11 +65,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method="POST" action="">
       <div class="mb-3">
         <label for="email" class="form-label">E-mail</label>
-        <input type="email" name="email" class="form-control" id="email" required value=<?php echo isset($_COOKIE['lembrar_email']) ? $_COOKIE['lembrar_email'] : ''; ?>>
+        <input type="email" name="email" class="form-control" id="email" required value="<?php echo isset($_COOKIE['lembrar_email']) ? htmlspecialchars($_COOKIE['lembrar_email']) : ''; ?>">
       </div>
       <div class="mb-3">
         <label for="senha" class="form-label">Senha</label>
-        <input type="password" name="senha" class="form-control" id="senha" required value=<?php echo isset($_COOKIE['lembrar_senha']) ? $_COOKIE['lembrar_senha'] : ''; ?>>
+        <input type="password" name="senha" class="form-control" id="senha" required value="<?php echo isset($_COOKIE['lembrar_senha']) ? htmlspecialchars($_COOKIE['lembrar_senha']) : ''; ?>">
       </div>
       <div class="form-check mb-3">
         <input class="form-check-input" type="checkbox" name="lembrar" id="lembrar">
