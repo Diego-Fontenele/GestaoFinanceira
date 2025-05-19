@@ -102,43 +102,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     try {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $pdo->beginTransaction();
-
-      $dataObj = new DateTime($data); // $data vindo do $_POST ou já definido
+    
+      $dataObj = new DateTime($data);
       $dataRefObj = new DateTime($datareferencia);
-      
+    
       for ($i = 0; $i < $recorrencia; $i++) {
-        
         $dataAtual = clone $dataObj;
         $dataRefAtual = clone $dataRefObj;
-
+    
         $dataAtual->modify("+$i month");
         $dataRefAtual->modify("+$i month");
-
+    
         $dataAtualStr = $dataAtual->format('Y-m-d');
         $dataRefStr = $dataRefAtual->format('Y-m-d');
-
+    
         try {
-        $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-        
-          $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
-        }  catch (PDOException $e) {
-          echo "Erro ao inserir recorrência $i: " . $e->getMessage() . "<br>";
-          echo "Query Params: " . json_encode([
+          $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+          $stmt->execute([
             $_SESSION['usuario_id'],
             $categoria_id,
             $descricao,
             $valor,
             $dataAtualStr,
             $dataRefStr
-          ]) . "<br>";
-          throw new Exception("Erro real na recorrência $i: " . $e->getMessage() . " | Dados: " . json_encode([
+          ]);
+        } catch (PDOException $e) {
+          // ERRO REAL DETECTADO
+          $pdo->rollBack(); // Encerra imediatamente a transação
+          die("❌ Erro ao inserir recorrência $i:<br><strong>" . $e->getMessage() . "</strong><br><pre>Query Params: " . print_r([
             $_SESSION['usuario_id'],
             $categoria_id,
             $descricao,
-            number_format($valor, 2, '.', ''),
+            $valor,
             $dataAtualStr,
             $dataRefStr
-          ])); // força o catch externo a dar rollback
+          ], true) . "</pre>");
         }
       }
     
@@ -147,9 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       header("Location: add_receita.php$queryString");
       exit;
     } catch (Exception $e) {
-  $pdo->rollBack();
-  die('Erro: ' . $e->getMessage()); // <-- mostra o erro no navegador
-}
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Receita: ' . $e->getMessage()];
+    }
   }
 
   // Limpa campos
