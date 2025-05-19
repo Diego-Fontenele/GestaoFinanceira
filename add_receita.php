@@ -100,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   } else {
     // Inserção
     try {
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $pdo->beginTransaction();
+    
       $dataObj = new DateTime($data);
       $dataRefObj = new DateTime($datareferencia);
     
@@ -113,9 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         $dataAtualStr = $dataAtual->format('Y-m-d');
         $dataRefStr = $dataRefAtual->format('Y-m-d');
     
-        echo "<h3>Inserindo recorrência $i</h3>";
-        echo "<pre>";
-        print_r([
+        $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
           $_SESSION['usuario_id'],
           $categoria_id,
           $descricao,
@@ -123,28 +125,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
           $dataAtualStr,
           $dataRefStr
         ]);
-        echo "</pre>";
-    
-        try {
-          $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-          $stmt->execute([
-            $_SESSION['usuario_id'],
-            $categoria_id,
-            $descricao,
-            $valor,
-            $dataAtualStr,
-            $dataRefStr
-          ]);
-        } catch (PDOException $e) {
-          die("💥 Erro real na recorrência $i:<br><strong>" . $e->getMessage() . "</strong>");
-        }
       }
     
-      echo "✅ Todas inserções feitas com sucesso.";
+      $pdo->commit();
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) cadastrada(s) com sucesso!'];
+      header("Location: add_receita.php$queryString");
       exit;
     
     } catch (Exception $e) {
-      echo "Erro geral: " . $e->getMessage();
+      $pdo->rollBack();
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Erro ao cadastrar receita: ' . $e->getMessage()];
+      // Você pode salvar o erro completo em um log também
+      error_log("Erro ao cadastrar receita: " . $e->getMessage());
     }
   }
 
