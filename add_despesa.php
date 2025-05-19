@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 
     // Agora você pode usar:
     $dataFormatada = $dataObj->format('Y-m-d');
-    $dataReferencia = $dataReferenciaObj->format('Y-m-d');
+    $datareferencia = $dataReferenciaObj->format('Y-m-d');
  
 
   if (!empty($_POST['id'])) {
