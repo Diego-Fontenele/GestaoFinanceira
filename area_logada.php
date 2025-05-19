@@ -95,7 +95,7 @@ foreach ($resultado as $linha) {
 
 if (isset($_GET['mes_descricao'])) {
 
-  $mesSelecionado = $_GET['mes_descricao'];
+  $mesSelecionado = $_GET['mes_descricao'].'-01';
   
 }
 
