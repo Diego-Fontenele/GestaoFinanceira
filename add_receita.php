@@ -75,12 +75,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
   $data = $_POST['data'];
+   // Converte a string para DateTime
+   $dataObj = DateTime::createFromFormat('Y-m-d', $data);
+
+   // Clona o objeto e ajusta para o primeiro dia do mês
+   $dataReferenciaObj = clone $dataObj;
+   $dataReferenciaObj->modify('first day of this month');
+ 
+   // Agora você pode usar:
+   $dataFormatada = $dataObj->format('Y-m-d');
+   $datareferencia = $dataReferenciaObj->format('Y-m-d');
 
   if (!empty($_POST['id'])) {
     // Atualização
     $id_edicao = $_POST['id'];
-    $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $id_edicao, $_SESSION['usuario_id']])) {
+    $stmt = $pdo->prepare("UPDATE receitas SET categoria_id = ?, descricao = ?, valor = ?, data = ?, data_referencia = ? WHERE id = ? AND usuario_id = ?");
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita atualizada com sucesso!'];
       header("Location: add_receita.php$queryString");
       exit;
@@ -95,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       for ($i = 0; $i < $recorrencia; $i++) {
         $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
     
-        $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual]);
+        $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $datareferencia]);
       }
     
       $pdo->commit();
@@ -129,6 +139,7 @@ if (isset($_GET['editar'])) {
     $descricao = $receita['descricao'];
     $valor = number_format($receita['valor'], 2, ',', '.');
     $data = $receita['data'];
+    $datareferencia = $despesa['data_referencia'];
     $editando = true;
   }
 }
