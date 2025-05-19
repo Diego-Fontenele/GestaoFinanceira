@@ -42,14 +42,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
-  $data = $_POST['data'];
+      $data = $_POST['data']; // Ex: '24/04/2025'
 
-  // Converte a string para DateTime (assumindo formato brasileiro d/m/Y)
-  $dataObj = DateTime::createFromFormat('d/m/Y', $data);
+    // 1. Converte a string para DateTime (assumindo formato brasileiro)
+    $dataObj = DateTime::createFromFormat('d/m/Y', $data);
 
-  // Gera a referência: primeiro dia do mesmo mês
-  $dataReferencia = $dataObj->format('Y-m'); // ex: '2025-04'
-  $dataReferencia = DateTime::createFromFormat('Y-m-d', $dataReferencia . '-01');
+    if (!$dataObj) {
+        die('Erro ao converter data!'); // Ou trate conforme necessário
+    }
+
+    // 2. Clona o objeto e ajusta para o primeiro dia do mês
+    $dataReferenciaObj = clone $dataObj;
+    $dataReferenciaObj->modify('first day of this month');
+
+    // Agora você pode usar:
+    $dataFormatada = $dataObj->format('Y-m-d');
+    $dataReferencia = $dataReferenciaObj->format('Y-m-d');
  
 
   if (!empty($_POST['id'])) {
