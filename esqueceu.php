@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $erro = "Este e-mail ainda não está cadastrado em nossa base. <a href='cadastrar.php'>Cadastrar Novo usuário.</a>";
     } else {
         // Gera nova senha aleatória
-          $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
+          $novaSenha = 'teste123';//bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
           $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
          try {
             $mensagem = "E-mail enviado com sucesso!";
