@@ -139,7 +139,7 @@ if (isset($_GET['editar'])) {
     $descricao = $receita['descricao'];
     $valor = number_format($receita['valor'], 2, ',', '.');
     $data = $receita['data'];
-    $datareferencia = $despesa['data_referencia'];
+    $datareferencia = $receita['data_referencia'];
     $editando = true;
   }
 }
