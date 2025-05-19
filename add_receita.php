@@ -131,7 +131,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
             $dataAtualStr,
             $dataRefStr
           ]) . "<br>";
-          throw $e; // força o catch externo a dar rollback
+          throw new Exception("Erro real na recorrência $i: " . $e->getMessage() . " | Dados: " . json_encode([
+            $_SESSION['usuario_id'],
+            $categoria_id,
+            $descricao,
+            number_format($valor, 2, '.', ''),
+            $dataAtualStr,
+            $dataRefStr
+          ])); // força o catch externo a dar rollback
         }
       }
     
