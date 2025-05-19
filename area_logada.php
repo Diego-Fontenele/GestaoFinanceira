@@ -96,15 +96,7 @@ foreach ($resultado as $linha) {
 if (isset($_GET['mes_descricao'])) {
 
   $mesSelecionado = $_GET['mes_descricao'];
-  list($ano, $mes) = explode('-', $mesSelecionado);
-} else {
-
-  $dataAnterior = new DateTime();
-  $dataAnterior->modify('-1 month');
-
-  $mes = $dataAnterior->format('m');
-  $ano = $dataAnterior->format('Y');
-  $mesSelecionado = "$ano-$mes";
+  
 }
 
 $sqlDescricao = $pdo->prepare("
@@ -113,12 +105,12 @@ $sqlDescricao = $pdo->prepare("
     SUM(valor) as total
   FROM despesas
   WHERE usuario_id = ?
-  AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?
+  AND data_referencia = ?
   GROUP BY descricao
   ORDER BY total DESC
   LIMIT 10
 ");
-$sqlDescricao->execute([$usuarioId, $mes, $ano]);
+$sqlDescricao->execute([$usuarioId, $mesSelecionado]);
 $descricoes = [];
 $valoresDescricao = [];
 
