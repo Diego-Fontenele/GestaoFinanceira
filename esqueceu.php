@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               $email,
               'Diego',
               'Nova senha para sua conta',
-              "Olá, {$verifica['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login.{$hash}"
+              "Olá, {$verifica['nome']}<br><br>Sua nova senha é: <strong>{$novaSenha}</strong><br><br>Você pode alterá-la após o login."
           );
             header("refresh:2;url=login.php");
         } catch (PDOException $e) {
