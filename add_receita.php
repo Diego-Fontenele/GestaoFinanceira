@@ -100,8 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   } else {
     // Inserção
     try {
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $pdo->beginTransaction();
-    
+      
       for ($i = 0; $i < $recorrencia; $i++) {
         $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
         $dataref = date('Y-m-d', strtotime("+$i month", strtotime($datareferencia)));
