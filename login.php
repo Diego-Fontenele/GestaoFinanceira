@@ -12,6 +12,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+  echo "<pre>";
+var_dump($senha); // senha digitada
+var_dump($usuario['senha']); // hash no banco
+echo password_verify($senha, $usuario['senha']) ? "VERIFICADO" : "FALHOU";
+echo "</pre>";
+exit();
   if ($usuario && password_verify($senha, $usuario['senha'])) {
     $_SESSION['usuario'] = $usuario['nome'];
     $_SESSION['usuario_id'] = $usuario['id'];
@@ -72,7 +78,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <input type="password" name="senha" class="form-control" id="senha" required value="<?php echo isset($_COOKIE['lembrar_senha']) ? htmlspecialchars($_COOKIE['lembrar_senha']) : ''; ?>">
       </div>
       <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" name="lembrar" id="lembrar">
+      <input class="form-check-input" type="checkbox" name="lembrar" id="lembrar"
+      <?php echo isset($_COOKIE['lembrar_email']) ? 'checked' : ''; ?>>
         <label class="form-check-label" for="lembrar">
           Lembrar login
         </label>

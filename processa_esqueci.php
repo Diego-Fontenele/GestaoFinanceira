@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->send();
             echo "Nova senha enviada para seu e-mail.";
             echo "<script>alert('E-mail enviado com sucesso!'); window.location.href = 'login.php';</script>";
+            setcookie('lembrar_senha', '', time() - 3600, "/");
         } catch (Exception $e) {
             echo "Erro ao enviar e-mail: {$mail->ErrorInfo}";
         }
