@@ -100,9 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   } else {
     // Inserção
     try {
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $pdo->beginTransaction();
-    
+          
       $dataObj = new DateTime($data);
       $dataRefObj = new DateTime($datareferencia);
     
@@ -127,13 +125,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         ]);
       }
     
-      $pdo->commit();
+    
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) cadastrada(s) com sucesso!'];
       header("Location: add_receita.php$queryString");
       exit;
     
     } catch (Exception $e) {
-      $pdo->rollBack();
+      
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Erro ao cadastrar receita: ' . $e->getMessage()];
       // Você pode salvar o erro completo em um log também
       error_log("Erro ao cadastrar receita: " . $e->getMessage());
