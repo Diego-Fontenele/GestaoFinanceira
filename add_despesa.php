@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       $data = $_POST['data']; // Ex: '24/04/2025'
 
     // 1. Converte a string para DateTime (assumindo formato brasileiro)
+    echo $data;
     $dataObj = DateTime::createFromFormat('d/m/Y', $data);
 
     if (!$dataObj) {
