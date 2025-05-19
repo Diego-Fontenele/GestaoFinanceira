@@ -12,13 +12,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     $verifica = $stmt->fetch(PDO::FETCH_ASSOC);
+    
 
     if (empty($verifica)) {
         $erro = "Este e-mail ainda não está cadastrado em nossa base. <a href='cadastrar.php'>Cadastrar Novo usuário.</a>";
     } else {
         // Gera nova senha aleatória
-          $novaSenha = 'teste123';//bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
+          $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
           $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
+          // Atualiza no banco
+          $stmt = $pdo->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
+          $stmt->execute([$hash, $email]);
          try {
             $mensagem = "E-mail enviado com sucesso!";
             $resultado = enviarEmail(
