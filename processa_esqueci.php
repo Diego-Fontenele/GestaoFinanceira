@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($usuario) {
         // Gera nova senha aleatória
+        echo "aqui";
         $novaSenha = 'teste123';//bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
         $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
         
