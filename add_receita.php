@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       for ($i = 0; $i < $recorrencia; $i++) {
         $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
         $dataref = date('Y-m-d', strtotime("+$i month", strtotime($datareferencia)));
-    
+        var_dump($valor, $dataAtual, $dataref);
         $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
         try {
           $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $dataref]);
