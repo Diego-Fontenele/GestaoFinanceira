@@ -100,9 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   } else {
     // Inserção
     try {
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $pdo->beginTransaction();
-    
       $dataObj = new DateTime($data);
       $dataRefObj = new DateTime($datareferencia);
     
@@ -116,6 +113,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         $dataAtualStr = $dataAtual->format('Y-m-d');
         $dataRefStr = $dataRefAtual->format('Y-m-d');
     
+        echo "<h3>Inserindo recorrência $i</h3>";
+        echo "<pre>";
+        print_r([
+          $_SESSION['usuario_id'],
+          $categoria_id,
+          $descricao,
+          $valor,
+          $dataAtualStr,
+          $dataRefStr
+        ]);
+        echo "</pre>";
+    
         try {
           $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
           $stmt->execute([
@@ -127,25 +136,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
             $dataRefStr
           ]);
         } catch (PDOException $e) {
-          // ERRO REAL DETECTADO
-          $pdo->rollBack(); // Encerra imediatamente a transação
-          die("❌ Erro ao inserir recorrência $i:<br><strong>" . $e->getMessage() . "</strong><br><pre>Query Params: " . print_r([
-            $_SESSION['usuario_id'],
-            $categoria_id,
-            $descricao,
-            $valor,
-            $dataAtualStr,
-            $dataRefStr
-          ], true) . "</pre>");
+          die("💥 Erro real na recorrência $i:<br><strong>" . $e->getMessage() . "</strong>");
         }
       }
     
-      $pdo->commit();
-      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) cadastrada(s) com sucesso!'];
-      header("Location: add_receita.php$queryString");
+      echo "✅ Todas inserções feitas com sucesso.";
       exit;
+    
     } catch (Exception $e) {
-      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Receita: ' . $e->getMessage()];
+      echo "Erro geral: " . $e->getMessage();
     }
   }
 
