@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($usuario) {
         // Gera nova senha aleatória
-        $novaSenha = bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
+        $novaSenha = 'teste123';//bin2hex(random_bytes(4)); // Ex: "a8d3f6e9"
         $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
-
+        
         // Atualiza no banco
         $stmt = $pdo->prepare("UPDATE usuarios SET senha = ? WHERE email = ?");
         $stmt->execute([$hash, $email]);
