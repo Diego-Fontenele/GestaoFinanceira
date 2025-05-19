@@ -42,18 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   $categoria_id = $_POST['categoria_id'];
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
-      $data = $_POST['data']; // Ex: '24/04/2025'
+  $data = $_POST['data']; 
 
-    // Converte a string para DateTime
-    $dataObj = DateTime::createFromFormat('Y-m-d', $data);
+  // Converte a string para DateTime
+  $dataObj = DateTime::createFromFormat('Y-m-d', $data);
 
-    // 2. Clona o objeto e ajusta para o primeiro dia do mês
-    $dataReferenciaObj = clone $dataObj;
-    $dataReferenciaObj->modify('first day of this month');
+  // Clona o objeto e ajusta para o primeiro dia do mês
+  $dataReferenciaObj = clone $dataObj;
+  $dataReferenciaObj->modify('first day of this month');
 
-    // Agora você pode usar:
-    $dataFormatada = $dataObj->format('Y-m-d');
-    $datareferencia = $dataReferenciaObj->format('Y-m-d');
+  // Agora você pode usar:
+  $dataFormatada = $dataObj->format('Y-m-d');
+  $datareferencia = $dataReferenciaObj->format('Y-m-d');
  
 
   if (!empty($_POST['id'])) {
@@ -74,9 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 
       for ($i = 0; $i < $recorrencia; $i++) {
         $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
+        $dataref = date('Y-m-d', strtotime("+$i month", strtotime($datareferencia)));
 
         $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $datareferencia]);
+        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $dataref]);
       }
 
       $pdo->commit();
