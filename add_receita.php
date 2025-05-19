@@ -119,10 +119,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 
         try {
         $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-        
+        var_dump([
+          'usuario_id' => $_SESSION['usuario_id'],
+          'categoria_id' => $categoria_id,
+          'descricao' => $descricao,
+          'valor' => $valor,
+          'data' => $dataAtualStr,
+          'data_referencia' => $dataRefStr
+        ]);
           $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
         } catch (PDOException $e) {
-          throw new Exception("Erro ao inserir mês {$i}: " . $e->getMessage());
+          echo "Erro ao inserir recorrência $i: " . $e->getMessage() . "<br>";
         }
       }
     
@@ -132,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       exit;
     } catch (Exception $e) {
       $pdo->rollBack();
-      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Receita'.$e->getMessage()];
+      die('Erro: ' . $e->getMessage()); // <-- mostra o erro no navegador
     }
   }
 
