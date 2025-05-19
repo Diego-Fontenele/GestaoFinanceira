@@ -266,12 +266,12 @@ where gasto_real <> 0
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$usuarioId,'2025-04-01','2025-04-30']);
 
-$categorias = [];
+$categoriasValorEsperado = [];
 $valoresEsperados = [];
 $gastosReais = [];
 
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $categorias[] = $row['categoria'];
+  $categoriasValorEsperado[] = $row['categoria'];
   $valoresEsperados[] = $row['valor_esperado'];
   $gastosReais[] = $row['gasto_real'];
 }
@@ -790,7 +790,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
           type: 'bar',
           data: {
-            labels: <?= json_encode($categorias); ?>,
+            labels: <?= json_encode($categoriasValorEsperado); ?>,
             datasets: [
               {
                 label: 'Valor Esperado',
