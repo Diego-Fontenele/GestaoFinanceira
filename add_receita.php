@@ -102,15 +102,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     try {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $pdo->beginTransaction();
+
+      $dataObj = new DateTime($data); // $data vindo do $_POST ou já definido
+      $dataRefObj = new DateTime($datareferencia);
       
       for ($i = 0; $i < $recorrencia; $i++) {
-        $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
-        $dataref = date('Y-m-d', strtotime("+$i month", strtotime($datareferencia)));
-        var_dump($valor, $dataAtual, $dataref);
+        
+        $dataAtual = clone $dataObj;
+        $dataRefAtual = clone $dataRefObj;
+
+        $dataAtual->modify("+$i month");
+        $dataRefAtual->modify("+$i month");
+
+        $dataAtualStr = $dataAtual->format('Y-m-d');
+        $dataRefStr = $dataRefAtual->format('Y-m-d');
+
         try {
         $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
         
-          $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $dataref]);
+          $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
         } catch (PDOException $e) {
           throw new Exception("Erro ao inserir mês {$i}: " . $e->getMessage());
         }
