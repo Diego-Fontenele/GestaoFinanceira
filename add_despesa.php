@@ -44,13 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
       $data = $_POST['data']; // Ex: '24/04/2025'
 
-    // 1. Converte a string para DateTime (assumindo formato brasileiro)
-    echo $data;
-    $dataObj = DateTime::createFromFormat('d/m/Y', $data);
-
-    if (!$dataObj) {
-        die('Erro ao converter data!'); // Ou trate conforme necessário
-    }
+    // Converte a string para DateTime
+    $dataObj = DateTime::createFromFormat('Y-m-d', $data);
 
     // 2. Clona o objeto e ajusta para o primeiro dia do mês
     $dataReferenciaObj = clone $dataObj;
