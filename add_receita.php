@@ -125,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         ]);
       }
     
-    
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Receita(s) cadastrada(s) com sucesso!'];
       header("Location: add_receita.php$queryString");
       exit;

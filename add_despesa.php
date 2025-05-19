@@ -70,23 +70,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   } else {
     // Inserção
     try {
-      $pdo->beginTransaction();
+      $dataObj = new DateTime($data);
+      $dataRefObj = new DateTime($datareferencia);
 
       for ($i = 0; $i < $recorrencia; $i++) {
-        $dataAtual = date('Y-m-d', strtotime("+$i month", strtotime($data)));
-        $dataref = date('Y-m-d', strtotime("+$i month", strtotime($datareferencia)));
+        $dataAtual = clone $dataObj;
+        $dataRefAtual = clone $dataRefObj;
+    
+        $dataAtual->modify("+$i month");
+        $dataRefAtual->modify("+$i month");
+    
+        $dataAtualStr = $dataAtual->format('Y-m-d');
+        $dataRefStr = $dataRefAtual->format('Y-m-d');
 
         $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtual, $dataref]);
+        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
       }
 
-      $pdo->commit();
+      
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Despesas(s) cadastrada(s) com sucesso!'];
       header("Location: add_despesa.php$queryString");
       exit;
     } catch (Exception $e) {
-      $pdo->rollBack();
+      
       $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problema ao cadastrar Despesa'];
+      error_log("Erro ao cadastrar receita: " . $e->getMessage());
     }
   }
 
