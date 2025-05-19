@@ -119,17 +119,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
 
         try {
         $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
-        var_dump([
-          'usuario_id' => $_SESSION['usuario_id'],
-          'categoria_id' => $categoria_id,
-          'descricao' => $descricao,
-          'valor' => $valor,
-          'data' => $dataAtualStr,
-          'data_referencia' => $dataRefStr
-        ]);
+        
           $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
-        } catch (PDOException $e) {
+        }  catch (PDOException $e) {
           echo "Erro ao inserir recorrência $i: " . $e->getMessage() . "<br>";
+          echo "Query Params: " . json_encode([
+            $_SESSION['usuario_id'],
+            $categoria_id,
+            $descricao,
+            $valor,
+            $dataAtualStr,
+            $dataRefStr
+          ]) . "<br>";
+          throw $e; // força o catch externo a dar rollback
         }
       }
     
@@ -138,9 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
       header("Location: add_receita.php$queryString");
       exit;
     } catch (Exception $e) {
-      $pdo->rollBack();
-      die('Erro: ' . $e->getMessage()); // <-- mostra o erro no navegador
-    }
+  $pdo->rollBack();
+  die('Erro: ' . $e->getMessage()); // <-- mostra o erro no navegador
+}
   }
 
   // Limpa campos
