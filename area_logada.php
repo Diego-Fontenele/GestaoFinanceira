@@ -319,7 +319,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <div id="menuLateral" class="collapse bg-light p-3 min-vh-100 position-fixed top-0 start-0 z-3 d-md-block" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
-
+     <!--Essa div "empurra" o conteúdo para o lado só em telas grandes -->
+     <div class="d-none d-md-block" style="width: 250px;"></div>
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
