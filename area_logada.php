@@ -297,6 +297,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       #menu-toggle {
         display: none;
       }
+      main {
+        margin-left: 250px;
+      }
 
       #sidebar {
         transform: translateX(0) !important;
@@ -345,11 +348,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 <body class="bg-light">
   <!-- Botão do menu -->
-  <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
-    &#9776;
-  </button>
+  <button id="menu-toggle" class="btn btn-primary position-fixed top-0 start-0 m-2 d-md-none" style="z-index: 1050;">
+  &#9776;
+</button>
   <div class="d-flex">
-    <div id='sidebar' class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 w-100 mw-100 md:position-relative md:translate-x-0 md:w-25">
+  <div id='sidebar' class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 d-md-block d-none" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
     <main class="flex-grow-1 p-4">
@@ -868,12 +871,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
-          document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
+          document.addEventListener("DOMContentLoaded", function () {
+            const menuToggle = document.getElementById("menu-toggle");
+            const sidebar = document.getElementById("sidebar");
 
-            toggleBtn.addEventListener('click', () => {
-              sidebar.classList.toggle('d-none');
+            menuToggle.addEventListener("click", function () {
+              sidebar.classList.toggle("show");
             });
           });
         </script>
