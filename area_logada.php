@@ -293,38 +293,72 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
   <style>
-    @media (min-width: 768px) {
-      #menu-toggle {
-        display: none;
-      }
+     body, html {
+    height: 100%;
+    margin: 0;
+  }
 
-      #sidebar {
-        transform: translateX(0) !important;
-        width: 250px;
-      }
+  #menu-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1050;
+    background-color: #0d6efd;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+  }
 
-      main {
-        margin-top: 0 !important;
-      }
+  #sidebar {
+    background-color: #0d6efd;
+    color: white;
+    padding: 1rem;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  @media (min-width: 768px) {
+    #menu-toggle {
+      display: none;
     }
 
-    @media (max-width: 767.98px) {
-      #sidebar {
-        transform: translateX(-100%);
-        position: fixed;
-        z-index: 1000;
-        width: 250px;
-        transition: transform 0.3s ease;
-      }
-
-      #sidebar.show {
-        transform: translateX(0);
-      }
-
-      main {
-        margin-top: 60px;
-      }
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      transform: translateX(0) !important;
+      z-index: 1040;
     }
+
+    main {
+      margin-left: 250px;
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1040;
+    }
+
+    #sidebar.show {
+      transform: translateX(0);
+    }
+
+    main {
+      margin-top: 60px;
+    }
+  }
   </style>
   <script>
     if ('serviceWorker' in navigator) {
