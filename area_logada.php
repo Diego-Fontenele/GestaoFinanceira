@@ -306,12 +306,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
   </script>
 </head>
-
-<button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3" type="button" data-bs-toggle="collapse" data-bs-target="#menuLateral">
-  &#9776;
-</button>
+<body class="bg-light">
+  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3" type="button" data-bs-toggle="collapse" data-bs-target="#menuLateral">
+    &#9776;
+  </button>
   <div class="d-flex flex-column flex-md-row min-vh-100">
-  <div id="menuLateral" class="collapse d-md-block bg-light p-3 d-flex flex-column flex-md-row min-vh-100" style="width: 250px;">
+  <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
     <?php include('includes/menu.php'); ?>
   </div>
 
