@@ -306,12 +306,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       });
     }
   </script>
-  <style>
-  body {
-    margin: 0;
-    padding: 0;
-  }
-</style>
+  
 </head>
 
 <body class="bg-light">
