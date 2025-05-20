@@ -1,6 +1,6 @@
 
 
-<nav class="bg-dark text-white p-3">
+<nav class="bg-dark text-white p-3 h-100 d-flex flex-column">
   <h4 class="mb-4"><i class="bi bi-piggy-bank"></i> Financeiro</h4>
   <ul class="nav flex-column">
     <li class="nav-item mb-2">
