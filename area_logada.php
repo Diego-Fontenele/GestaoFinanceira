@@ -309,9 +309,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 <body class="bg-light">
   <!-- Botão do menu -->
-  <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
-    &#9776;
-  </button>
+  <button id="menu-toggle" class="btn btn-primary d-md-none position-fixed top-0 start-0 m-3 z-3">
+  &#9776;
+</button>
   <div class="d-flex flex-column flex-md-row min-vh-100">
     <?php include('includes/menu.php'); ?>
 
