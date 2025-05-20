@@ -293,19 +293,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('Service Worker registrado com sucesso:', registration);
-          })
-          .catch(error => {
-            console.log('Erro ao registrar o Service Worker:', error);
-          });
-      });
-    }
-  </script>
+  
 
 </head>
 
