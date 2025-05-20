@@ -311,11 +311,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     margin: 0;
     padding: 0;
   }
-  @media (min-width: 768px) {
-  main {
-    margin-left: 250px; /* mesmo valor do menu */
-  }
-}
+  
 </style>
 </head>
 
@@ -325,11 +321,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     &#9776;
   </button>
   <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
-  <div id="menuLateral" class="collapse bg-light p-3 min-vh-100 d-md-block position-fixed" style="width: 250px; z-index: 1020;">
+  <div id="menuLateral" class="collapse bg-light p-3 min-vh-100 d-md-block" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
 
-    <main class="flex-grow-1 p-0">
+    <div class="d-none d-md-block" style="width: 250px;"></div>
+    <main class="flex-grow-1 p-0 mt-0 ms-0 ms-md-250">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
       <!-- Cards de Resumo -->
