@@ -315,7 +315,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         aria-controls="menuLateral">
   &#9776;
 </button>
-  <div class="collapse d-md-block bg-light p-3 position-fixed top-0 start-0 h-100" id="menuLateral" style="width: 250px;">
+  <div class="d-flex flex-column flex-md-row min-vh-100">
     <?php include('includes/menu.php'); ?>
 
     <main class="flex-grow-1 p-4">
@@ -835,14 +835,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           }
         });
-         // Controle do menu mobile
-          const menuToggle = document.getElementById('menu-toggle');
-          const sidebar = document.getElementById('sidebar');
-
-          menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-          });
-         
+        
         </script>
 
 </body>
