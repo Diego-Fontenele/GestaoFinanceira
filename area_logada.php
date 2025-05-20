@@ -311,7 +311,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   &#9776;
 </button>
   <div class="d-flex flex-column flex-md-row min-vh-100">
-  <div id="menuLateral" class="collapse d-md-block bg-light p-3" style="width: 250px;">
+  <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
     <?php include('includes/menu.php'); ?>
   </div>
 
