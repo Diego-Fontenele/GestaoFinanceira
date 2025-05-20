@@ -312,7 +312,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
     &#9776;
   </button>
-  <div id='sidebar' class="d-flex flex-column flex-md-row min-vh-100">
+  <div id='sidebar' class="d-flex flex-column flex-md-row min-vh-100 transition-transform duration-300 ease-in-out">
     <?php include('includes/menu.php'); ?>
 
     <main class="flex-grow-1 p-4">
