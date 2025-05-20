@@ -308,7 +308,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
-  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3" type="button"
+  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
