@@ -292,6 +292,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
+  <style>
+  @media (min-width: 768px) {
+    #menu-toggle {
+      display: none;
+    }
+  }
+</style>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
