@@ -95,7 +95,7 @@ foreach ($resultado as $linha) {
 
 if (isset($_GET['mes_descricao'])) {
 
-  $datareferencia = $_GET['mes_descricao'].'01';
+  $datareferencia = $_GET['mes_descricao'] . '01';
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 } else {
@@ -264,7 +264,7 @@ where gasto_real <> 0
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$usuarioId,'2025-04-01','2025-04-30']);
+$stmt->execute([$usuarioId, '2025-04-01', '2025-04-30']);
 
 $categoriasValorEsperado = [];
 $valoresEsperados = [];
@@ -306,14 +306,16 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
   </script>
 </head>
+
 <body class="bg-light">
-  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3" type="button" data-bs-toggle="collapse" data-bs-target="#menuLateral">
+  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3" type="button"
+    data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
-  <div class="d-flex flex-column flex-md-row min-vh-100">
-  <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
-    <?php include('includes/menu.php'); ?>
-  </div>
+  <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+    <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
+      <?php include('includes/menu.php'); ?>
+    </div>
 
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
@@ -459,7 +461,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               </div>
             </div>
           </div>
-        </div>            
+        </div>
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -799,40 +801,38 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             },
             plugins: [ChartDataLabels]
           });
-          
-        const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
-        const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
-          type: 'bar',
-          data: {
-            labels: <?= json_encode($categoriasValorEsperado); ?>,
-            datasets: [
-              {
-                label: 'Valor Esperado',
-                data: <?= json_encode($valoresEsperados); ?>,
-                backgroundColor: '#0d6efd'
-              },
-              {
-                label: 'Gasto Real',
-                data: <?= json_encode($gastosReais); ?>,
-                backgroundColor: '#dc3545'
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return value.toLocaleString('pt-BR');
+
+          const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
+          const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
+            type: 'bar',
+            data: {
+              labels: <?= json_encode($categoriasValorEsperado); ?>,
+              datasets: [{
+                  label: 'Valor Esperado',
+                  data: <?= json_encode($valoresEsperados); ?>,
+                  backgroundColor: '#0d6efd'
+                },
+                {
+                  label: 'Gasto Real',
+                  data: <?= json_encode($gastosReais); ?>,
+                  backgroundColor: '#dc3545'
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return value.toLocaleString('pt-BR');
+                    }
                   }
                 }
               }
             }
-          }
-        });
-        
+          });
         </script>
 
 </body>
