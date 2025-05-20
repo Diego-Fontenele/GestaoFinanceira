@@ -95,7 +95,7 @@ foreach ($resultado as $linha) {
 
 if (isset($_GET['mes_descricao'])) {
 
-  $datareferencia = $_GET['mes_descricao'] . '01';
+  $datareferencia = $_GET['mes_descricao'].'01';
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 } else {
@@ -264,7 +264,7 @@ where gasto_real <> 0
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$usuarioId, '2025-04-01', '2025-04-30']);
+$stmt->execute([$usuarioId,'2025-04-01','2025-04-30']);
 
 $categoriasValorEsperado = [];
 $valoresEsperados = [];
@@ -292,74 +292,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
-  <style>
-     body, html {
-    height: 100%;
-    margin: 0;
-  }
-
-  #menu-toggle {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1050;
-    background-color: #0d6efd;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-  }
-
-  #sidebar {
-    background-color: #0d6efd;
-    color: white;
-    padding: 1rem;
-    height: 100vh;
-    overflow-y: auto;
-  }
-
-  @media (min-width: 768px) {
-    #menu-toggle {
-      display: none;
-    }
-
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 100vh;
-      transform: translateX(0) !important;
-      z-index: 1040;
-    }
-
-    main {
-      margin-left: 250px;
-      margin-top: 0;
-    }
-  }
-
-  @media (max-width: 767.98px) {
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 100vh;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      z-index: 1040;
-    }
-
-    #sidebar.show {
-      transform: translateX(0);
-    }
-
-    main {
-      margin-top: 60px;
-    }
-  }
-  </style>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -377,15 +309,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 <body class="bg-light">
   <!-- Botão do menu -->
-  <button id="menu-toggle" class="btn btn-primary position-fixed top-0 start-0 m-2 d-md-none" style="z-index: 1050;">
-  &#9776;
-</button>
-  <div class="d-flex">
-  <div id='sidebar' class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 d-md-block d-none" style="width: 250px;">
-      <?php include('includes/menu.php'); ?>
-    </div>
+  <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
+    &#9776;
+  </button>
+  <div class="d-flex flex-column flex-md-row min-vh-100">
+    <?php include('includes/menu.php'); ?>
+
     <main class="flex-grow-1 p-4">
-      <h2 class="mb-4 text-black">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
+      <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
       <!-- Cards de Resumo -->
       <div class="row g-3 mb-4">
@@ -528,7 +459,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               </div>
             </div>
           </div>
-        </div>
+        </div>            
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -868,47 +799,47 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             },
             plugins: [ChartDataLabels]
           });
-
-          const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
-          const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
-            type: 'bar',
-            data: {
-              labels: <?= json_encode($categoriasValorEsperado); ?>,
-              datasets: [{
-                  label: 'Valor Esperado',
-                  data: <?= json_encode($valoresEsperados); ?>,
-                  backgroundColor: '#0d6efd'
-                },
-                {
-                  label: 'Gasto Real',
-                  data: <?= json_encode($gastosReais); ?>,
-                  backgroundColor: '#dc3545'
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    callback: function(value) {
-                      return value.toLocaleString('pt-BR');
-                    }
+          
+        const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
+        const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
+          type: 'bar',
+          data: {
+            labels: <?= json_encode($categoriasValorEsperado); ?>,
+            datasets: [
+              {
+                label: 'Valor Esperado',
+                data: <?= json_encode($valoresEsperados); ?>,
+                backgroundColor: '#0d6efd'
+              },
+              {
+                label: 'Gasto Real',
+                data: <?= json_encode($gastosReais); ?>,
+                backgroundColor: '#dc3545'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return value.toLocaleString('pt-BR');
                   }
                 }
               }
             }
-          });
-          document.addEventListener("DOMContentLoaded", function () {
-      const menuToggle = document.getElementById("menu-toggle");
-      const sidebar = document.getElementById("sidebar");
+          }
+        });
+         // Controle do menu mobile
+          const menuToggle = document.getElementById('menu-toggle');
+          const sidebar = document.getElementById('sidebar');
 
-      menuToggle.addEventListener("click", function () {
-        sidebar.classList.toggle("show");
-        sidebar.classList.toggle("d-none");
-      });
-    });
+          menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+          });
+         
         </script>
 
 </body>
