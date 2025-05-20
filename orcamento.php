@@ -107,11 +107,18 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
     <title>Orçamento por Categoria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="d-flex">
-        <?php include('includes/menu.php'); ?>
+    <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
+        data-bs-toggle="collapse" data-bs-target="#menuLateral">
+        &#9776;
+    </button>
+    <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+        <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
+            <?php include('includes/menu.php'); ?>
+        </div>
         <div class="flex-grow-1 p-4">
             <div class="card p-4">
                 <h4 class="mb-4">Orçamento por Categoria</h4>
@@ -151,7 +158,7 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                         </div>
                         <div class="col-md-2 align-self-end">
                             <label class="form-label">Receitas - Estimativa</label>
-                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas-$valor_esperado, 2, ',', '.') ?>" readonly>
+                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas - $valor_esperado, 2, ',', '.') ?>" readonly>
                         </div>
                         <div class="col-md-2 align-self-end">
                             <label class="form-label">Total Despesas</label>
@@ -159,10 +166,10 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                         </div>
                         <div class="col-md-2 align-self-end">
                             <label class="form-label">Receitas - Despesas</label>
-                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas-$total_despesas, 2, ',', '.') ?>" readonly>
+                            <input type="text" class="form-control text-success" value="<?= number_format($total_receitas - $total_despesas, 2, ',', '.') ?>" readonly>
                         </div>
 
-                        
+
                     <?php endif; ?>
                 </form>
 
@@ -183,7 +190,7 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
                                     <td><?= $d['categoria'] ?></td>
                                     <td><?= number_format($d['esperado'], 2, ',', '.') ?></td>
                                     <td><?= number_format($d['despesas'], 2, ',', '.') ?></td>
-                                    <td><?= number_format($d['esperado']-$d['despesas'], 2, ',', '.') ?></td>
+                                    <td><?= number_format($d['esperado'] - $d['despesas'], 2, ',', '.') ?></td>
 
                                 </tr>
                             <?php endforeach; ?>
