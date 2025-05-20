@@ -310,25 +310,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
-  <!-- Botão do menu visível apenas no mobile -->
   <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
-    data-bs-toggle="collapse" data-bs-target="#menuLateralMobile">
+    data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
-
-  <!-- Menu mobile com overlay -->
-  <div id="mobileMenuOverlay" class="collapse d-md-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 z-2">
-    <div class="bg-light h-100 p-3" style="width: 250px;">
-      <?php include('includes/menu.php'); ?>
-    </div>
-  </div>
   <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
-    <!-- Menu fixo no desktop -->
-    <div class="bg-light p-3 min-vh-100 d-none d-md-block position-fixed top-0 start-0 z-3" style="width: 250px;">
+    <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
-    <!-- Espaço reservado no desktop para o menu fixo -->
-    <div class="d-none d-md-block" style="width: 250px;"></div>
+
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 

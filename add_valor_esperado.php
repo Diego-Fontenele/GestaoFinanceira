@@ -20,7 +20,7 @@ $aluno_id = '';
 $valor_esperado = '';
 
 // Cadastro ou edição
-if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id']))){
+if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id']))) {
     $id = $_POST['id'] ?? '';
     $categoria_id = $_POST['categoria_id'];
     $aluno_id = $_POST['aluno_id'];
@@ -42,7 +42,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
     } else {
         // Inserir
         $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id,mentor_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
-        if ($stmt->execute([$categoria_id, $aluno_id,$_SESSION['usuario_id'], $valor_esperado,$mes_ano])) {
+        if ($stmt->execute([$categoria_id, $aluno_id, $_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: add_valor_esperado.php");
             exit;
@@ -115,11 +115,18 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-light">
-    <div class="d-flex">
-        <?php include('includes/menu.php'); ?>
+    <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
+        data-bs-toggle="collapse" data-bs-target="#menuLateral">
+        &#9776;
+    </button>
+    <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+        <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
+            <?php include('includes/menu.php'); ?>
+        </div>
         <div class="flex-grow-1 p-4">
             <div class="card p-4 mb-4">
                 <h4 class="mb-4"><?= $editando ? 'Editar Valor Esperado da Categoria' : 'Adicionar Valor Esperado a Categoria' ?></h4>
@@ -130,7 +137,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <form method="POST">
 
-                <div class="mb-3">
+                    <div class="mb-3">
                         <label class="form-label">Aluno</label>
                         <select name="aluno_id" class="form-control" id="aluno_id" required>
                             <option value="">Selecione</option>
@@ -138,7 +145,7 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
                             <?php endforeach; ?>
                         </select>
-                    </div>    
+                    </div>
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -210,13 +217,15 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 removeMaskOnSubmit: true
             }).mask('.valor');
         });
-        
+
         $(document).ready(function() {
             $('#aluno_id').on('change', function() {
                 let alunoId = $(this).val();
                 if (!alunoId) return;
 
-                $.getJSON('buscar_categorias.php', { aluno_id: alunoId }, function(data) {
+                $.getJSON('buscar_categorias.php', {
+                    aluno_id: alunoId
+                }, function(data) {
                     let categoriaSelect = $('select[name="categoria_id"]');
                     categoriaSelect.empty().append('<option value="">Selecione</option>');
 
@@ -228,11 +237,11 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
         });
 
         <?php if (!empty($flash)): ?>
-        Swal.fire({
-            icon: '<?= $flash['tipo'] ?>',
-            title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
-            text: '<?= $flash['mensagem'] ?>'
-        });
+            Swal.fire({
+                icon: '<?= $flash['tipo'] ?>',
+                title: '<?= $flash['tipo'] === 'success' ? 'Sucesso!' : 'Ops...' ?>',
+                text: '<?= $flash['mensagem'] ?>'
+            });
         <?php endif; ?>
     </script>
 </body>
