@@ -101,29 +101,32 @@
 
   <!-- Service Worker -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('Service Worker registrado'))
-        .catch(err => console.error('Erro ao registrar o Service Worker:', err));
+   if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then((registration) => {
+      console.log('Service Worker registrado');
 
-      navigator.serviceWorker.register("/sw.js").then((registration) => {
-        registration.onupdatefound = () => {
-          const installingWorker = registration.installing;
-          installingWorker.onstatechange = () => {
-            if (installingWorker.state === "installed") {
-              if (navigator.serviceWorker.controller) {
-                if (confirm("Uma nova versão do sistema está disponível. Deseja atualizar agora?")) {
-                  registration.waiting.postMessage("SKIP_WAITING");
-                  window.location.reload();
-                }
-              } else {
-                console.log("Conteúdo está em cache para uso offline.");
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              if (confirm("Uma nova versão do sistema está disponível. Deseja atualizar agora?")) {
+                registration.waiting.postMessage("SKIP_WAITING");
+                window.location.reload();
               }
+            } else {
+              console.log("Conteúdo está em cache para uso offline.");
             }
-          };
+          }
         };
-      });
-    }
+      };
+    })
+    .catch((err) => {
+      console.error('Erro ao registrar o Service Worker:', err);
+    });
+}
   </script>
 </body>
 
