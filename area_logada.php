@@ -307,12 +307,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   </script>
 </head>
 
-<body class="bg-light">
-  <!-- Botão do menu -->
-  <button id="menu-toggle" class="btn btn-primary d-md-none position-fixed top-0 start-0 m-3 z-3">
+<button class="btn btn-primary d-md-none position-fixed top-0 start-0 m-3 z-3"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#menuLateral"
+        aria-expanded="false"
+        aria-controls="menuLateral">
   &#9776;
 </button>
-  <div class="d-flex flex-column flex-md-row min-vh-100">
+  <div class="collapse d-md-block bg-light p-3 position-fixed top-0 start-0 h-100" id="menuLateral" style="width: 250px;">
     <?php include('includes/menu.php'); ?>
 
     <main class="flex-grow-1 p-4">
