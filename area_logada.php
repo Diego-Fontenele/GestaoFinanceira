@@ -285,29 +285,39 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <head>
   <meta charset="UTF-8">
   <title>Área Logada - Gestão Financeira</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-
-
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registrado com sucesso:', registration);
+          })
+          .catch(error => {
+            console.log('Erro ao registrar o Service Worker:', error);
+          });
+      });
+    }
+  </script>
 </head>
 
 <body class="bg-light">
-
-  <div class="d-flex">
-    <!-- Inclusão do menu lateral -->
+  <div class="d-flex flex-column flex-md-row min-vh-100">
     <?php include('includes/menu.php'); ?>
 
-    <!-- Conteúdo principal -->
-    <div class="flex-grow-1 p-4">
-
+    <main class="flex-grow-1 p-4">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
       <!-- Cards de Resumo -->
-      <div class="row mb-4">
+      <div class="row g-3 mb-4">
         <div class="col-md-4">
-          <div class="card text-white bg-success mb-3">
+          <div class="card text-white bg-success shadow rounded-4">
             <div class="card-body">
               <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Saldo</h5>
               <p class="card-text fs-4">R$ <?= number_format($saldo, 2, ',', '.'); ?></p>
@@ -315,7 +325,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card text-white bg-primary mb-3">
+          <div class="card text-white bg-primary shadow rounded-4">
             <div class="card-body">
               <h5 class="card-title"><i class="bi bi-arrow-down-circle"></i> Receitas</h5>
               <p class="card-text fs-4">R$ <?= number_format($receitas, 2, ',', '.'); ?></p>
@@ -323,7 +333,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card text-white bg-danger mb-3">
+          <div class="card text-white bg-danger shadow rounded-4">
             <div class="card-body">
               <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas</h5>
               <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
