@@ -297,9 +297,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       #menu-toggle {
         display: none;
       }
-      main {
-        margin-left: 250px;
-      }
 
       #sidebar {
         transform: translateX(0) !important;
@@ -308,7 +305,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
       main {
         margin-top: 0 !important;
-        margin-left: 250px !important;
       }
     }
 
@@ -318,7 +314,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         position: fixed;
         z-index: 1000;
         width: 250px;
-        height: 100vh;
         transition: transform 0.3s ease;
       }
 
@@ -872,13 +867,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           });
           document.addEventListener("DOMContentLoaded", function () {
-            const menuToggle = document.getElementById("menu-toggle");
-            const sidebar = document.getElementById("sidebar");
+      const menuToggle = document.getElementById("menu-toggle");
+      const sidebar = document.getElementById("sidebar");
 
-            menuToggle.addEventListener("click", function () {
-              sidebar.classList.toggle("show");
-            });
-          });
+      menuToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("show");
+        sidebar.classList.toggle("d-none");
+      });
+    });
         </script>
 
 </body>
