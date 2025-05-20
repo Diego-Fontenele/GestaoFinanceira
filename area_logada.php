@@ -306,7 +306,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       });
     }
   </script>
-
+  
 </head>
 
 <body class="bg-light">
@@ -314,13 +314,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
-  <div id="menuOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-md-none collapse" data-bs-toggle="collapse" data-bs-target="#menuLateral"></div>
+  
   <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
-    <div id="menuLateral" class="collapse bg-light p-3 min-vh-100 position-fixed top-0 start-0 z-3 d-md-block" style="width: 250px;">
+    <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
-     <!--Essa div "empurra" o conteúdo para o lado só em telas grandes -->
-     <div class="d-none d-md-block" style="width: 250px;"></div>
+
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 

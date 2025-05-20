@@ -216,7 +216,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </button>
 
   <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
-    <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
+    <div id="menuLateral" class="collapse bg-light p-3 min-vh-100 position-fixed top-0 start-0 z-3" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
     <div class="flex-grow-1 p-4">
