@@ -292,10 +292,37 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
-  <style>
+  <style> 
   @media (min-width: 768px) {
     #menu-toggle {
       display: none;
+    }
+    #sidebar {
+      transform: translateX(0) !important;
+      width: 250px;
+    }
+    main {
+      margin-top: 0 !important;
+      margin-left: 250px !important;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    #sidebar {
+      transform: translateX(-100%);
+      position: fixed;
+      z-index: 1000;
+      width: 250px;
+      height: 100vh;
+      transition: transform 0.3s ease;
+    }
+
+    #sidebar.show {
+      transform: translateX(0);
+    }
+
+    main {
+      margin-top: 60px;
     }
   }
 </style>
@@ -319,9 +346,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
     &#9776;
   </button>
-  <div id='sidebar' class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white p-4 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-40">
+  <div class="d-flex">
+  <div id="sidebar" class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 w-100 mw-100 md:position-relative md:translate-x-0 md:w-25">
     <?php include('includes/menu.php'); ?>
-
+    </div>
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4 text-black">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
@@ -839,13 +867,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           }
         });
-         // Controle do menu mobile
-          const menuToggle = document.getElementById('menu-toggle');
-          const sidebar = document.getElementById('sidebar');
-
-          menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-          });
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('show');
+  });
         </script>
 
 </body>
