@@ -319,11 +319,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
     &#9776;
   </button>
-  <div id='sidebar' class="d-flex fixed inset-y-0 left-0 w-64 bg-blue-800 text-white p-4 transform transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:relative md:transform-none">
+  <div id='sidebar' class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white p-4 transform transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:relative md:transform-none">
     <?php include('includes/menu.php'); ?>
 
     <main class="flex-grow-1 p-4">
-      <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
+      <h2 class="mb-4 text-black">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
       <!-- Cards de Resumo -->
       <div class="row g-3 mb-4">
