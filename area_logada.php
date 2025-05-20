@@ -95,7 +95,7 @@ foreach ($resultado as $linha) {
 
 if (isset($_GET['mes_descricao'])) {
 
-  $datareferencia = $_GET['mes_descricao'].'01';
+  $datareferencia = $_GET['mes_descricao'] . '01';
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 } else {
@@ -264,7 +264,7 @@ where gasto_real <> 0
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$usuarioId,'2025-04-01','2025-04-30']);
+$stmt->execute([$usuarioId, '2025-04-01', '2025-04-30']);
 
 $categoriasValorEsperado = [];
 $valoresEsperados = [];
@@ -293,39 +293,41 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
   <style>
- @media (min-width: 768px) {
-    #menu-toggle {
-      display: none;
-    }
-    #sidebar {
-      transform: translateX(0) !important;
-      width: 250px;
-    }
-    main {
-      margin-top: 0 !important;
-      margin-left: 250px !important;
-    }
-  }
+    @media (min-width: 768px) {
+      #menu-toggle {
+        display: none;
+      }
 
-  @media (max-width: 767.98px) {
-    #sidebar {
-      transform: translateX(-100%);
-      position: fixed;
-      z-index: 1000;
-      width: 250px;
-      height: 100vh;
-      transition: transform 0.3s ease;
+      #sidebar {
+        transform: translateX(0) !important;
+        width: 250px;
+      }
+
+      main {
+        margin-top: 0 !important;
+        margin-left: 250px !important;
+      }
     }
 
-    #sidebar.show {
-      transform: translateX(0);
-    }
+    @media (max-width: 767.98px) {
+      #sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 1000;
+        width: 250px;
+        height: 100vh;
+        transition: transform 0.3s ease;
+      }
 
-    main {
-      margin-top: 60px;
+      #sidebar.show {
+        transform: translateX(0);
+      }
+
+      main {
+        margin-top: 60px;
+      }
     }
-  }
-</style>
+  </style>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -346,10 +348,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <button id="menu-toggle" class="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-md md:hidden">
     &#9776;
   </button>
-  
-  <div id='sidebar' class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 w-100 mw-100 md:position-relative md:translate-x-0 md:w-25">
-    <?php include('includes/menu.php'); ?>
-
+  <div class="d-flex">
+    <div id='sidebar' class="bg-blue-800 text-white p-4 vh-100 position-fixed top-0 start-0 w-100 mw-100 md:position-relative md:translate-x-0 md:w-25">
+      <?php include('includes/menu.php'); ?>
+    </div>
     <main class="flex-grow-1 p-4">
       <h2 class="mb-4 text-black">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
 
@@ -494,7 +496,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               </div>
             </div>
           </div>
-        </div>            
+        </div>
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -834,42 +836,46 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             },
             plugins: [ChartDataLabels]
           });
-          
-        const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
-        const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
-          type: 'bar',
-          data: {
-            labels: <?= json_encode($categoriasValorEsperado); ?>,
-            datasets: [
-              {
-                label: 'Valor Esperado',
-                data: <?= json_encode($valoresEsperados); ?>,
-                backgroundColor: '#0d6efd'
-              },
-              {
-                label: 'Gasto Real',
-                data: <?= json_encode($gastosReais); ?>,
-                backgroundColor: '#dc3545'
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return value.toLocaleString('pt-BR');
+
+          const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
+          const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
+            type: 'bar',
+            data: {
+              labels: <?= json_encode($categoriasValorEsperado); ?>,
+              datasets: [{
+                  label: 'Valor Esperado',
+                  data: <?= json_encode($valoresEsperados); ?>,
+                  backgroundColor: '#0d6efd'
+                },
+                {
+                  label: 'Gasto Real',
+                  data: <?= json_encode($gastosReais); ?>,
+                  backgroundColor: '#dc3545'
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return value.toLocaleString('pt-BR');
+                    }
                   }
                 }
               }
             }
-          }
-        });
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('show');
-  });
+          });
+          document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            toggleBtn.addEventListener('click', () => {
+              sidebar.classList.toggle('d-none');
+            });
+          });
         </script>
 
 </body>
