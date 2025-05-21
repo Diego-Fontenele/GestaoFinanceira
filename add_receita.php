@@ -379,7 +379,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php endif; ?>
   </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6lp4Ukn5tKQ2Fh3z9jzeb6zE6ZTUMlzHFO1h+Ejw1Q0B" crossorigin="anonymous"></script>
 </body>
 
 </html>
