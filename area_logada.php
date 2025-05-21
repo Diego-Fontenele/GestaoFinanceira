@@ -298,11 +298,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
-<button class="btn btn-primary d-md-none m-2 position-relative z-3 ms-0 mt-0" type="button"
-    data-bs-toggle="collapse" data-bs-target="#menuLateral">
+  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0"
+    type="button"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#menuLateral"
+    aria-controls="menuLateral">
     &#9776;
   </button>
-  <div class="container-fluid min-vh-100 d-flex flex-row p-0">
+  <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
     <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
