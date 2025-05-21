@@ -302,7 +302,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
-  <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+  <div class="container-fluid min-vh-100 d-flex flex-row p-0">
     <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
       <?php include('includes/menu.php'); ?>
     </div>
