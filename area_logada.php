@@ -284,7 +284,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 <head>
   <meta charset="UTF-8">
-  <title>Área Logada - Gestão Financeira</title>
+  <title>Domine Seu Bolso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -298,7 +298,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
-  <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
+<button class="btn btn-primary d-md-none m-2 position-relative z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
   </button>
