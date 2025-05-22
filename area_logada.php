@@ -373,7 +373,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
               <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
               <div style="min-width: 100%; overflow-x: auto; border: 1px solid #ccc; padding: 10px;">
-                <canvas id="graficoDespesasMes" style="width: auto; min-width: 100%; height: 200px;"></canvas>
+                <canvas id="graficoDespesasMes" style="min-width: 600px; height: 200px;"></canvas>
               </div>
             </div>
           </div>
