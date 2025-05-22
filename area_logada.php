@@ -370,10 +370,16 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
-            <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
-              <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-              <div style="min-width: 100%; overflow-x: auto; border: 1px solid #ccc; padding: 10px;">
-                <canvas id="graficoDespesasMes" style="min-width: 600px; height: 200px;"></canvas>
+            <div class="card-body">
+              <h5 class="card-title mb-3">
+                <i class="bi bi-graph-down-arrow"></i> Evolução das Despesas
+              </h5>
+              <!-- Este div cria a barra de rolagem apenas quando o conteúdo é maior que a largura da tela -->
+              <div style="overflow-x: auto; border: 1px solid #ccc; padding: 10px;">
+                <!-- Este div força o canvas a ter uma largura maior, gerando a rolagem se necessário -->
+                <div style="min-width: 800px;">
+                  <canvas id="graficoDespesasMes" height="300"></canvas>
+                </div>
               </div>
             </div>
           </div>
