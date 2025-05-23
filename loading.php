@@ -1,28 +1,40 @@
 <!-- loading.php -->
-<div id="loadingSpinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
-  <div style="font-size: 1.2rem; margin-bottom: 10px;">Economizando para o futuro...</div>
-  <div id="piggy" style="font-size: 3rem; line-height: 3rem;">🐷</div>
-  <div id="coins" style="font-size: 2rem; margin-top: 10px; height: 2rem; overflow: hidden;"></div>
+<div id="loadingSpinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
+  <div style="margin-bottom: 1rem; font-size: 1.2rem;">Analisando sua evolução financeira...</div>
+  <div id="bars" style="display: flex; gap: 5px; align-items: flex-end; height: 100px;">
+    <div style="width: 10px; background: #0d6efd; height: 10px;"></div>
+    <div style="width: 10px; background: #0d6efd; height: 20px;"></div>
+    <div style="width: 10px; background: #0d6efd; height: 30px;"></div>
+    <div style="width: 10px; background: #0d6efd; height: 40px;"></div>
+    <div style="width: 10px; background: #0d6efd; height: 50px;"></div>
+  </div>
 </div>
 
 <script>
   const spinner = document.getElementById("loadingSpinner");
-  const coins = document.getElementById("coins");
-  let coinStr = "";
-  let progress = 0;
+  const bars = document.getElementById("bars").children;
+
+  let heights = [10, 20, 30, 40, 50];
+  let dir = 1;
 
   const interval = setInterval(() => {
-    if (progress >= 100) {
-      clearInterval(interval);
-      spinner.style.display = "none";
-    } else {
-      progress += Math.floor(Math.random() * 10) + 5;
-      if (progress > 100) progress = 100;
-      coinStr += "💰 ";
-      coins.innerText = coinStr;
+    for (let i = 0; i < bars.length; i++) {
+      let h = parseInt(bars[i].style.height);
+      h += dir * 10;
+      if (h > 100) h = 10;
+      bars[i].style.height = h + "px";
     }
-  }, 300);
+  }, 200);
 
+  // Simula carregamento de 4 segundos
+  setTimeout(() => {
+    clearInterval(interval);
+    spinner.style.display = "none";
+  }, 4000);
+</script>
+
+
+<script>
   function mostrarLoading() {
     const spinner = document.getElementById('loadingSpinner');
     if (spinner) {
