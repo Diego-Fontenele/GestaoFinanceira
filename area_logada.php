@@ -873,16 +873,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           }
 
-          function esconderLoading() {
-            const spinner = document.getElementById("loadingSpinner");
-            if (spinner) {
-              spinner.style.display = "none";
-            }
-          }
-
-          // Garante que o loading começa escondido ao carregar a página
-          document.addEventListener("DOMContentLoaded", function () {
-            esconderLoading();
+           // Esconde o loading quando a página terminar de carregar
+          window.addEventListener('load', function () {
+            document.getElementById('loadingSpinner').style.display = 'none';
           });
         </script>
     </main>
