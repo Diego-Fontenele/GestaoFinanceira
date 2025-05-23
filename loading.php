@@ -1,40 +1,65 @@
-<!-- loading.php -->
-<!-- loading.php -->
 <div id="loadingSpinner"
      class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center d-none"
      style="z-index: 1050;">
-  <div class="d-flex flex-column align-items-center">
-    <div class="d-flex gap-2">
-    <div style="width: 10px; background: #0d6efd; height: 10px;"></div>
-    <div style="width: 10px; background: #0d6efd; height: 20px;"></div>
-    <div style="width: 10px; background: #0d6efd; height: 30px;"></div>
-    <div style="width: 10px; background: #0d6efd; height: 40px;"></div>
-    <div style="width: 10px; background: #0d6efd; height: 50px;"></div>
+  <div class="text-center">
+    <div class="fs-5 font-monospace text-dark" id="loadingMessage">_</div>
+    <div class="spinner-border text-primary mt-3" role="status" style="width: 2rem; height: 2rem;">
+      <span class="visually-hidden">Carregando...</span>
     </div>
-    <small class="text-muted mt-3">Carregando inteligência financeira...</small>
   </div>
 </div>
+
 <script>
-  const spinner = document.getElementById("loadingSpinner");
-  const bars = document.getElementById("bars").children;
+  const mensagensPorContexto = {
+    insercao: [
+      "Guardando seus dados...",
+      "organizar seus dados é uma ótima escolha para seu sucesso...",
+      "finalizando..."
+    ],
+    metas: [
+      "Carregando metas financeiras...",
+      "Analisando seus objetivos...",
+      "Ajustando planos mensais..."
+    ],
+    dashboard: [
+      "Montando seu painel inteligente...",
+      "Coletando dados financeiros...",
+      "Preparando resumos e gráficos..."
+    ],
+    sincronizacao: [
+      "Sincronizando dados com o servidor...",
+      "Atualizando informações...",
+      "Verificando integridade dos dados..."
+    ]
+  };
 
-  let heights = [10, 20, 30, 40, 50];
-  let dir = 1;
+  function iniciarLoading(contexto = "dashboard") {
+    const mensagens = mensagensPorContexto[contexto] || mensagensPorContexto.dashboard;
+    let index = 0, char = 0, mensagemAtual = mensagens[0], isDeleting = false;
+    const el = document.getElementById("loadingMessage");
 
-  const interval = setInterval(() => {
-    for (let i = 0; i < bars.length; i++) {
-      let h = parseInt(bars[i].style.height);
-      h += dir * 10;
-      if (h > 100) h = 10;
-      bars[i].style.height = h + "px";
+    function digitarMensagem() {
+      if (!el) return;
+
+      if (char <= mensagemAtual.length && !isDeleting) {
+        el.textContent = mensagemAtual.substring(0, char++) + "_";
+      } else if (isDeleting) {
+        el.textContent = mensagemAtual.substring(0, char--) + "_";
+        if (char < 0) {
+          isDeleting = false;
+          index = (index + 1) % mensagens.length;
+          mensagemAtual = mensagens[index];
+        }
+      }
+
+      setTimeout(digitarMensagem, isDeleting ? 50 : 80);
+      if (char === mensagemAtual.length + 1) isDeleting = true;
     }
-  }, 200);
 
-  // Simula carregamento de 4 segundos
-  setTimeout(() => {
-    clearInterval(interval);
-    spinner.style.display = "none";
-  }, 4000);
+    digitarMensagem();
+    document.getElementById('loadingSpinner').classList.remove('d-none');
+  }
+
 
   function mostrarLoading() {
     const spinner = document.getElementById('loadingSpinner');

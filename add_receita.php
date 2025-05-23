@@ -255,7 +255,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label">Data</label>
             <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
           </div>
-          <button type="submit" class="btn btn-success" onclick="mostrarLoading();"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
+          <button type="submit" class="btn btn-success" onclick="mostrarLoading('insercao');"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
           <a href="add_receita.php" class="btn btn-secondary">Limpar</a>
         </form>
       </div>
