@@ -30,16 +30,30 @@
       "Sincronizando dados com o servidor...",
       "Atualizando informações...",
       "Verificando integridade dos dados..."
+    ],
+    padrao: [
+      "Carregando...",
+      "Processando informações...",
+      "Aguarde só um instante..."
     ]
-  };
+};
 
-  function iniciarLoading(contexto = "dashboard") {
-    const mensagens = mensagensPorContexto[contexto] || mensagensPorContexto.dashboard;
-    let index = 0, char = 0, mensagemAtual = mensagens[0], isDeleting = false;
+  let animacaoAtiva = false;
+
+  function mostrarLoading(contexto = "padrao") {
+    const mensagens = mensagensPorContexto[contexto] || mensagensPorContexto["padrao"];
     const el = document.getElementById("loadingMessage");
+    const spinner = document.getElementById("loadingSpinner");
+
+    if (!el || !spinner) return;
+
+    spinner.classList.remove("d-none");
+    let index = 0, char = 0, isDeleting = false;
+    let mensagemAtual = mensagens[index];
+    animacaoAtiva = true;
 
     function digitarMensagem() {
-      if (!el) return;
+      if (!animacaoAtiva) return;
 
       if (char <= mensagemAtual.length && !isDeleting) {
         el.textContent = mensagemAtual.substring(0, char++) + "_";
@@ -57,27 +71,16 @@
     }
 
     digitarMensagem();
-    document.getElementById('loadingSpinner').classList.remove('d-none');
-  }
-
-
-  function mostrarLoading() {
-    const spinner = document.getElementById('loadingSpinner');
-    if (spinner) {
-      spinner.classList.remove('d-none');
-      spinner.classList.add('d-flex');
-    }
   }
 
   function esconderLoading() {
-    const spinner = document.getElementById('loadingSpinner');
+    animacaoAtiva = false;
+    const spinner = document.getElementById("loadingSpinner");
     if (spinner) {
-      spinner.classList.add('d-none');
-      spinner.classList.remove('d-flex');
+      spinner.classList.add("d-none");
     }
   }
 
-  window.addEventListener("load", function () {
-    esconderLoading();
-  });
+  // Ocultar ao carregar completamente a página
+  window.addEventListener("load", esconderLoading);
 </script>
