@@ -865,10 +865,25 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
-
+          
           function mostrarLoading() {
-            document.getElementById('loadingSpinner').style.display = 'flex';
+            const spinner = document.getElementById("loadingSpinner");
+            if (spinner) {
+              spinner.style.display = "flex";
+            }
           }
+
+          function esconderLoading() {
+            const spinner = document.getElementById("loadingSpinner");
+            if (spinner) {
+              spinner.style.display = "none";
+            }
+          }
+
+          // Garante que o loading começa escondido ao carregar a página
+          document.addEventListener("DOMContentLoaded", function () {
+            esconderLoading();
+          });
         </script>
     </main>
 
