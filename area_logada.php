@@ -140,7 +140,7 @@ $metasUsuario = $sqlMetasUsuario->fetchAll(PDO::FETCH_ASSOC);
 $sqlPrimeiraMeta = $pdo->prepare("SELECT id FROM metas WHERE usuario_id = ? ORDER BY id LIMIT 1");
 $sqlPrimeiraMeta->execute([$usuarioId]);
 $metaIdSelecionada = !empty($_GET['meta_id']) ? (int) $_GET['meta_id'] : (int) $sqlPrimeiraMeta->fetchColumn();
-$categoriaIDSelecionada = !empty($_GET['categoria_id']) ? (int) $_GET['categoria_id'] : '';
+
 $sqlProgressoMetas = $pdo->prepare("
       SELECT 
       m.id as meta_id,
