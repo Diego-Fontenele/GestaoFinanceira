@@ -324,6 +324,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
+  <?php include 'loading.php'?>
   <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
@@ -510,16 +511,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           <?php endforeach; ?>
         </div>
-        <div id="loadingSpinner"
-              class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-none justify-content-center align-items-center"
-              style="z-index: 1050;">
-            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-              <span class="visually-hidden">Carregando...</span>
-            </div>
-          </div>
-
-
-        <script>
+         <script>
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
             type: 'pie',
@@ -868,20 +860,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           });
           
-          // Mostrar o spinner assim que o DOM começa a carregar
-                    function mostrarLoading() {
-              const spinner = document.getElementById('loadingSpinner');
-              spinner.classList.remove('d-none');
-              spinner.classList.add('d-flex');
-              
-            }
 
-            // Esconde o spinner quando a página terminar de carregar
-            window.addEventListener("load", function () {
-              const spinner = document.getElementById('loadingSpinner');
-              spinner.classList.add('d-none');
-              spinner.classList.remove('d-flex');
-            });
         </script>
     </main>
 
