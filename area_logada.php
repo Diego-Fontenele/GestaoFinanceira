@@ -87,7 +87,7 @@ $sqlCategoria = $pdo->prepare('select ca.id,
 
 $sqlCategoria->execute([$usuarioId]);
 $resultado = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
-$resultadoGraf = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
+
 
 $categorias = [];
 $valores = [];
@@ -364,7 +364,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
                   <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
                     <?php
-                    foreach ($resultadoGraf as $categoria) {
+                    foreach ($resultado as $categoria) {
                       $selected = $categoria['id'] == $categoriaIDSelecionada ? 'selected' : '';
                       echo "<option value='{$categoria['id']}' $selected>{$categoria['nome']}</option>";
                     }
