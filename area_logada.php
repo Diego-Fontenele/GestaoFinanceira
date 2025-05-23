@@ -510,10 +510,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           <?php endforeach; ?>
         </div>
-        <div id="loadingSpinner" class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center" style="z-index: 1050; display: none;">
-        
-            <span class="visually-hidden">Carregando...</span>
-     
+        <div id="loadingSpinner" style="display:none; position:fixed; z-index:9999; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.8); display:flex; justify-content:center; align-items:center;">
+          Carregando...
         </div>
 
 
@@ -867,16 +865,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           });
           
           function mostrarLoading() {
-            const spinner = document.getElementById("loadingSpinner");
-            if (spinner) {
-              spinner.style.display = "flex";
+              document.getElementById('loadingSpinner').style.display = 'flex';
             }
-          }
 
-           // Esconde o loading quando a página terminar de carregar
-          window.addEventListener('load', function () {
-            document.getElementById('loadingSpinner').style.display = 'none';
-          });
+            window.addEventListener('load', () => {
+              document.getElementById('loadingSpinner').style.display = 'none';
+            });
         </script>
     </main>
 
