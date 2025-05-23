@@ -1,44 +1,27 @@
 <!-- loading.php -->
-<div id="loadingSpinner"
-     class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center d-none"
-     style="z-index: 1050;">
-  <div class="text-center">
-    <div class="fs-5 font-monospace text-dark" id="loadingMessage">_</div>
-    <div class="spinner-border text-primary mt-3" role="status" style="width: 2rem; height: 2rem;">
-      <span class="visually-hidden">Carregando...</span>
-    </div>
-  </div>
+<div id="loadingSpinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
+  <div style="font-size: 1.2rem; margin-bottom: 10px;">Economizando para o futuro...</div>
+  <div id="piggy" style="font-size: 3rem; line-height: 3rem;">🐷</div>
+  <div id="coins" style="font-size: 2rem; margin-top: 10px; height: 2rem; overflow: hidden;"></div>
 </div>
 
 <script>
-  const mensagens = [
-    "Processando sua informação...",
-    "Trabalhando para o seu futuro financeiro...",
-    "Finalizando o processo...",
-  ];
+  const spinner = document.getElementById("loadingSpinner");
+  const coins = document.getElementById("coins");
+  let coinStr = "";
+  let progress = 0;
 
-  let index = 0, char = 0, mensagemAtual = mensagens[0], isDeleting = false;
-
-  function digitarMensagem() {
-    const el = document.getElementById("loadingMessage");
-    if (!el) return;
-
-    if (char <= mensagemAtual.length && !isDeleting) {
-      el.textContent = mensagemAtual.substring(0, char++) + "_";
-    } else if (isDeleting) {
-      el.textContent = mensagemAtual.substring(0, char--) + "_";
-      if (char < 0) {
-        isDeleting = false;
-        index = (index + 1) % mensagens.length;
-        mensagemAtual = mensagens[index];
-      }
+  const interval = setInterval(() => {
+    if (progress >= 100) {
+      clearInterval(interval);
+      spinner.style.display = "none";
+    } else {
+      progress += Math.floor(Math.random() * 10) + 5;
+      if (progress > 100) progress = 100;
+      coinStr += "💰 ";
+      coins.innerText = coinStr;
     }
-
-    setTimeout(digitarMensagem, isDeleting ? 50 : 80);
-    if (char === mensagemAtual.length + 1) isDeleting = true;
-  }
-
-  document.addEventListener("DOMContentLoaded", digitarMensagem);
+  }, 300);
 
   function mostrarLoading() {
     const spinner = document.getElementById('loadingSpinner');
