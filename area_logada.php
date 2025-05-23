@@ -869,9 +869,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           });
           
           // Mostrar o spinner assim que o DOM começa a carregar
-                    function mostrarLoading() {
+          function mostrarLoading() {
               const spinner = document.getElementById('loadingSpinner');
               spinner.classList.remove('d-none');
+
+              console.log('Spinner ativado'); // Para garantir que a função foi chamada
+
+              setTimeout(() => {
+                document.querySelector('form').submit();
+              }, 50); // dá um tempinho para o spinner renderizar
             }
 
             // Esconde o spinner quando a página terminar de carregar
