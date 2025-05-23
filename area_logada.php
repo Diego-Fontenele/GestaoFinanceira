@@ -76,7 +76,8 @@ foreach ($mesesTotais as $mes) {
 $saldo = $receitas - $despesas;
 
 //Categoria
-$sqlCategoria = $pdo->prepare('select ca.nome ,
+$sqlCategoria = $pdo->prepare('select ca.id,
+                                      ca.nome ,
                                       sum(valor)as total 
                                 from despesas r  ,
                                      categorias as ca
@@ -86,6 +87,8 @@ $sqlCategoria = $pdo->prepare('select ca.nome ,
 
 $sqlCategoria->execute([$usuarioId]);
 $resultado = $sqlCategoria->fetchAll();
+$categorias = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
+
 $categorias = [];
 $valores = [];
 foreach ($resultado as $linha) {
@@ -137,6 +140,7 @@ $metasUsuario = $sqlMetasUsuario->fetchAll(PDO::FETCH_ASSOC);
 $sqlPrimeiraMeta = $pdo->prepare("SELECT id FROM metas WHERE usuario_id = ? ORDER BY id LIMIT 1");
 $sqlPrimeiraMeta->execute([$usuarioId]);
 $metaIdSelecionada = !empty($_GET['meta_id']) ? (int) $_GET['meta_id'] : (int) $sqlPrimeiraMeta->fetchColumn();
+$categoriaIDSelecionada = !empty($_GET['categoria_id']) ? (int) $_GET['categoria_id'] : '';
 $sqlProgressoMetas = $pdo->prepare("
       SELECT 
       m.id as meta_id,
@@ -359,6 +363,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
+                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <?php
+                    foreach ($categorias as $categoria) {
+                      $selected = $categoria['id'] == $categoriaIDSelecionada ? 'selected' : '';
+                      echo "<option value='{$categoria['id']}' $selected>{$categoria['nome']}</option>";
+                    }
+                    ?>
+                  </select>
                 </form>
               </h5>
               <div style="height: 300px;">
