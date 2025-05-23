@@ -317,6 +317,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            esconderLoading();
+          });
+  </script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
 
@@ -518,9 +523,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 
         <script>
-             document.addEventListener("DOMContentLoaded", function () {
-            esconderLoading();
-          });
+         
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
             type: 'pie',
