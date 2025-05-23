@@ -98,7 +98,7 @@ foreach ($resultado as $linha) {
 
 if (isset($_GET['mes_descricao'])) {
 
-  $datareferencia = $_GET['mes_descricao'] . '01';
+  $datareferencia = $_GET['mes_descricao'] . '-01';
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 } else {
