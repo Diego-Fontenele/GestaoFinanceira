@@ -510,7 +510,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           <?php endforeach; ?>
         </div>
-
+        <div id="loadingSpinner" class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center" style="z-index: 1050; display: none;">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Carregando...</span>
+          </div>
+        </div>
 
 
         <script>
@@ -861,16 +865,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
+
           function mostrarLoading() {
             document.getElementById('loadingSpinner').style.display = 'flex';
           }
         </script>
     </main>
-    <div id="loadingSpinner" class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center" style="z-index: 1050; display: none;">
-  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-    <span class="visually-hidden">Carregando...</span>
-  </div>
-</div>
+
 </body>
 
 </html>
