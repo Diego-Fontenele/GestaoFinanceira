@@ -386,7 +386,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
                   <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value='todos' <?= $categoriaIDSelecionada == 'todos' ? 'selected' : '' ?>>Todos</option>
+                    <option value='todos' <?= $categoriaIDSelecionada == 'todos' ? 'selected' : '' ?>>Categorias</option>
                     <?php
                     foreach ($resultado as $categoria) {
                       $selected = $categoria['id'] == $categoriaIDSelecionada ? 'selected' : '';
