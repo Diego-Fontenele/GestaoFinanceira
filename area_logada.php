@@ -440,7 +440,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
                 <!-- Select dentro do título do card -->
                 <form method="get" class="mb-0">
-                  <select name="meta_id" class="form-select form-select-sm" onchange="mostrarLoading(); this.form.submit()">
+                  <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
                     <?php
                     foreach ($metasUsuario as $meta) {
                       $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
