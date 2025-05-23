@@ -112,18 +112,37 @@ if (isset($_GET['mes_descricao'])) {
   $mesSelecionado = "$ano-$mes";
 }
 
-$sqlDescricao = $pdo->prepare("
-  SELECT 
-    descricao,
-    SUM(valor) as total
-  FROM despesas
-  WHERE usuario_id = ?
-  AND data_referencia = ?
-  GROUP BY descricao
-  ORDER BY total DESC
-  LIMIT 10
-");
-$sqlDescricao->execute([$usuarioId, $datareferencia]);
+if ( (!isset($_GET['categoria_id']) ) && ($_GET['categoria_id'] != 'todos')){
+
+                            $sql = "
+                              SELECT 
+                                descricao,
+                                SUM(valor) as total
+                              FROM despesas
+                              WHERE usuario_id = ?
+                              AND data_referencia = ?
+                              GROUP BY descricao
+                              ORDER BY total DESC
+                              LIMIT 10
+                            ";
+                            $params = [$usuarioId, $datareferencia];
+}else{
+                          $sql ="
+                            SELECT 
+                              descricao,
+                              SUM(valor) as total
+                            FROM despesas
+                            WHERE usuario_id = ?
+                            AND data_referencia = ?
+                            and categoria_id = ?
+                            GROUP BY descricao
+                            ORDER BY total DESC
+                            LIMIT 10
+                          ";
+                          $params = [$usuarioId,$datareferencia, $categoria];
+}
+$sqlDescricao = $pdo->prepare($sql);
+$sqlDescricao->execute($params);
 $descricoes = [];
 $valoresDescricao = [];
 
