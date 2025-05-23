@@ -234,7 +234,7 @@ foreach ($resultados as $row) {
   $total = $row['saldo_inicial'] + $row['aportes'] + $row['rendimentos'] + $row['alocacoes'] - $row['retiradas'];
   $totais[] = round($total, 2);
 }
-/*
+
 // Consulta SQL
 $sql = "
   with categoriaEsperado as (
@@ -275,7 +275,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   $valoresEsperados[] = $row['valor_esperado'];
   $gastosReais[] = $row['gasto_real'];
 }
-*/
+
 ?>
 
 
