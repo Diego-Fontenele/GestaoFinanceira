@@ -127,6 +127,7 @@ if ( (!isset($_GET['categoria_id']) ) && ($_GET['categoria_id'] != 'todos')){
                             ";
                             $params = [$usuarioId, $datareferencia];
 }else{
+  $categoria = $_GET['categoria_id'];
                           $sql ="
                             SELECT 
                               descricao,
