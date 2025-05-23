@@ -869,9 +869,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           });
           
           // Mostrar o spinner assim que o DOM começa a carregar
-              document.addEventListener("DOMContentLoaded", function () {
-                document.getElementById('loadingSpinner').style.display = 'flex';
-              });
+            function mostrarLoading() {
+                  const spinner = document.getElementById('loadingSpinner');
+                  if (spinner) {
+                    spinner.style.display = 'flex';
+                  }
+                }
 
               // Esconder o spinner quando tudo estiver carregado
               window.addEventListener("load", function () {
