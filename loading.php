@@ -1,15 +1,19 @@
 <!-- loading.php -->
-<div id="loadingSpinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
-  <div style="margin-bottom: 1rem; font-size: 1.2rem;">Analisando sua evolução financeira...</div>
-  <div id="bars" style="display: flex; gap: 5px; align-items: flex-end; height: 100px;">
+<!-- loading.php -->
+<div id="loadingSpinner"
+     class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center d-none"
+     style="z-index: 1050;">
+  <div class="d-flex flex-column align-items-center">
+    <div class="d-flex gap-2">
     <div style="width: 10px; background: #0d6efd; height: 10px;"></div>
     <div style="width: 10px; background: #0d6efd; height: 20px;"></div>
     <div style="width: 10px; background: #0d6efd; height: 30px;"></div>
     <div style="width: 10px; background: #0d6efd; height: 40px;"></div>
     <div style="width: 10px; background: #0d6efd; height: 50px;"></div>
+    </div>
+    <small class="text-muted mt-3">Carregando inteligência financeira...</small>
   </div>
 </div>
-
 <script>
   const spinner = document.getElementById("loadingSpinner");
   const bars = document.getElementById("bars").children;
@@ -31,10 +35,7 @@
     clearInterval(interval);
     spinner.style.display = "none";
   }, 4000);
-</script>
 
-
-<script>
   function mostrarLoading() {
     const spinner = document.getElementById('loadingSpinner');
     if (spinner) {
