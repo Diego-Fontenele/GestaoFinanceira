@@ -112,7 +112,7 @@ if (isset($_GET['mes_descricao'])) {
   $mesSelecionado = "$ano-$mes";
 }
 
-if ( (!isset($_GET['categoria_id']) ) && ($_GET['categoria_id'] != 'todos')){
+if  (!isset($_GET['categoria_id'])  && ($_GET['categoria_id'] != 'todos')){
 
                             $sql = "
                               SELECT 
