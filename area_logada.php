@@ -183,7 +183,7 @@ $valorMeta = $valoresMeta[$primeiraMetaTitulo] ?? 0;
 // Buscar metas e aportes do usuário
 $stmt = $pdo->prepare("
  SELECT m.id, m.titulo AS nome, m.valor as objetivo,
-           COALESCE(SUM(a.valor + m.val_inicial), 0) AS acumulado
+           COALESCE(SUM(a.valor), 0) + m.val_inicial  AS acumulado
     FROM metas m
     LEFT JOIN metas_aportes a ON a.meta_id = m.id
     WHERE m.usuario_id = ?
