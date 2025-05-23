@@ -385,7 +385,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
-                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                  <select name="categoria_id" class="form-select form-select-sm" onchange="mostrarLoading(); this.form.submit()">
                     <option value='todos' <?= $categoriaIDSelecionada == 'todos' ? 'selected' : '' ?>>Selecionar Categoria</option>
                     <?php
                     foreach ($resultado as $categoria) {
@@ -440,7 +440,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
                 <!-- Select dentro do título do card -->
                 <form method="get" class="mb-0">
-                  <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                  <select name="meta_id" class="form-select form-select-sm" onchange="mostrarLoading(); this.form.submit()">
                     <?php
                     foreach ($metasUsuario as $meta) {
                       $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
@@ -861,8 +861,16 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
+          function mostrarLoading() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+          }
         </script>
     </main>
+    <div id="loadingSpinner" class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center" style="z-index: 1050; display: none;">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Carregando...</span>
+  </div>
+</div>
 </body>
 
 </html>
