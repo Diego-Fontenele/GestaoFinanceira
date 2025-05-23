@@ -210,6 +210,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body class="bg-light">
+<?php include 'loading.php'?>
   <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
@@ -254,7 +255,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label">Data</label>
             <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
           </div>
-          <button type="submit" class="btn btn-success"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
+          <button type="submit" class="btn btn-success" onclick="mostrarLoading();"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
           <a href="add_receita.php" class="btn btn-secondary">Limpar</a>
         </form>
       </div>
