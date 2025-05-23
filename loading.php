@@ -1,20 +1,45 @@
 <!-- loading.php -->
-<!-- loading.php -->
 <div id="loadingSpinner"
      class="position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex justify-content-center align-items-center d-none"
      style="z-index: 1050;">
-  <div class="d-flex flex-column align-items-center">
-    <div class="d-flex gap-2">
-      <div class="spinner-grow text-primary" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
-      <div class="spinner-grow text-primary" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
-      <div class="spinner-grow text-primary" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+  <div class="text-center">
+    <div class="fs-5 font-monospace text-dark" id="loadingMessage">_</div>
+    <div class="spinner-border text-primary mt-3" role="status" style="width: 2rem; height: 2rem;">
+      <span class="visually-hidden">Carregando...</span>
     </div>
-    <small class="text-muted mt-3">Carregando inteligência financeira...</small>
   </div>
 </div>
 
-
 <script>
+  const mensagens = [
+    "Carregando o seu futuro financeiro...",
+    "Analisando metas e oportunidades...",
+    "Preparando seu painel inteligente..."
+  ];
+
+  let index = 0, char = 0, mensagemAtual = mensagens[0], isDeleting = false;
+
+  function digitarMensagem() {
+    const el = document.getElementById("loadingMessage");
+    if (!el) return;
+
+    if (char <= mensagemAtual.length && !isDeleting) {
+      el.textContent = mensagemAtual.substring(0, char++) + "_";
+    } else if (isDeleting) {
+      el.textContent = mensagemAtual.substring(0, char--) + "_";
+      if (char < 0) {
+        isDeleting = false;
+        index = (index + 1) % mensagens.length;
+        mensagemAtual = mensagens[index];
+      }
+    }
+
+    setTimeout(digitarMensagem, isDeleting ? 50 : 80);
+    if (char === mensagemAtual.length + 1) isDeleting = true;
+  }
+
+  document.addEventListener("DOMContentLoaded", digitarMensagem);
+
   function mostrarLoading() {
     const spinner = document.getElementById('loadingSpinner');
     if (spinner) {
