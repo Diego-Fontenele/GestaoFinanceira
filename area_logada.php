@@ -83,7 +83,7 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                      categorias as ca
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
-                                group by ca.nome');
+                                group by ca.nome, ca.id');
 
 $sqlCategoria->execute([$usuarioId]);
 $resultado = $sqlCategoria->fetchAll();
