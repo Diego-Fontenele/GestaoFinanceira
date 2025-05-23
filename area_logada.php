@@ -108,7 +108,7 @@ if (isset($_GET['mes_descricao'])) {
   $datareferencia = $dataAnterior;
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
-  $mesSelecionado = "$ano-$mes";
+  $mesSelecionado = "$ano-$mes-01";
 }
 
 $sqlDescricao = $pdo->prepare("
@@ -117,12 +117,12 @@ $sqlDescricao = $pdo->prepare("
     SUM(valor) as total
   FROM despesas
   WHERE usuario_id = ?
-  AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?
+  AND data_referencia = ?
   GROUP BY descricao
   ORDER BY total DESC
   LIMIT 10
 ");
-$sqlDescricao->execute([$usuarioId, $mes, $ano]);
+$sqlDescricao->execute([$usuarioId, $mesSelecionado]);
 $descricoes = [];
 $valoresDescricao = [];
 
