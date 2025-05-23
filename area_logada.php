@@ -112,35 +112,36 @@ if (isset($_GET['mes_descricao'])) {
   $mesSelecionado = "$ano-$mes";
 }
 
-if  (!isset($_GET['categoria_id'])  && ($_GET['categoria_id'] != 'todos')){
-
-                            $sql = "
-                              SELECT 
-                                descricao,
-                                SUM(valor) as total
-                              FROM despesas
-                              WHERE usuario_id = ?
-                              AND data_referencia = ?
-                              GROUP BY descricao
-                              ORDER BY total DESC
-                              LIMIT 10
-                            ";
-                            $params = [$usuarioId, $datareferencia];
-}else{
+if (!isset($_GET['categoria_id']) || $_GET['categoria_id'] === 'todos') {
+  // Se a categoria não foi enviada ou se foi "todos"
+  $sql = "
+      SELECT 
+        descricao,
+        SUM(valor) as total
+      FROM despesas
+      WHERE usuario_id = ?
+        AND data_referencia = ?
+      GROUP BY descricao
+      ORDER BY total DESC
+      LIMIT 10
+  ";
+  $params = [$usuarioId, $datareferencia];
+} else {
+  // Se uma categoria específica foi selecionada
   $categoria = $_GET['categoria_id'];
-                          $sql ="
-                            SELECT 
-                              descricao,
-                              SUM(valor) as total
-                            FROM despesas
-                            WHERE usuario_id = ?
-                            AND data_referencia = ?
-                            and categoria_id = ?
-                            GROUP BY descricao
-                            ORDER BY total DESC
-                            LIMIT 10
-                          ";
-                          $params = [$usuarioId,$datareferencia, $categoria];
+  $sql = "
+      SELECT 
+        descricao,
+        SUM(valor) as total
+      FROM despesas
+      WHERE usuario_id = ?
+        AND data_referencia = ?
+        AND categoria_id = ?
+      GROUP BY descricao
+      ORDER BY total DESC
+      LIMIT 10
+  ";
+  $params = [$usuarioId, $datareferencia, $categoria];
 }
 $sqlDescricao = $pdo->prepare($sql);
 $sqlDescricao->execute($params);
@@ -384,6 +385,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
                   <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value='todos' $selected>Todos</option>
                     <?php
                     foreach ($resultado as $categoria) {
                       $selected = $categoria['id'] == $categoriaIDSelecionada ? 'selected' : '';
