@@ -621,7 +621,20 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   display: true,
                   text: 'Comparativo Mensal de Receitas e Despesas'
                 }
-              }
+              },
+              scales: {
+                x: {
+                  type: 'category', // Tipo do eixo X para categorias (meses)
+                  ticks: {
+                    maxRotation: 90, // Girar as labels para melhorar a visibilidade
+                    minRotation: 45,
+                    //autoSkip: false // Permite todas as labels serem exibidas
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              },
             }
           });
 
