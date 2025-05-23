@@ -105,10 +105,11 @@ if (isset($_GET['mes_descricao'])) {
 
   $dataAnterior = new DateTime();
   $dataAnterior->modify('-1 month');
+  $dataAnterior->modify('first day of this month');
   $datareferencia = $dataAnterior;
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
-  $mesSelecionado = "$ano-$mes-01";
+  $mesSelecionado = "$ano-$mes";
 }
 
 $sqlDescricao = $pdo->prepare("
@@ -122,7 +123,7 @@ $sqlDescricao = $pdo->prepare("
   ORDER BY total DESC
   LIMIT 10
 ");
-$sqlDescricao->execute([$usuarioId, $mesSelecionado]);
+$sqlDescricao->execute([$usuarioId, $datareferencia]);
 $descricoes = [];
 $valoresDescricao = [];
 
