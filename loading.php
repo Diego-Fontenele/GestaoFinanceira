@@ -12,9 +12,9 @@
 <script>
   const mensagensPorContexto = {
     insercao: [
-      "Guardando seus dados...",
-      "organizar seus dados é uma ótima escolha para seu sucesso...",
-      "finalizando..."
+      "Coletando seus dados...",
+      "Salvando suas informações...",
+      "Finalizando..."
     ],
     metas: [
       "Carregando metas financeiras...",
