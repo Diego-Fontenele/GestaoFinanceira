@@ -114,6 +114,7 @@ if (isset($_GET['mes_descricao'])) {
 
 if (!isset($_GET['categoria_id']) || $_GET['categoria_id'] === 'todos') {
   // Se a categoria não foi enviada ou se foi "todos"
+  
   $sql = "
       SELECT 
         descricao,
@@ -384,7 +385,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
-                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()" value="<?= $categoria ?>">
                     <option value='todos' $selected>Todos</option>
                     <?php
                     foreach ($resultado as $categoria) {
