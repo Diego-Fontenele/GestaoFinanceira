@@ -385,7 +385,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             <div class="card-body">
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
                 <form id="formFiltroMes" method="GET" class="mb-0">
-                  <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
+                  <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>" onchange="mostrarLoading();">
                   <select name="categoria_id" class="form-select form-select-sm" onchange="mostrarLoading(); this.form.submit()">
                     <option value='todos' <?= $categoriaIDSelecionada == 'todos' ? 'selected' : '' ?>>Selecionar Categoria</option>
                     <?php
@@ -441,7 +441,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <span><i class="bi bi-graph-up"></i> Progresso de Aporte da Meta</span>
                 <!-- Select dentro do título do card -->
                 <form method="get" class="mb-0">
-                  <select name="meta_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                  <select name="meta_id" class="form-select form-select-sm" onchange="mostrarLoading(); this.form.submit()">
                     <?php
                     foreach ($metasUsuario as $meta) {
                       $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
