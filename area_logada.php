@@ -86,10 +86,8 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                 group by ca.nome, ca.id');
 
 $sqlCategoria->execute([$usuarioId]);
-$sqlCategoriaGraf->execute([$usuarioId]);
-$resultado = $sqlCategoria->fetchAll();
-$resultadoGraf = $sqlCategoriaGraf->fetchAll(PDO::FETCH_ASSOC);
-
+$resultado = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
+$resultadoGraf = '';
 $categorias = [];
 $valores = [];
 foreach ($resultado as $linha) {
