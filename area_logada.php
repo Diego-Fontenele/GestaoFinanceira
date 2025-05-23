@@ -293,7 +293,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0d6efd" />
-  
+
 
 </head>
 
@@ -453,7 +453,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>
-          -->             
+          -->
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -624,7 +624,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   text: 'Comparativo Mensal de Receitas e Despesas'
                 }
               }
-              
+
             }
           });
 
@@ -827,7 +827,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           });
         </script>
-
+    </main>
 </body>
 
 </html>
