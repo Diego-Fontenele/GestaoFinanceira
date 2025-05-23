@@ -12,9 +12,9 @@
 
 <script>
   const mensagens = [
-    "Carregando o seu futuro financeiro...",
-    "Analisando metas e oportunidades...",
-    "Preparando seu painel inteligente..."
+    "Processando sua informação...",
+    "Trabalhando para o seu futuro financeiro...",
+    "Finalizando o processo...",
   ];
 
   let index = 0, char = 0, mensagemAtual = mensagens[0], isDeleting = false;
