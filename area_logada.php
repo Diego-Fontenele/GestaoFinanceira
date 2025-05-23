@@ -518,6 +518,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 
         <script>
+             document.addEventListener("DOMContentLoaded", function () {
+            esconderLoading();
+          });
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
             type: 'pie',
@@ -881,9 +884,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           }
 
           // Garante que o loading começa escondido ao carregar a página
-          document.addEventListener("DOMContentLoaded", function () {
-            esconderLoading();
-          });
+       
         </script>
     </main>
 
