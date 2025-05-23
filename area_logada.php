@@ -234,7 +234,7 @@ foreach ($resultados as $row) {
   $total = $row['saldo_inicial'] + $row['aportes'] + $row['rendimentos'] + $row['alocacoes'] - $row['retiradas'];
   $totais[] = round($total, 2);
 }
-
+/*
 // Consulta SQL
 $sql = "
   with categoriaEsperado as (
@@ -275,7 +275,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   $valoresEsperados[] = $row['valor_esperado'];
   $gastosReais[] = $row['gasto_real'];
 }
-
+*/
 ?>
 
 
@@ -437,7 +437,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>
-        <!-- Gráfico de Barras: Esperado vs Real por Categoria -->
+        <!--
+        Gráfico de Barras: Esperado vs Real por Categoria estou tirando pq não sei se vou utilizar esse por enquanto
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
             <div class="card-body">
@@ -452,6 +453,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>
+          -->             
         <!-- Gráfico de Roscas - Progresso Geral das Metas -->
         <div class="row">
           <?php foreach ($metas as $index => $meta):
@@ -621,20 +623,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   display: true,
                   text: 'Comparativo Mensal de Receitas e Despesas'
                 }
-              },
-              scales: {
-                x: {
-                  type: 'category', // Tipo do eixo X para categorias (meses)
-                  ticks: {
-                    maxRotation: 90, // Girar as labels para melhorar a visibilidade
-                    minRotation: 45,
-                    //autoSkip: false // Permite todas as labels serem exibidas
-                  }
-                },
-                y: {
-                  beginAtZero: true
-                }
-              },
+              }
+              
             }
           });
 
