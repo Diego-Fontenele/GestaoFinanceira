@@ -16,7 +16,7 @@ $usuarioId = $_SESSION['usuario_id'];
 $sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ?");
 $sqlReceitas->execute([$usuarioId]);
 $receitas = $sqlReceitas->fetch()['total'] ?? 0;
-
+$categoriaIDSelecionada = $_GET['categoria_id'] ?? 'todos';
 // Receitas por mês
 $sqlReceitasMes = $pdo->prepare("
   SELECT 
@@ -385,8 +385,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-list-ul"></i> Despesas por Descrição (Top 10)</span>
                 <form id="formFiltroMes" method="GET" class="mb-0">
                   <input type="month" name="mes_descricao" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionado  ?>">
-                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()" value="<?= $categoria ?>">
-                    <option value='todos' $selected>Todos</option>
+                  <select name="categoria_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value='todos' <?= $categoriaIDSelecionada == 'todos' ? 'selected' : '' ?>>Todos</option>
                     <?php
                     foreach ($resultado as $categoria) {
                       $selected = $categoria['id'] == $categoriaIDSelecionada ? 'selected' : '';
