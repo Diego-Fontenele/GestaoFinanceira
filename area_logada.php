@@ -106,7 +106,7 @@ if (isset($_GET['mes_descricao'])) {
   $dataAnterior = new DateTime();
   $dataAnterior->modify('-1 month');
   $dataAnterior->modify('first day of this month');
-  $datareferencia = $dataAnterior;
+  $datareferencia = $dataAnterior->format('Y-m-d');
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
   $mesSelecionado = "$ano-$mes";
