@@ -11,6 +11,7 @@ unset($_SESSION['flash']);
 
 $categoria_id = '';
 $descricao = '';
+$tipo_pagamento = '';
 $valor = '';
 $data = '';
 $editando = false;
