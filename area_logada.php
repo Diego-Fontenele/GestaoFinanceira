@@ -98,8 +98,8 @@ $dataAnterior->modify('-1 month');
 $dataAnterior->modify('first day of this month');
 
 if (isset($_GET['mes_tipoPagamento'])){
-  $mes_tipopagamento = $_GET['mes_tipoPagamento'];
-  $mesSelecionadotp = $mes_tipopagamento ;
+  $mes_tipopagamento = $_GET['mes_tipoPagamento'].'-01';
+  $mesSelecionadotp =  $_GET['mes_tipoPagamento'];
 }else{
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
