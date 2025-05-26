@@ -261,7 +261,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label">Data</label>
             <input type="date" name="data" class="form-control" value="<?= $data ?>" required>
           </div>
-          <button type="submit" class="btn btn-danger"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
+          <button type="submit" class="btn btn-danger" onclick="mostrarLoading('insercao');"><?= $editando ? 'Atualizar' : 'Salvar' ?></button>
           <a href="add_despesa.php" class="btn btn-secondary">Limpar</a>
         </form>
       </div>
