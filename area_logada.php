@@ -436,7 +436,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           <div class="card w-100 h-100">
             <div class="card-body">
               <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-credit-card"></i> Tipo de pagamento</span>
-                <form id="formFiltroMes" method="GET" class="mb-0">
+                <form id="formTipoPagamento" method="GET" class="mb-0">
                   <input type="month" name="mes_tipoPagamento" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionadotp  ?>" onchange="mostrarLoading('dashboard');">
                 </form>
               </h5>
@@ -738,6 +738,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
           document.querySelector('input[name="mes_descricao"]').addEventListener('change', function() {
             document.getElementById('formFiltroMes').submit();
+          });
+          document.querySelector('input[name="mes_tipoPagamento"]').addEventListener('change', function() {
+            document.getElementById('formTipoPagamento').submit();
           });
           //gráfico rosca de metas
           <?php foreach ($metas as $index => $meta):
