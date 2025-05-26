@@ -249,12 +249,12 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label">Tipo de Pagamento</label>
             <select name="tipo_pagamento" class="form-select" required>
               <option value="">Selecione</option>
-              <option value="Pix" <?= $tipo_pagamento == 'pix' ? 'selected' : '' ?>>PIX</option>
-              <option value="Débito" <?= $tipo_pagamento == 'debito' ? 'selected' : '' ?>>Débito em Conta</option>
-              <option value="Crédito" <?= $tipo_pagamento == 'credito' ? 'selected' : '' ?>>Cartão de Crédito</option>
-              <option value="Boleto" <?= $tipo_pagamento == 'boleto' ? 'selected' : '' ?>>Boleto</option>
-              <option value="Dinheiro" <?= $tipo_pagamento == 'dinheiro' ? 'selected' : '' ?>>Dinheiro</option>
-              <option value="Outro" <?= $tipo_pagamento == 'outro' ? 'selected' : '' ?>>Outro</option>
+              <option value="Pix" <?= $tipo_pagamento == 'Pix' ? 'selected' : '' ?>>PIX</option>
+              <option value="Cartão de Débito" <?= $tipo_pagamento == 'Cartão de Débito' ? 'selected' : '' ?>>Débito em Conta</option>
+              <option value="Cartão de Crédito" <?= $tipo_pagamento == 'Cartão de Crédito' ? 'selected' : '' ?>>Cartão de Crédito</option>
+              <option value="Boleto" <?= $tipo_pagamento == 'Boleto' ? 'selected' : '' ?>>Boleto</option>
+              <option value="Dinheiro" <?= $tipo_pagamento == 'Dinheiro' ? 'selected' : '' ?>>Dinheiro</option>
+              <option value="Outro" <?= $tipo_pagamento == 'Outro' ? 'selected' : '' ?>>Outro</option>
             </select>
           </div>
           <div class="mb-3">
