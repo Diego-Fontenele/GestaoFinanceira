@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     // Atualização
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ?,data_referencia = ?,tipo_pagamento=? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia, $id_edicao, $_SESSION['usuario_id'], $tipo_pagamento])) {
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia,$tipo_pagamento, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
       header("Location: add_despesa.php$queryString");
       exit;
