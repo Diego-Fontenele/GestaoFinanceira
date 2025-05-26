@@ -446,6 +446,20 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>             
+	
+	 <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
+        <div class="col-md-6 mb-4 d-flex">
+          <div class="card w-100 h-100">
+            <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
+              <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
+              <div style="width: 100%; max-width: auto; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
+                <div style="width: 1200px; height: 300px;">
+                  <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>	
 
         <!-- Gráfico de Comparativo de Receitas vs Despesas -->
         <div class="col-md-6 mb-4 d-flex">
@@ -849,7 +863,51 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             },
             plugins: [ChartDataLabels]
           });
-
+	  const ctxDespesasMes = document.getElementById('graficoDespesasMes');
+          const graficoDespesasMes = new Chart(ctxDespesasMes, {
+            type: 'line',
+            data: {
+              labels: <?= json_encode($mesesDespesas); ?>, // Meses
+              datasets: [{
+                label: 'Despesas Mensais',
+                data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top'
+                },
+                title: {
+                  display: true,
+                  text: 'Gastos Mensais'
+                }
+              },
+              scales: {
+                x: {
+                  type: 'category', // Tipo do eixo X para categorias (meses)
+                  ticks: {
+                    maxRotation: 90, // Girar as labels para melhorar a visibilidade
+                    minRotation: 45,
+                    //autoSkip: false // Permite todas as labels serem exibidas
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              },
+              elements: {
+                line: {
+                  tension: 0.4 // Suaviza as linhas
+                }
+              }
+            }
+          });	
           const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
           const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
             type: 'bar',
