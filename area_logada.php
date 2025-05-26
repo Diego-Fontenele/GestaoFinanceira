@@ -87,14 +87,42 @@ $sqlCategoria = $pdo->prepare('select ca.id,
 
 $sqlCategoria->execute([$usuarioId]);
 $resultado = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
-
-
 $categorias = [];
 $valores = [];
 foreach ($resultado as $linha) {
   $categorias[] = $linha['nome'];
   $valores[] = $linha['total'];
 }
+$dataAnterior = new DateTime();
+$dataAnterior->modify('-1 month');
+$dataAnterior->modify('first day of this month');
+
+if (isset($_GET['mes_tipoPagamento'])){
+  $mes_tipopagamento = $_GET['mes_tipoPagamento'];
+  $mesSelecionadotp = $mes_tipopagamento ;
+}else{
+  $mes_tipopagamento = $dataAnterior;
+  $mes = $dataAnterior->format('m');
+  $ano = $dataAnterior->format('Y');
+  $mesSelecionadotp = "$ano-$mes";
+}
+//Tipo de pagamento
+$sqlTipoPagamento = $pdo->prepare('select tipo_pagamento ,
+                                          sum(valor)as valor
+                                    from despesas where usuario_id = ?
+                                      and data_referencia = ?
+                                      group by tipo_pagamento
+                                    ');
+
+$sqlTipoPagamento->execute([$usuarioId,$mes_tipopagamento]);
+$resultado = $sqlTipoPagamento->fetchAll(PDO::FETCH_ASSOC);
+$tipoPagamento = [];
+$valoresTpPagamento = [];
+foreach ($resultado as $linha) {
+  $tipoPagamento[] = $linha['tipo_pagamento'];
+  $valoresTpPagamento[] = $linha['valor'];
+}
+
 
 if (isset($_GET['mes_descricao'])) {
 
@@ -102,15 +130,14 @@ if (isset($_GET['mes_descricao'])) {
   $mesSelecionado = $_GET['mes_descricao'];
   list($ano, $mes) = explode('-', $mesSelecionado);
 } else {
-
-  $dataAnterior = new DateTime();
-  $dataAnterior->modify('-1 month');
-  $dataAnterior->modify('first day of this month');
   $datareferencia = $dataAnterior->format('Y-m-d');
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
   $mesSelecionado = "$ano-$mes";
 }
+
+
+
 
 if (!isset($_GET['categoria_id']) || $_GET['categoria_id'] === 'todos') {
   // Se a categoria não foi enviada ou se foi "todos"
@@ -324,7 +351,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </head>
 
 <body class="bg-light">
-  <?php include 'loading.php'?>
+  <?php include 'loading.php' ?>
   <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
@@ -403,19 +430,22 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>
-        <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
+        
+         <!-- Gráfico de Pizza por tipo de pagamento  -->
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
-            <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
-              <h5 class="card-title mb-3"><i class="bi bi-graph-down-arrow"></i> Evolução das Despesas</h5>
-              <div style="width: 100%; max-width: auto; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
-                <div style="width: 1200px; height: 300px;">
-                  <canvas id="graficoDespesasMes" class="w-100" style="height: 100%;"></canvas>
-                </div>
+            <div class="card-body">
+              <h5 class="card-title mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-credit-card"></i> Tipo de pagamento</span>
+                <form id="formFiltroMes" method="GET" class="mb-0">
+                  <input type="month" name="mes_tipoPagamento" class="form-control form-control-sm" style="width: 150px;" value="<?= $mesSelecionadotp  ?>" onchange="mostrarLoading('dashboard');">
+                </form>
+              </h5>
+              <div style="height: 300px;">
+                <canvas id="graficoTipoPagamento" class="w-100 h-100"></canvas>
               </div>
             </div>
           </div>
-        </div>
+        </div>             
 
         <!-- Gráfico de Comparativo de Receitas vs Despesas -->
         <div class="col-md-6 mb-4 d-flex">
@@ -511,7 +541,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           <?php endforeach; ?>
         </div>
-         <script>
+        <script>
           const ctx = document.getElementById('graficoDespesas');
           const grafico = new Chart(ctx, {
             type: 'pie',
@@ -542,51 +572,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           });
 
 
-          const ctxDespesasMes = document.getElementById('graficoDespesasMes');
-          const graficoDespesasMes = new Chart(ctxDespesasMes, {
-            type: 'line',
-            data: {
-              labels: <?= json_encode($mesesDespesas); ?>, // Meses
-              datasets: [{
-                label: 'Despesas Mensais',
-                data: <?= json_encode($valoresDespesas); ?>, // Valores das despesas
-                borderColor: '#dc3545',
-                backgroundColor: 'rgba(220, 53, 69, 0.2)',
-                fill: true,
-                tension: 0.3
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top'
-                },
-                title: {
-                  display: true,
-                  text: 'Gastos Mensais'
-                }
-              },
-              scales: {
-                x: {
-                  type: 'category', // Tipo do eixo X para categorias (meses)
-                  ticks: {
-                    maxRotation: 90, // Girar as labels para melhorar a visibilidade
-                    minRotation: 45,
-                    //autoSkip: false // Permite todas as labels serem exibidas
-                  }
-                },
-                y: {
-                  beginAtZero: true
-                }
-              },
-              elements: {
-                line: {
-                  tension: 0.4 // Suaviza as linhas
-                }
-              }
-            }
-          });
+          
           const ctxMeta = document.getElementById('graficoProgressoMeta');
           const graficoProgressoMeta = new Chart(ctxMeta, {
             type: 'line',
@@ -661,6 +647,35 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           });
 
+          const ctxTpPagamento = document.getElementById('graficoTipoPagamento');
+          const graficoTipoPagamento = new Chart(ctxTpPagamento, {
+            type: 'pie',
+            data: {
+              labels: <?= json_encode($tipoPagamento); ?>,
+              datasets: [{
+                label: 'Tipos de Pagamentos',
+                data: <?= json_encode($valoresTpPagamento); ?>,
+                backgroundColor: [
+                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                  '#9966FF', '#FF9F40', '#C9CBCF', '#2ecc71',
+                  '#e74c3c', '#3498db'
+                ]
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom'
+                },
+                title: {
+                  display: false
+                }
+              }
+            }
+          });
+
           const ctxDescricao = document.getElementById('graficoDescricao');
           const graficoDescricao = new Chart(ctxDescricao, {
             type: 'pie',
@@ -689,6 +704,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
+
+
+
+
           //Plugin para aparecer o % dentro do  gráfico
           Chart.register({
             id: 'centerTextPlugin',
@@ -859,8 +878,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               }
             }
           });
-          
-
         </script>
     </main>
 
