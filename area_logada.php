@@ -101,9 +101,7 @@ if (isset($_GET['mes_tipoPagamento'])){
   $mes_tipopagamento = $_GET['mes_tipoPagamento'];
   $mesSelecionadotp = $mes_tipopagamento ;
 }else{
-  $mes_tipopagamento = $dataAnterior;
-  $mes = $dataAnterior->format('m');
-  $ano = $dataAnterior->format('Y');
+  $mes_tipopagamento = $dataAnterior->format('Y-m-d');
   $mesSelecionadotp = "$ano-$mes";
 }
 //Tipo de pagamento
