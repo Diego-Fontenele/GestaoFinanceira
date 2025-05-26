@@ -312,6 +312,7 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Categoria</th>
                 <th>Descrição</th>
                 <th>Valor</th>
+                <th>Tipo de Pagamento</th>
                 <th style="width: 5%;">Ações</th>
               </tr>
             </thead>
