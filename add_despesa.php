@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   $descricao = $_POST['descricao'];
   $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));;
   $data = $_POST['data'];
+  $tipo_pagamento = $_POST['tipo_pagamento'];
 
   // Converte a string para DateTime
   $dataObj = DateTime::createFromFormat('Y-m-d', $data);
@@ -59,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
   if (!empty($_POST['id'])) {
     // Atualização
     $id_edicao = $_POST['id'];
-    $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ?,data_referencia = ? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia, $id_edicao, $_SESSION['usuario_id']])) {
+    $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ?,data_referencia = ?,tipo_pagamento=? WHERE id = ? AND usuario_id = ?");
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia, $id_edicao, $_SESSION['usuario_id'], $tipo_pagamento])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
       header("Location: add_despesa.php$queryString");
       exit;
@@ -83,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         $dataAtualStr = $dataAtual->format('Y-m-d');
         $dataRefStr = $dataRefAtual->format('Y-m-d');
 
-        $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia,tipo_pagamento) VALUES (?, ?, ?, ?, ?, ?,?)");
         $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
       }
 
@@ -145,6 +146,7 @@ if (isset($_GET['editar'])) {
     $valor = number_format($despesa['valor'], 2, ',', '.');
     $data = $despesa['data'];
     $datareferencia = $despesa['data_referencia'];
+    $tipo_pagamento = $despesa['tipo_pagamento'];
     $editando = true;
   }
 }
@@ -240,6 +242,19 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <div class="mb-3">
             <label class="form-label">Valor</label>
             <input type="text" name="valor" class="form-control valor" value="<?= $valor ?>" required>
+          </div>
+          <!-- Tipo de Pagamento -->
+          <div class="mb-3">
+            <label class="form-label">Tipo de Pagamento</label>
+            <select name="tipo_pagamento" class="form-select" required>
+              <option value="">Selecione</option>
+              <option value="Pix" <?= $tipo_pagamento == 'pix' ? 'selected' : '' ?>>PIX</option>
+              <option value="Débito" <?= $tipo_pagamento == 'debito' ? 'selected' : '' ?>>Débito em Conta</option>
+              <option value="Crédito" <?= $tipo_pagamento == 'credito' ? 'selected' : '' ?>>Cartão de Crédito</option>
+              <option value="Boleto" <?= $tipo_pagamento == 'boleto' ? 'selected' : '' ?>>Boleto</option>
+              <option value="Dinheiro" <?= $tipo_pagamento == 'dinheiro' ? 'selected' : '' ?>>Dinheiro</option>
+              <option value="Outro" <?= $tipo_pagamento == 'outro' ? 'selected' : '' ?>>Outro</option>
+            </select>
           </div>
           <div class="mb-3">
             <label class="form-label">Data</label>
