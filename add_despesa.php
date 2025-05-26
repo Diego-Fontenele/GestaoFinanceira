@@ -85,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
         $dataAtualStr = $dataAtual->format('Y-m-d');
         $dataRefStr = $dataRefAtual->format('Y-m-d');
 
-        $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia,tipo_pagamento) VALUES (?, ?, ?, ?, ?, ?,?)");
-        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr]);
+        $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, categoria_id, descricao, valor, data, data_referencia,tipo_pagamento) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['usuario_id'], $categoria_id, $descricao, $valor, $dataAtualStr, $dataRefStr, $tipo_pagamento]);
       }
 
 
