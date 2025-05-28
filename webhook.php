@@ -1,30 +1,25 @@
 <?php
-$instancia = getenv('ZAPI_INSTANCIA');  // instanceId
-$token = getenv('ZAPI_TOKEN');              // client token
-$telefone = '556181243772';
-$mensagem = "Teste envio Z-API (token no header)";
+$instancia = getenv('ZAPI_INSTANCIA');  
+$token = getenv('ZAPI_TOKEN');           
+$telefone = '5561981243772';
+$mensagem = "Welcome to *Z-API*";
 
-// Token vai na URL!
 $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
- 
+
 $headers = [
     "Content-Type: application/json",
-    "Client-Token: $token" // <-- esse é obrigatório!
+    "client-token: $token"
 ];
 
-$payload = [
+$payload = json_encode([
     "phone" => $telefone,
     "message" => $mensagem
-];
-
-error_log("Token: $token");
-error_log("Instância: $instancia");
-
+]);
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 $response = curl_exec($ch);
@@ -35,6 +30,7 @@ if (curl_errno($ch)) {
     $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     error_log("HTTP Status: $httpcode");
     error_log("Retorno da API: $response");
+    echo $response;
 }
 
 curl_close($ch);
