@@ -23,11 +23,11 @@ $instancia = getenv('ZAPI_INSTANCIA');
 error_log("Token: $token");
 error_log("Instância: $instancia");
 
-$url = "https://api.z-api.io/instances/$instancia/send-text"; // URL NOVA
+$url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
 
 $headers = [
-    "Content-Type: application/json",
-    "Client-Token: $token" // TOKEN NO CABEÇALHO
+    "Content-Type: application/json"
+    // Não precisa mais do Client-Token no header se está na URL
 ];
 
 $payload = [
