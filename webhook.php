@@ -23,13 +23,14 @@ if ($telefone) {
 }
 
 error_log("Telefone ajustado: $telefone");
-
+error_log("erro aqui 2 $mensagem - $telefone");
 if ($mensagem && $telefone) {
     include "Conexao.php";
-
+    error_log("erro aqui");
     $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE telefone = ?");
     $stmt->execute([$telefone]);
     $usuario = $stmt->fetch();
+    error_log("erro aqui 2");
     error_log("o que tem aqui: $usuario");
     if (!$usuario) {
         enviarMensagem($telefone, "Olá! Seu número não está cadastrado. Acesse domineseubolso.com.br para se registrar.");
@@ -93,3 +94,5 @@ function enviarMensagem($telefone, $mensagem) {
 
     curl_close($ch);
 }
+
+
