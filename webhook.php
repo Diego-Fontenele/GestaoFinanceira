@@ -15,23 +15,25 @@ $telefone = preg_replace('/\D/', '', $data["phone"]);
 $mensagemRecebida = $data["text"]["message"];
 $mensagemDeResposta = "Olá, {$data['senderName']}! Você disse: \"$mensagemRecebida\" 😉";
 
+
+
 $token = getenv('ZAPI_TOKEN');
 $instancia = getenv('ZAPI_INSTANCIA');
 
-$url = "https://api.z-api.io/instances/$instancia/token/$token/send-messages";
+error_log("Token: $token");
+error_log("Instância: $instancia");
+
+$url = "https://api.z-api.io/instances/$instancia/send-text"; // URL NOVA
 
 $headers = [
-    "Content-Type: application/json"
+    "Content-Type: application/json",
+    "Client-Token: $token" // TOKEN NO CABEÇALHO
 ];
 
 $payload = [
     "phone" => $telefone,
     "message" => $mensagemDeResposta
 ];
-
-
-error_log("Token: $token");
-error_log("Instância: $instancia");
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
