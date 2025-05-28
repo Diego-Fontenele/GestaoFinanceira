@@ -17,7 +17,7 @@ if (!$mensagem || !$telefone) {
 
 // Mensagem de boas-vindas se o usuário mandar "oi", "olá", etc.
 if (preg_match('/\b(oi|olá|ola|bom dia|boa tarde|boa noite)\b/i', $mensagem)) {
-    responder($telefone, "👋 Olá! Eu sou o *Domine Seu Bolso*.\n\nVocê pode me mandar mensagens como:\n➡️ `Receita Mercado 300 reais`\n➡️ `Despesa Luz 150,90`\n\n💡 Para facilitar, salve este número como *Domine Seu Bolso*.\n\nVamos organizar suas finanças juntos!");
+    responder($telefone, "👋 Olá! Eu sou o *Domine Seu Bolso*.\n\nVocê pode me mandar mensagens como:\n➡️ `Receita Mercado 300 reais'\n➡️ 'Despesa Luz 150,90'\n\n💡 Para facilitar, salve este número como *Domine Seu Bolso*.\n\nVamos organizar suas finanças juntos!");
     exit;
 }
 
@@ -31,7 +31,7 @@ if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?
 
     responder($telefone, "✅ $tipo registrada!\nCategoria: *$categoria*\nValor: *R$ " . number_format($valor, 2, ',', '.') . "*");
 } else {
-    responder($telefone, "❌ Não entendi sua mensagem.\nEnvie no formato:\n`Receita Mercado 300 reais`\n`Despesa Luz 150,90`");
+    responder($telefone, "❌ Não entendi sua mensagem.\nEnvie no formato:\n'Receita Mercado 300 reais'\n'Despesa Luz 150,90'");
 }
 
 // Função para responder usando a Z-API
