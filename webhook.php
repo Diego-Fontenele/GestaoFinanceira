@@ -29,6 +29,10 @@ $payload = [
     "message" => $mensagemDeResposta
 ];
 
+
+error_log("Token: $token");
+error_log("Instância: $instancia");
+
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
