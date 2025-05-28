@@ -4,11 +4,11 @@ $token = getenv('ZAPI_TOKEN');              // client token
 $telefone = '556181243772';
 $mensagem = "Teste envio Z-API (token no header)";
 
-$url = "https://api.z-api.io/instances/$instancia/send-text";
+// Token vai na URL!
+$url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
 
 $headers = [
-    "Content-Type: application/json",
-    "Client-Token: $token"
+    "Content-Type: application/json"
 ];
 
 $payload = [
