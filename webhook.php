@@ -5,8 +5,8 @@
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-// Extrair informações
-$mensagem = strtolower(trim($data["message"] ?? ""));
+// Extrair informações - agora com a estrutura correta
+$mensagem = strtolower(trim($data["text"]["message"] ?? ""));
 $telefone = preg_replace('/\D/', '', $data["phone"] ?? "");
 
 // Verificar se os dados necessários existem
@@ -37,9 +37,10 @@ if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?
 // Função para responder usando a Z-API
 function responder($telefone, $mensagem)
 {
-$token = getenv('ZAPI_TOKEN');
-$instancia = getenv('ZAPI_INSTANCIA');
-$url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
+    $token = getenv('ZAPI_TOKEN');
+    $instancia = getenv('ZAPI_INSTANCIA');
+    $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
+
     $dados = [
         'phone' => $telefone,
         'message' => $mensagem
@@ -50,7 +51,13 @@ $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dados));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_exec($ch);
+    $resposta = curl_exec($ch);
+    $erro = curl_error($ch);
     curl_close($ch);
+
+    error_log("Resposta da API Z-API: $resposta");
+    if ($erro) {
+        error_log("Erro no curl: $erro");
+    }
 }
 ?>
