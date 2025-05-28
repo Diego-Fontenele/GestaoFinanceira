@@ -32,22 +32,26 @@ $resposta = [
 // Envio via API da Z-API
 $token = getenv('ZAPI_TOKEN');
 $instancia = getenv('ZAPI_INSTANCIA');
-$url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
+
+$url = "https://api.z-api.io/instances/$instancia/send-text"; // Tire o token da URL
+
+$payload = [
+    "phone" => $phone,
+    "message" => $resposta,
+];
+
+$headers = [
+    "Content-Type: application/json",
+    "Authorization: Bearer $token" // Adiciona o token corretamente aqui
+];
 
 $ch = curl_init($url);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($resposta));
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$retorno = curl_exec($ch);
-$erro = curl_error($ch);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+$response = curl_exec($ch);
 curl_close($ch);
 
-// Log para análise
-error_log("ZAPI_TOKEN: $token");
-error_log("ZAPI_INSTANCIA: $instancia");
-error_log("Enviando resposta para $telefone: $mensagemDeResposta");
-error_log("Retorno da API: $retorno");
-if ($erro) {
-    error_log("Erro CURL: $erro");
-}
+error_log("Retorno da API: $response");
