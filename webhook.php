@@ -5,35 +5,24 @@
 $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
 
-// Loga o conteúdo bruto da requisição (opcional para debug)
 error_log("Requisição recebida: $dataRaw");
 
-// Valida o JSON
-if (!$data) {
-    error_log("Erro ao decodificar JSON");
-    http_response_code(400);
-    exit;
-}
+// Extrai a mensagem corretamente
+$mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
+$telefone = isset($data['phone']) ? substr(preg_replace('/\D/', '', $data['phone']), 0, 15) : null;
 
-// Verifica se é uma mensagem válida
-if (isset($data['message']) && isset($data['phone'])) {
-    $mensagem = trim($data['message']);
-    $telefone = substr(preg_replace('/\D/', '', $data['phone']), 0, 15); // Limpa e limita
+if ($mensagem && $telefone) {
+    include "Conexao.php";
 
-    include "Conexao.php"; // Conecta ao banco
-
-    // Verifica se o telefone já está cadastrado
     $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE telefone = ?");
     $stmt->execute([$telefone]);
     $usuario = $stmt->fetch();
 
     if (!$usuario) {
         enviarMensagem($telefone, "Olá! Seu número não está cadastrado. Acesse domineseubolso.com.br para se registrar.");
-        http_response_code(200);
         exit;
     }
 
-    // Expressão: Receita Mercado 300 reais
     if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
@@ -51,8 +40,6 @@ if (isset($data['message']) && isset($data['phone'])) {
     } else {
         enviarMensagem($telefone, "Oi {$usuario['nome']}! Envie mensagens como:\n- Receita Mercado 300 reais\n- Despesa Luz 150 reais");
     }
-
-    http_response_code(200); // Sempre responde OK
 } else {
     error_log("Mensagem inválida recebida.");
     http_response_code(400);
