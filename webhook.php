@@ -6,9 +6,10 @@ $mensagem = "Teste envio Z-API (token no header)";
 
 // Token vai na URL!
 $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
-
+ 
 $headers = [
-    "Content-Type: application/json"
+    "Content-Type: application/json",
+    "Client-Token: $token" // <-- esse é obrigatório!
 ];
 
 $payload = [
