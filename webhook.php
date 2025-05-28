@@ -44,6 +44,8 @@ $erro = curl_error($ch);
 curl_close($ch);
 
 // Log para análise
+error_log("ZAPI_TOKEN: $token");
+error_log("ZAPI_INSTANCIA: $instancia");
 error_log("Enviando resposta para $telefone: $mensagemDeResposta");
 error_log("Retorno da API: $retorno");
 if ($erro) {
