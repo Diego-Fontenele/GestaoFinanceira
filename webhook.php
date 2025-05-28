@@ -51,7 +51,7 @@ if ($mensagem && $telefone) {
             enviarMensagem($telefone, "Despesa de R$ {$valor} registrada: {$descricao}");
         }
     } else {
-        enviarMensagem($telefone, "Oi {$usuario['nome']}! Envie mensagens como:\n- Receita Mercado 300 reais\n- Despesa Luz 150 reais");
+        enviarMensagem($telefone, "Oi {$usuario['nome']}! Envie mensagens como:\n- Receita Projeto 300 reais\n- Despesa Luz 150 reais");
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
