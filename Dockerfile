@@ -1,3 +1,4 @@
+# Usa a imagem oficial do PHP com Apache
 FROM php:8.2-apache
 
 # Instala dependências do sistema e do PHP
