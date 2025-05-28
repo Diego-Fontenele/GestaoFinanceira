@@ -33,16 +33,16 @@ $resposta = [
 $token = getenv('ZAPI_TOKEN');
 $instancia = getenv('ZAPI_INSTANCIA');
 
-$url = "https://api.z-api.io/instances/$instancia/send-message";
+$url = "https://api.z-api.io/instances/$instancia/token/$token/send-message";
 
 $headers = [
     "Content-Type: application/json",
-    "Authorization: Bearer $token"
+    // Não precisa do Authorization aqui, o token já vai na URL
 ];
 
 $payload = [
-    "phone" => $phone,
-    "message" => $resposta
+    "phone" => $telefone,
+    "message" => $mensagemDeResposta
 ];
 
 $ch = curl_init($url);
