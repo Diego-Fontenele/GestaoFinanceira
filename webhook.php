@@ -1,47 +1,34 @@
 <?php
 // webhook.php
 
-// Recebe a entrada da Z-API
 $input = file_get_contents("php://input");
 error_log("Z-API input: " . $input);
 
-http_response_code(200); // responde imediatamente ao Z-API
+http_response_code(200);
 echo 'OK';
 
 $data = json_decode($input, true);
 
-// Validação básica
 if (!isset($data['phone']) || !isset($data['text']['message'])) {
     error_log("Dados incompletos");
     exit;
 }
 
-// Dados da mensagem
 $telefone = preg_replace('/\D/', '', $data["phone"]);
 $mensagemRecebida = $data["text"]["message"];
+$mensagemDeResposta = "Olá, {$data['senderName']}! Você disse: \"$mensagemRecebida\" 😉";
 
-// Texto de resposta
-$mensagemDeResposta = "Olá, $data[senderName]! Você disse: \"$mensagemRecebida\" 😉";
-
-// Dados para envio
-$resposta = [
-    'phone' => $telefone,
-    'message' => $mensagemDeResposta
-];
-
-// Envio via API da Z-API
 $token = getenv('ZAPI_TOKEN');
 $instancia = getenv('ZAPI_INSTANCIA');
 
-$url = "https://api.z-api.io/instances/$instancia/token/$token/send-message";
+$url = "https://api.z-api.io/instances/$instancia/token/$token/send-messages";
 
 $headers = [
-    "Content-Type: application/json",
-    // Não precisa do Authorization aqui, o token já vai na URL
+    "Content-Type: application/json"
 ];
 
 $payload = [
-    "phone" => $telefone,
+    "phones" => [$telefone],
     "message" => $mensagemDeResposta
 ];
 
@@ -50,7 +37,11 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
 $response = curl_exec($ch);
+if (curl_errno($ch)) {
+    error_log("cURL error: " . curl_error($ch));
+}
 curl_close($ch);
 
 error_log("Retorno da API: $response");
