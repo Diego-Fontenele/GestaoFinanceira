@@ -30,12 +30,12 @@ if ($mensagem && $telefone) {
     $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE telefone = ?");
     $stmt->execute([$telefone]);
     $usuario = $stmt->fetch();
-
+    error_log("o que tem aqui: $usuario");
     if (!$usuario) {
         enviarMensagem($telefone, "Olá! Seu número não está cadastrado. Acesse domineseubolso.com.br para se registrar.");
         exit;
     }
-    error_log("o que tem aqui: $usuario");
+   
     if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
