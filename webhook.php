@@ -9,13 +9,21 @@ error_log("Requisição recebida: $dataRaw");
 
 // Extrai a mensagem corretamente do campo text.message
 $mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
-$telefone = isset($data['phone']) ? substr(preg_replace('/\D/', '', $data['phone']), 0, 15) : null;
-if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
-    $ddd = $m[1];
-    $numero = $m[2];
-    $telefone = "55{$ddd}9{$numero}";
+
+// Extrai o telefone e ajusta para garantir que tenha o 9 após o DDD no Brasil
+$telefone = isset($data['phone']) ? preg_replace('/\D/', '', $data['phone']) : null;
+
+if ($telefone) {
+    // Corrige telefone: se for número do Brasil com 12 dígitos (55 + DDD + 8 números), adiciona o 9 após o DDD
+    if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
+        $ddd = $m[1];
+        $numero = $m[2];
+        $telefone = "55{$ddd}9{$numero}";
+    }
 }
+
 error_log("Telefone ajustado: $telefone");
+
 if ($mensagem && $telefone) {
     include "Conexao.php";
 
@@ -46,12 +54,11 @@ if ($mensagem && $telefone) {
         enviarMensagem($telefone, "Oi {$usuario['nome']}! Envie mensagens como:\n- Receita Mercado 300 reais\n- Despesa Luz 150 reais");
     }
 } else {
-    error_log("Mensagem inválida recebida.");
+    error_log("Mensagem ou telefone inválido recebido.");
     http_response_code(400);
 }
 
-
-// Função original com cURL (mantida conforme você fez)
+// Função para enviar mensagem via Z-API
 function enviarMensagem($telefone, $mensagem) {
     $instancia = getenv('ZAPI_INSTANCIA');  
     $token = getenv('ZAPI_TOKEN'); 
