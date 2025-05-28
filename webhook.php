@@ -1,6 +1,29 @@
 <?php
 // webhook.php
 
+// webhook.php
+
+// Pega o conteúdo bruto da requisição
+$input = file_get_contents("php://input");
+
+// Salva num arquivo temporário para debug (Render pode não permitir arquivos, então comente essa linha se não funcionar)
+// file_put_contents('/tmp/debug_zapi_input.txt', $input);
+
+// Ou apenas registre no log do servidor PHP
+error_log("Z-API input: " . $input);
+
+$data = json_decode($input, true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    error_log("Erro ao decodificar JSON: " . json_last_error_msg());
+    http_response_code(400);
+    exit('JSON inválido');
+}
+
+
+
+
+
 // Receber os dados enviados pela Z-API
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
