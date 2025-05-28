@@ -33,7 +33,7 @@ $resposta = [
 $token = getenv('ZAPI_TOKEN');
 $instancia = getenv('ZAPI_INSTANCIA');
 
-$url = "https://api.z-api.io/instances/$instancia/send-messages";
+$url = "https://api.z-api.io/instances/$instancia/send-message";
 
 $headers = [
     "Content-Type: application/json",
