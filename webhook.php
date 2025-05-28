@@ -10,7 +10,12 @@ error_log("Requisição recebida: $dataRaw");
 // Extrai a mensagem corretamente do campo text.message
 $mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
 $telefone = isset($data['phone']) ? substr(preg_replace('/\D/', '', $data['phone']), 0, 15) : null;
-
+if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
+    $ddd = $m[1];
+    $numero = $m[2];
+    $telefone = "55{$ddd}9{$numero}";
+}
+error_log("Telefone ajustado: $telefone");
 if ($mensagem && $telefone) {
     include "Conexao.php";
 
