@@ -1,13 +1,13 @@
 <?php
 // webhook.php
 
-// Lê o corpo da requisição e faz o parse do JSON
 $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
 
+// Log para debug
 error_log("Requisição recebida: $dataRaw");
 
-// Extrai a mensagem corretamente
+// Extrai a mensagem corretamente do campo text.message
 $mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
 $telefone = isset($data['phone']) ? substr(preg_replace('/\D/', '', $data['phone']), 0, 15) : null;
 
@@ -44,6 +44,9 @@ if ($mensagem && $telefone) {
     error_log("Mensagem inválida recebida.");
     http_response_code(400);
 }
+
+
+// Função original com cURL (mantida conforme você fez)
 function enviarMensagem($telefone, $mensagem) {
     $instancia = getenv('ZAPI_INSTANCIA');  
     $token = getenv('ZAPI_TOKEN'); 
@@ -78,4 +81,3 @@ function enviarMensagem($telefone, $mensagem) {
 
     curl_close($ch);
 }
-?>
