@@ -37,8 +37,8 @@ if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?
 // Função para responder usando a Z-API
 function responder($telefone, $mensagem)
 {
-    $token = 'SUA_CHAVE_DA_INSTANCIA'; // Substitua pelo seu token real
-    $url = 'https://api.z-api.io/instances/SUA_INSTANCIA/token/' . $token . '/send-message';
+    $token = '43BD3E198157CE2FD5261629'; // Substitua pelo seu token real
+    $url = 'https://api.z-api.io/instances/3E1E0A1E0F3500FD1B149A25103DD3DD/token/' . $token . '/send-message';
 
     $dados = [
         'phone' => $telefone,
