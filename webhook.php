@@ -39,7 +39,7 @@ function detectarCategoria($pdo, $tipo, $descricao) {
         if (strpos($descricaoLower, $chave) !== false) {
             // Retorna um array com id e nome
             return [
-                'id' => $linha['id'],
+                'id' => $linha['id_categoria'],
                 'categoria' => $linha['categoria']
             ];
         }
