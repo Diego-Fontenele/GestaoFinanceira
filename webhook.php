@@ -76,12 +76,12 @@ if ($mensagem && $telefone) {
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-            $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor,categoria_id, data) VALUES (?, ?, ?, NOW())");
+            $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor,categoria_id, data) VALUES (?, ?, ?, ?, NOW())");
             $stmt->execute([$usuario['id'], $descricao, $valor, $resultado['id']]);
             enviarMensagem($telefone, "📌 Despesa registrada!\n💸 Valor: R$ {$valor}\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         }
     } else {
-        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda bolo 150\n➡️ Despesa Luz 120\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n\n➡️ Ganhei\n➡️ Gastei");
+        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda bolo 150\n➡️ Despesa Luz 120\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n➡️ Ganhei\n➡️ Gastei");
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
