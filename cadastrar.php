@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = $_POST['nome'];
     $email = $_POST['email'];
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+    $telefone = preg_replace('/\D/', '', $_POST['telefone']); // Remove tudo que não for número
 
     // Verificar se o e-mail já está cadastrado
     $verifica = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email LIMIT 1");
@@ -18,11 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $erro = "Este e-mail já está cadastrado. <a href='esqueceu.php'>Esqueci minha senha</a>";
     } else {
         // Se não existe, cadastrar novo usuário
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
+        $sql = "INSERT INTO usuarios (nome, email, senha, num_telefone) VALUES (:nome, :email, :senha, :telefone)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':telefone', '55'.$telefone);
+        
 
         try {
             $stmt->execute();
@@ -63,6 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       text-decoration: underline;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
 </head>
 <body>
 
@@ -87,6 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <input type="email" name="email" class="form-control" id="email" required>
     </div>
     <div class="mb-3">
+      <label for="telefone" class="form-label">Telefone</label>
+      <input type="telefone" name="telefone" class="form-control" id="telefone" required>
+    </div>
+    <div class="mb-3">
       <label for="senha" class="form-label">Senha</label>
       <input type="password" name="senha" class="form-control" id="senha" required>
     </div>
@@ -100,4 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </div>
 
 </body>
+<script>
+  $(document).ready(function () {
+    Inputmask({"mask": "(99) 99999-9999"}).mask("#telefone");
+  });
+</script>
 </html>
