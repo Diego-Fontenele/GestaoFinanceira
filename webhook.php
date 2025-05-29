@@ -32,26 +32,26 @@ if ($mensagem && $telefone) {
     $usuario = $stmt->fetch();
     
     if (!$usuario) {
-        enviarMensagem($telefone, "Olá! Seu número não está cadastrado. Acesse domineseubolso.com.br para se registrar.");
+        enviarMensagem($telefone, "👋 Olá! Parece que seu número ainda não está cadastrado.\n\nPara usar o Domine Seu Bolso, acesse:\nwww.domineseubolso.com.br\n\n⚠️ O cadastro é rápido e gratuito!");
         exit;
     }
    
-    if (preg_match('/^(receita|despesa)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?$/iu', $mensagem, $match)) {
+    if (preg_match('/^(receita|despesa|gastei|ganhei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
 
-        if ($tipo === 'receita') {
+        if ($tipo === 'receita' || $tipo === 'ganhei') {
             $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, data) VALUES (?, ?, ?, NOW())");
             $stmt->execute([$usuario['id'], $descricao, $valor]);
-            enviarMensagem($telefone, "Receita de R$ {$valor} registrada: {$descricao}");
+            enviarMensagem($telefone, "✅ Receita registrada com sucesso!\n💰 Valor: R$ {$valor}\n📝 Descrição: {$descricao}");
         } else {
             $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, data) VALUES (?, ?, ?, NOW())");
             $stmt->execute([$usuario['id'], $descricao, $valor]);
-            enviarMensagem($telefone, "Despesa de R$ {$valor} registrada: {$descricao}");
+            enviarMensagem($telefone, "📌 Despesa registrada!\n💸 Valor: R$ {$valor}\n📝 Descrição: {$descricao}");
         }
     } else {
-        enviarMensagem($telefone, "Oi {$usuario['nome']}! Envie mensagens como:\n- Receita Projeto 300 reais\n- Despesa Luz 150 reais");
+        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda bolo 150\n➡️ Despesa Luz 120\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n\n Ganhei ou Gastei");
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
