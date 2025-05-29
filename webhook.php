@@ -53,10 +53,15 @@ if ($mensagem && $telefone) {
     
         return null; // Nenhuma palavra-chave correspondente
     }
+
+    $stmt = $pdo->prepare("SELECT usuario_id as id, nome FROM dependentes WHERE telefone = ?");
+    $stmt->execute([$telefone]);
+    $usuario = $stmt->fetch();
+    if (!$usuario){
     $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE num_telefone = ?");
     $stmt->execute([$telefone]);
     $usuario = $stmt->fetch();
-    
+    }
     if (!$usuario) {
         enviarMensagem($telefone, "👋 Olá! Parece que seu número ainda não está cadastrado.\n\nPara usar o Domine Seu Bolso, acesse:\nwww.domineseubolso.com.br\n\n⚠️ O cadastro é rápido e gratuito!");
         exit;
