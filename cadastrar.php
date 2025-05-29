@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $email = $_POST['email'];
   $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
   $telefone = preg_replace('/\D/', '', $_POST['telefone']); // Remove tudo que não for número
-
+  $telefone = '55'.$telefone ;
   // Verificar se o e-mail já está cadastrado
   $verifica = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email LIMIT 1");
   $verifica->bindParam(':email', $email);
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bindParam(':nome', $nome);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':senha', $senha);
-    $stmt->bindParam(':telefone', '55' . $telefone);
+    $stmt->bindParam(':telefone', $telefone);
 
 
     try {
