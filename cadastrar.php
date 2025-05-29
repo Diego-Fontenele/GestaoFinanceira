@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script>
 </head>
 <body>
 
@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
     <div class="mb-3">
       <label for="telefone" class="form-label">Telefone</label>
-      <input type="telefone" name="telefone" class="form-control" id="telefone" required>
+      <input type="tel" name="telefone" class="form-control" id="telefone" required>
     </div>
     <div class="mb-3">
       <label for="senha" class="form-label">Senha</label>
