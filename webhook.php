@@ -70,13 +70,13 @@ if ($mensagem && $telefone) {
         if ($tipo === 'receita' || $tipo === 'ganhei') {
             $tipo = 'receita';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-            $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),DATE_FORMAT(NOW(), '%Y-%m-01'))");
+            $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),date_trunc('month', NOW()))");
             $stmt->execute([$usuario['id'], $descricao, $valor, $resultado['id']]);
             enviarMensagem($telefone, "✅ Receita registrada com sucesso!\n💰 Valor: R$ {$valor}\n📝 Descrição: {$descricao} \n🏷️ Categoria: {$resultado['categoria']}");
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-            $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),DATE_FORMAT(NOW(), '%Y-%m-01'))");
+            $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),date_trunc('month', NOW()))");
             $stmt->execute([$usuario['id'], $descricao, $valor, $resultado['id']]);
             enviarMensagem($telefone, "📌 Despesa registrada!\n💸 Valor: R$ {$valor}\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         }
