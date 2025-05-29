@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
     <div class="mb-3">
       <label for="telefone" class="form-label">Telefone</label>
-      <input type="tel" name="telefone" class="form-control" id="telefone" required>
+      <input type="text" name="telefone" class="form-control" id="telefone" required>
     </div>
     <div class="mb-3">
       <label for="senha" class="form-label">Senha</label>
@@ -110,8 +110,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </body>
 <script>
-  $(document).ready(function () {
-    Inputmask({"mask": "(99) 99999-9999"}).mask("#telefone");
+  $(function () {
+    $('#telefone').inputmask('(99) 99999-9999', { clearIncomplete: true });
   });
 </script>
 </html>
