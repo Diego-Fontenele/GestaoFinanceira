@@ -72,7 +72,7 @@ if ($mensagem && $telefone) {
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
         
-        if ($tipo === 'receita' || $tipo === 'ganhei') {
+        if ($tipo === 'receita' || $tipo === 'ganhei'|| $tipo === 'recebi') {
             $tipo = 'receita';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
             $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),date_trunc('month', NOW()))");
