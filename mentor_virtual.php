@@ -46,7 +46,7 @@ if ($mesSelecionado) {
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
     Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).
-    observe $textoParaIA e agora de forma análitica veja onde posso tentar economizar, utilize bons fundamentos seja criativo.
+    observe {$textoParaIA} e agora de forma análitica veja onde posso tentar economizar, utilize bons fundamentos seja criativo.
     ";
 
     $openai_api_key = getenv('API_GPT');
