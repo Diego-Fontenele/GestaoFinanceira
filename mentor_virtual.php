@@ -43,7 +43,7 @@ if ($mesSelecionado) {
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
-    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}.
+    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).
     observe {$textoParaIA} e agora de forma análitica veja onde posso tentar economizar, utilize bons fundamentos seja criativo.
     ";
 
@@ -60,7 +60,7 @@ if ($mesSelecionado) {
 
     if (!$ja_gerado) {
         // Define o provedor ativo: 'openai' ou 'groq'
-        $provedor_api = 'groq'; // altere para 'openai' quando quiser usar a OpenAI
+        $provedor_api = 'openai'; // altere para 'openai' quando quiser usar a OpenAI
 
         if ($provedor_api === 'openai') {
             $api_key = $openai_api_key;
