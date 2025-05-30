@@ -1,8 +1,9 @@
 <?php
 $host = 'ep-red-star-acyn9osu-pooler.sa-east-1.aws.neon.tech';  // O host fornecido pelo neon
 $dbname = 'neondb';             // O nome do banco de dados
-$username = 'neondb_owner';         // O usuário fornecido pelo Render
-$password = 'npg_pbWiu9U7YknO';           // A senha fornecida pelo neon
+$username = getenv('USER_DB');         // O usuário fornecido pelo Render
+$password = getenv('PASSWORD_DB');          // A senha fornecida pelo neon
+
 
 try {
     // Conexão com o PostgreSQL usando PDO
