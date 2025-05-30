@@ -50,7 +50,17 @@ if ($mensagem && $telefone) {
                 ];
             }
         }
-    
+        if ($tipo == 'receita'){
+            return [
+                'id' => '13',
+                'categoria' => 'Outros'
+            ];
+        }else{
+            return [
+                'id' => '8',
+                'categoria' => 'Outros'
+            ];
+        }
         return null; // Nenhuma palavra-chave correspondente
     }
 
