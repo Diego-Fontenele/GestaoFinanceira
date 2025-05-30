@@ -86,7 +86,7 @@ if ($mensagem && $telefone) {
             enviarMensagem($telefone, "📌 Despesa registrada!\n💸 Valor: R$ {$valor}\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         }
     } else {
-        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda de bolo 150 reais\n➡️ Despesa Luz 120 reais\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n➡️ Ganhei\n➡️ Gastei");
+        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda de bolo 150 reais\n➡️ Despesa Luz 120 reais\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n➡️ Ganhei ou Recebi\n➡️ Gastei ou Paguei");
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
