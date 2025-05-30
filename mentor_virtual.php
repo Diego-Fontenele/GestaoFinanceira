@@ -17,6 +17,26 @@ $respostaBd = '';
 if ($mesSelecionado) {
     list($ano, $mes) = explode('-', $mesSelecionado);
 
+    $sql = "SELECT descricao, SUM(valor) as total 
+        FROM despesas 
+        WHERE usuario_id = :usuario_id 
+          AND data_referencia = :data_referencia 
+        GROUP BY descricao";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':usuario_id', $usuario_id);
+    $stmt->bindParam(':data_referencia', $mesSelecionado.'-01');
+    $stmt->execute();
+    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $textoParaIA = "Análise das despesas por categoria:\n";
+    foreach ($resultados as $linha) {
+        $descricao = $linha['descricao'];
+        $total = number_format($linha['total'], 2, ',', '.');
+        $textoParaIA .= "- {$descricao}: R$ {$total}\n";
+    }
+
+
     $stmt = $pdo->prepare("SELECT 
         (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_receitas,
         (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_despesas
@@ -25,7 +45,9 @@ if ($mesSelecionado) {
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
-    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).";
+    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).
+    observe $textoParaIA e agora de forma análitica veja onde posso tentar economizar, utilize bons fundamentos.
+    ";
 
     $openai_api_key = getenv('API_GPT');
     $groq_api_key  = getenv('API_GROQ');
