@@ -59,7 +59,7 @@ if ($mesSelecionado) {
 
 
     if (!$ja_gerado) {
-        // Define o provedor ativo: 'openai' ou 'groq'
+        // Define o provedor ativo: 'openai' ou 'groq' só precisa alterar a variável abaixo.
         $provedor_api = 'openai'; // altere para 'openai' quando quiser usar a OpenAI
 
         if ($provedor_api === 'openai') {
