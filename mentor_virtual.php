@@ -43,7 +43,7 @@ if ($mesSelecionado) {
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
-    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}. Seja breve (1 parágrafo).
+    Receitas: R$ {$dados['total_receitas']}, Despesas: R$ {$dados['total_despesas']}.
     observe {$textoParaIA} e agora de forma análitica veja onde posso tentar economizar, utilize bons fundamentos seja criativo.
     ";
 
