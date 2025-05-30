@@ -24,9 +24,7 @@ if ($mesSelecionado) {
         GROUP BY descricao";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':usuario_id', $usuario_id);
-    $stmt->bindParam(':data_referencia', $mesSelecionado.'-01');
-    $stmt->execute();
+    $stmt->execute(['usuario_id' => $usuario_id, 'data_referencia' => $mesSelecionado.'-01']);
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $textoParaIA = "Análise das despesas por categoria:\n";
