@@ -8,7 +8,7 @@ if (!$usuario_id) {
     exit;
 }
 
-$mesSelecionado = $_GET['mes_ano'].'-01' ?? null;
+$mesSelecionado = $_GET['mes_ano'] ?? null;
 $resposta = '';
 $mes = '';
 $ano = '';
@@ -21,7 +21,7 @@ if ($mesSelecionado) {
         (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_receitas,
         (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_despesas
     ");
-    $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado]);
+    $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado.'-01']);
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
