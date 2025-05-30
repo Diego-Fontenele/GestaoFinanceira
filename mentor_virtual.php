@@ -145,38 +145,41 @@ if ($mesSelecionado) {
         <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
             <?php include('includes/menu.php'); ?>
         </div>
+
+
         <div class="flex-grow-1 p-4">
-            <h1 class="mb-4">Mentor Virtual</h1>
+            <div class="card p-4">
+                <h4 class="mb-4">Mentor Virtual</h1>
 
-            <form method="get" class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <label class="form-label">Mês/Ano</label>
-                    <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado ?? '') ?>" required>
-                </div>
-                <div class="col-md-3 align-self-end">
-                    <button type="submit" class="btn btn-primary">Consultar</button>
-                </div>
-            </form>
+                    <form method="get" class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Mês/Ano</label>
+                            <input type="month" name="mes_ano" class="form-control" value="<?= htmlspecialchars($mesSelecionado ?? '') ?>" required>
+                        </div>
+                        <div class="col-md-3 align-self-end">
+                            <button type="submit" class="btn btn-primary">Consultar</button>
+                        </div>
+                    </form>
 
-            <?php if ($resposta): ?>
-                <div class="card">
-                    <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
-                    <div class="card-body">
-                        <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <?php if ($respostaBd): ?>
-                <div class="card">
-                    <div class="card-header">Histórico - Dica do Mentor&nbsp;<?= $data_refe_bd . ' - Data resposta IA - ' . $data_resp_bd ?></div>
-                    <div class="card-body">
-                        <p><?= nl2br(htmlspecialchars($respostaBd)) ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
+                    <?php if ($resposta): ?>
+                        <div class="card">
+                            <div class="card-header">Dica do Mentor - <?= str_pad($mes, 2, '0', STR_PAD_LEFT) ?>/<?= $ano ?></div>
+                            <div class="card-body">
+                                <p><?= nl2br(htmlspecialchars($resposta)) ?></p>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($respostaBd): ?>
+                        <div class="card">
+                            <div class="card-header">Histórico - Dica do Mentor&nbsp;<?= $data_refe_bd . ' - Data resposta IA - ' . $data_resp_bd ?></div>
+                            <div class="card-body">
+                                <p><?= nl2br(htmlspecialchars($respostaBd)) ?></p>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+            </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 </body>
 
