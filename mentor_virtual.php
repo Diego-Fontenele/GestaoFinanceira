@@ -8,7 +8,7 @@ if (!$usuario_id) {
     exit;
 }
 
-$mesSelecionado = $_GET['mes_ano'] ?? null;
+$mesSelecionado = $_GET['mes_ano'].'-01' ?? null;
 $resposta = '';
 $mes = '';
 $ano = '';
@@ -18,10 +18,10 @@ if ($mesSelecionado) {
     list($ano, $mes) = explode('-', $mesSelecionado);
 
     $stmt = $pdo->prepare("SELECT 
-        (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_receitas,
-        (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND EXTRACT(MONTH FROM data) = :mes AND EXTRACT(YEAR FROM data) = :ano) AS total_despesas
+        (SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_receitas,
+        (SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = :uid AND data_referencia = :data_referencia) AS total_despesas
     ");
-    $stmt->execute(['uid' => $usuario_id, 'mes' => $mes, 'ano' => $ano]);
+    $stmt->execute(['uid' => $usuario_id, 'data_referencia' => $mesSelecionado]);
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $prompt = "Analise os dados abaixo do aluno e dê um elogio ou dica personalizada. 
