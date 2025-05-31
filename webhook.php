@@ -5,7 +5,7 @@ $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
 
 // Log para debug
-error_log("Requisição recebida: $dataRaw");
+//error_log("Requisição recebida: $dataRaw");
 
 // Extrai a mensagem corretamente do campo text.message
 $mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
@@ -110,6 +110,7 @@ function enviarMensagem($telefone, $mensagem) {
     $clientToken = getenv('CLIENT_TOKEN');
 
     $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
+   
 
     $headers = [
         "Content-Type: application/json",
