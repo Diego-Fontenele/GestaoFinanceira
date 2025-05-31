@@ -12,7 +12,7 @@ $mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : n
 
 // Extrai o telefone e ajusta para garantir que tenha o 9 após o DDD no Brasil
 $telefone = isset($data['phone']) ? preg_replace('/\D/', '', $data['phone']) : null;
-
+error_log("Telefone ajustado: $telefone");
 if ($telefone) {
     // Corrige telefone: se for número do Brasil com 12 dígitos (55 + DDD + 8 números), adiciona o 9 após o DDD
     if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
