@@ -115,10 +115,10 @@ $sqlTipoPagamento = $pdo->prepare('select tipo_pagamento ,
                                     ');
 
 $sqlTipoPagamento->execute([$usuarioId,$mes_tipopagamento]);
-$resultado = $sqlTipoPagamento->fetchAll(PDO::FETCH_ASSOC);
+$resultadoTipoPg = $sqlTipoPagamento->fetchAll(PDO::FETCH_ASSOC);
 $tipoPagamento = [];
 $valoresTpPagamento = [];
-foreach ($resultado as $linha) {
+foreach ($resultadoTipoPg as $linha) {
   $tipoPagamento[] = $linha['tipo_pagamento'];
   $valoresTpPagamento[] = $linha['valor'];
 }
