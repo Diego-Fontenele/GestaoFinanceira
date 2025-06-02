@@ -168,7 +168,7 @@ if ($mensagem && $telefone) {
         }
     } else {
         enviarMensagem($telefone, 
-        "👋 Oi {$usuario['nome']}! Não entendi sua mensagem. Veja como registrar:
+        "👋 Ei {$usuario['nome']}! Não consegui entender direitinho sua mensagem. Mas calma, tô aqui pra te ajudar! 🤗
         
         🟢 *Formato:* [tipo] [descrição] [valor] [parcelas] [fechado]
         
@@ -178,6 +178,7 @@ if ($mensagem && $telefone) {
         - Despesa celular 1200 em 6x fechado
         
         🔁 *Tipo:* receita, despesa (ou: ganhei, recebi, paguei, gastei)  
+        📆 *Fechado:* só lança no mês seguinte, útil se a fatura já foi fechada.  
         💬 *Parcelas* e *fechado* são *opcionais*.
         
         Tenta de novo e qualquer coisa estou por aqui! 😊"
