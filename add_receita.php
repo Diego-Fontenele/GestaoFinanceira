@@ -298,8 +298,8 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
 
             <!-- LINHA COM BOTÕES E TOTAL -->
             <div class="col-md-4 d-flex align-items-end">
-              <!-- Total à esquerda -->
-              <div class="me-auto">
+              <!-- Total à direita -->
+              <div class="md-auto">
               <button type="submit" class="btn btn-primary me-2">
                 <i class="bi bi-filter"></i> Filtrar
               </button>
