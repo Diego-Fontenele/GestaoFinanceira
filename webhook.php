@@ -172,16 +172,17 @@ if ($mensagem && $telefone) {
         
         🟢 *Formato:* [tipo] [descrição] [valor] [parcelas] [fechado]
         
-        📌 *Exemplos:*
-        - Receita venda de bolo 150  
-        - Despesa mercado 200 reais  
-        - Despesa celular 1200 em 6x fechado
-        
-        🔁 *Tipo:* receita, despesa (ou: ganhei, recebi, paguei, gastei)  
-        📆 *Fechado:* só lança no mês seguinte, útil se a fatura já foi fechada.  
-        💬 *Parcelas* e *fechado* são *opcionais*.
-        
-        Tenta de novo e qualquer coisa estou por aqui! 😊"
+        📌 Você pode registrar assim:
+            - Receita venda bolo 150  
+            - Despesa mercado 200  
+            - Despesa celular 1200 em 6x  
+            - Receita curso 600 em 3x fechado
+
+            💡 Use: receita ou despesa + descrição + valor.  
+            ➕ Pode adicionar parcelas (ex: em 3x).  
+            📆 Escreva *fechado* se for pra lançar só no mês que vem.
+
+            Tenta de novo que vai dar certo! 😊"
         );
     }
 } else {
