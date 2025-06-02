@@ -311,7 +311,7 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
                   <a href="add_receita.php" class="btn btn-outline-secondary w-100 w-md-auto">Limpar</a>
                 </div>
                 <div class="fw-bold text-md-end">
-                  Total: R$ <?= number_format($total_receita, 2, ',', '.') ?>
+                <label class="form-label">Total: R$ <?= number_format($total_receita, 2, ',', '.') ?></label>
                 </div>
               </div>
             </div>
