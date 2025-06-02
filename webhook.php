@@ -167,11 +167,11 @@ if ($mensagem && $telefone) {
                 enviarMensagem($telefone, $msg);
         }
     } else {
-        $msgFim = "👋 Ei {$usuario['nome']}! Não entendi muito bem... mas olha como é fácil:\n\n";
-        $msgFim .= "💰 *Receita:*\n➕ Receita venda bolo 150\n💵 Ganhei aluguel 800 reais\n📥 Recebi pix da Ana 200\n\n💸";
-        $msgFim .="*Despesa:*➖ Despesa mercado 300\n🧾 Paguei cartão 250\n🍕 Gastei pizza 90 reais\n\n📆 *Parcelado?*\nDespesas ou receitas em várias vezes:\n";
-        $msgFim .="📱 Despesa celular 1200 em 6x\n🎓 Receita curso 600 em 3x\n\n🔒 *Fatura fechada?*\nEscreva *fechado* no final e lançarei";
-        $msgFim .=" no mês que vem 😉\nEx: Despesa TV 2400 em 4x fechado\n✨ Use frases simples e diretas.\n\nTenta de novo que tô contigo! 😄";
+
+        $msgFim = "👋 Oi {$usuario['nome']}!\n\nHmm, não consegui entender sua mensagem. Sem problemas! Olha só como você pode registrar certinho:\n\n🟢";
+        $msgFim .= " *Formato:* [tipo] [descrição] [valor] [parcelas] [fechado]\n\n📌 *Exemplos:*\n- Receita venda de bolo 150\n- Despesa mercado 200 reais\n- Despesa celular 1200 em 6x fechado\n\n";
+        $msgFim .="🔁 *Tipo:* receita, despesa (ou: ganhei, recebi, paguei, gastei)\n📆 *Fechado:*";
+        $msgFim .=" só lança no mês seguinte, útil se a fatura já foi fechada.\n💬 *Parcelas* e *fechado* são *opcionais*.\n\nTenta de novo e qualquer coisa estou por aqui! 😊";
         enviarMensagem($telefone,$msgFim);
 
     }
