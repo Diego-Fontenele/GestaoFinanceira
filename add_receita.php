@@ -195,6 +195,7 @@ $sql .= " ORDER BY r.data DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$total_receita = array_sum(array_column($receitas, 'valor'));
 ?>
 
 <!DOCTYPE html>
@@ -295,6 +296,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+            <label class="form-label"><?= $total_receita?></label> 
           </div>
         </form>
         <form method="POST">
