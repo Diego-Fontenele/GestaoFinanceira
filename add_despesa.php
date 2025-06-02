@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['excluir_selecionados
     // Atualização
     $id_edicao = $_POST['id'];
     $stmt = $pdo->prepare("UPDATE despesas SET categoria_id = ?, descricao = ?, valor = ?, data = ?,data_referencia = ?,tipo_pagamento=? WHERE id = ? AND usuario_id = ?");
-    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia,$tipo_pagamento, $id_edicao, $_SESSION['usuario_id']])) {
+    if ($stmt->execute([$categoria_id, $descricao, $valor, $data, $datareferencia, $tipo_pagamento, $id_edicao, $_SESSION['usuario_id']])) {
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Depesa atualizada com sucesso!'];
       header("Location: add_despesa.php$queryString");
       exit;
@@ -305,7 +305,7 @@ $total_despesa = array_sum(array_column($despesas, 'valor'));
             <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
           </div>
           <div class="fw-bold text-md-end">
-                <input type="text" name="totalreceita" class="form-control text-end" value="R$ <?= number_format($total_despesa, 2, ',', '.') ?>" readonly>
+            <input type="text" name="totalreceita" class="form-control text-end border-0" value="R$ <?= number_format($total_despesa, 2, ',', '.') ?>" readonly>
           </div>
         </form>
         <form method="POST">
