@@ -168,29 +168,7 @@ if ($mensagem && $telefone) {
         }
     } else {
         enviarMensagem($telefone, 
-        "👋 Ei {$usuario['nome']}! Não entendi muito bem... mas olha como é fácil:
-        
-        💰 *Receita:*  
-        ➕ Receita venda bolo 150  
-        💵 Ganhei aluguel 800 reais  
-        📥 Recebi pix da Ana 200
-        
-        💸 *Despesa:*  
-        ➖ Despesa mercado 300  
-        🧾 Paguei cartão 250  
-        🍕 Gastei pizza 90 reais
-        
-        📆 *Parcelado?*  
-        Despesas ou receitas em várias vezes:  
-        📱 Despesa celular 1200 em 6x  
-        🎓 Receita curso 600 em 3x
-        
-        🔒 *Fatura fechada?*  
-        Escreva *fechado* no final e lançarei no mês que vem 😉  
-        Ex: Despesa TV 2400 em 4x fechado
-        
-        ✨ Use frases simples e diretas.  
-        Tenta de novo que tô contigo! 😄"
+        "👋 Ei {$usuario['nome']}! Não entendi muito bem... mas olha como é fácil:\n\n💰 *Receita:*\n➕ Receita venda bolo 150\n💵 Ganhei aluguel 800 reais\n📥 Recebi pix da Ana 200\n\n💸 *Despesa:*➖ Despesa mercado 300\n🧾 Paguei cartão 250\n🍕 Gastei pizza 90 reais\n\n📆 *Parcelado?*\nDespesas ou receitas em várias vezes:\n📱 Despesa celular 1200 em 6x\n🎓 Receita curso 600 em 3x\n\n🔒 *Fatura fechada?*\nEscreva *fechado* no final e lançarei no mês que vem 😉\nEx: Despesa TV 2400 em 4x fechado\n✨ Use frases simples e diretas.\n\nTenta de novo que tô contigo! 😄"
         );
 
     }
