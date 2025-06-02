@@ -298,7 +298,7 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </div>
           <div class="col-md-2">
             <label class="form-label">Total</label>
-            <input type="text" name="Totalreceita" class="form-control" value="<?= $receitas ?>">
+            <input type="text" name="Totalreceita" class="form-control" value="<?= $receitas['valor'] ?>">
           </div>
         </form>
         <form method="POST">
