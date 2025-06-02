@@ -170,20 +170,28 @@ if ($mensagem && $telefone) {
         enviarMensagem($telefone, 
         "👋 Ei {$usuario['nome']}! Não consegui entender direitinho sua mensagem. Mas calma, tô aqui pra te ajudar! 🤗
         
-        🟢 *Formato:* [tipo] [descrição] [valor] [parcelas] [fechado]
-        
-        📌 Você pode registrar assim:
-            - Receita venda bolo 150  
-            - Despesa mercado 200  
-            - Despesa celular 1200 em 6x  
-            - Receita curso 600 em 3x fechado
+            💰 *Registrar receita:*  
+            ➕ Receita venda bolo 150  
+            💵 Ganhei aluguel 800 reais  
+            📥 Recebi pix da Ana 200
 
-            💡 Use: receita ou despesa + descrição + valor.  
-            ➕ Pode adicionar parcelas (ex: em 3x).  
-            📆 Escreva *fechado* se for pra lançar só no mês que vem.
+            💸 *Registrar despesa:*  
+            ➖ Despesa mercado 300  
+            🧾 Paguei cartão 250  
+            🍕 Gastei pizza 90 reais
 
-            Tenta de novo que vai dar certo! 😊"
-        );
+            📆 *Parcelado?*  
+            📱 Despesa celular 1200 em 6x  
+            🎓 Receita curso 600 em 3x
+
+            🔒 *Fatura fechada?*  
+            Só escrever *fechado* no final pra lançar só no mês que vem!  
+            (ex: Despesa TV 2400 em 4x fechado)
+
+            ✨ Use palavras simples e direto ao ponto!  
+            Tenta aí que tô aqui pra ajudar 😄"
+            );
+
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
