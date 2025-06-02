@@ -171,7 +171,7 @@ $stmt->execute([$_SESSION['usuario_id']]);
 $desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar receitas com filtros
-$sql = "SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
+$sql = "SELECT sum(r.valor) valor AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
 
 if (!empty($filtro_categoria)) {
@@ -295,6 +295,10 @@ $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Total</label>
+            <input type="text" name="Totalreceita" class="form-control" value="<?= $receitas ?>">
           </div>
         </form>
         <form method="POST">
