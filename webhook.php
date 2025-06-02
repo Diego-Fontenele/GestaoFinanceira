@@ -23,6 +23,7 @@ if ($telefone) {
 }
 
 $proximo_mes = 0;
+$mes = 0;
 //error_log("Telefone ajustado: $telefone");
 
 if ($mensagem && $telefone) {
@@ -100,8 +101,8 @@ if ($mensagem && $telefone) {
                 $proximo_mes = 0;
             }
             for ($i = 0; $i < $parcelas; $i++) {
-                $proximo_mes = $proximo_mes + $i;
-                $dataParcela = (new DateTime())->modify("+$proximo_mes month")->format('Y-m-d');
+                $mes = $proximo_mes + $i;
+                $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
@@ -111,6 +112,7 @@ if ($mensagem && $telefone) {
                     $dataParcela,
                     $dataReferencia
                 ]);
+                
             }
     
             $msg = "✅ Receita registrada em $parcelas parcela(s)!\n" .
@@ -133,8 +135,8 @@ if ($mensagem && $telefone) {
                 $proximo_mes = 0;
             }
             for ($i = 0; $i < $parcelas; $i++) {
-                $proximo_mes = $proximo_mes + $i;
-                $dataParcela = (new DateTime())->modify("+$proximo_mes month")->format('Y-m-d');
+                $mes = $proximo_mes + $i;
+                $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
