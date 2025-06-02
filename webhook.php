@@ -167,7 +167,9 @@ if ($mensagem && $telefone) {
                 enviarMensagem($telefone, $msg);
         }
     } else {
-        enviarMensagem($telefone, "👋 Olá {$usuario['nome']}! Não consegui entender sua mensagem. 😕\n\nVeja como você pode registrar suas movimentações:\n\n📥 *Para receitas* (dinheiro que entrou):\n➡️ Receita Venda de bolo 150 reais\n➡️ Ganhei Freelancer 200\n➡️ Recebi Aluguel 800 reais\n\n📤 *Para despesas* (gastos):\n➡️ Despesa Luz 120 reais\n➡️ Paguei Cartão 250\n➡️ Gastei Mercado 350 reais\n\n✅ Você também pode registrar *parcelas* assim:\n➡️ Despesa Celular 1200 reais em 6x\n➡️ Receita Curso online 600 em 3x\n\n🔁 *Dicas úteis:*\n- Use palavras como *ganhei, recebi, paguei, gastei* — todas funcionam!\n- Escreva o valor com ou sem “reais” no final.\n\nTente novamente seguindo esse padrão. Estou aqui pra te ajudar! 😊");
+        enviarMensagem($telefone, 
+"👋 Ei {$usuario['nome']}! Não consegui entender direitinho sua mensagem. Mas calma, tô aqui pra te ajudar! 🤗\n\n📌 Aqui vão alguns jeitos de registrar suas movimentações:\n\n💰 *Receitas* (dinheiro que entrou):\n➕ *Ganhei* bolo 150\n➕ *Recebi* aluguel 800\n➕ *Freelancer* 200 reais\n\n💸 *Despesas* (gastos que você teve):\n➖ *Paguei* luz 120\n➖ *Gastei* mercado 350\n➖ *Cartão* 250 reais\n\n📆 *Parcelado?* É só dizer assim:\n💳 Celular 1200 em 6x\n💳 Curso online 600 em 3x\n\n📴 *Fatura fechada?* Escreva:\n💳 Celular 1200 em 6x *fechado* (lança só no próximo mês!)\n\n✨ *Dicas mágicas:*\n✅ Pode escrever com ou sem “reais”\n✅ Pode usar palavras como *ganhei, recebi, paguei, gastei*\n✅ Simples e direto, como se estivesse contando pra um amigo!\n\n🔁 Agora é só tentar de novo! Tô contigo! 💪😄"
+);
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
