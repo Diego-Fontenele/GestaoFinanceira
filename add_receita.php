@@ -300,14 +300,15 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
             <div class="col-md-4 d-flex align-items-end">
               <!-- Total à esquerda -->
               <div class="me-auto">
-                <label class="form-label m-0 fw-bold">Total: R$ <?= number_format($total_receita, 2, ',', '.') ?></label>
+                <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
               </div>
 
               <!-- Botões à direita -->
               <button type="submit" class="btn btn-primary me-2">
                 <i class="bi bi-filter"></i> Filtrar
               </button>
-              <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+
+              <label class="form-label m-0 fw-bold">Total: R$ <?= number_format($total_receita, 2, ',', '.') ?></label>
             </div>
           </div>
 
