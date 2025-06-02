@@ -22,7 +22,7 @@ if ($telefone) {
     }
 }
 
-
+$proximo_mes = 0;
 //error_log("Telefone ajustado: $telefone");
 
 if ($mensagem && $telefone) {
@@ -76,6 +76,12 @@ if ($mensagem && $telefone) {
         enviarMensagem($telefone, "👋 Olá! Parece que seu número ainda não está cadastrado.\n\nPara usar o Domine Seu Bolso, acesse:\nwww.domineseubolso.com.br\n\n⚠️ O cadastro é rápido e gratuito!");
         exit;
     }
+    $mensagem = strtolower($mensagem);
+    if ((strpos($mensagem, 'fechado') !== false)||(strpos($mensagem, 'fechada') !== false)) {
+        $faturaFechada = true;
+        $mensagem = str_ireplace('fechado', '', $mensagem); // remove a palavra
+    }
+
     $mensagem = trim(preg_replace('/\s+/', ' ', $mensagem));
     if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
@@ -88,9 +94,13 @@ if ($mensagem && $telefone) {
         if ($tipo === 'receita' || $tipo === 'ganhei' || $tipo === 'recebi') {
             $tipo = 'receita';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-    
+            if ($faturaFechada) {
+                $proximo_mes = 1;
+            }else{
+                $proximo_mes = 0;
+            }
             for ($i = 0; $i < $parcelas; $i++) {
-                $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
+                $dataParcela = (new DateTime())->modify("+($i+$proximo_mes) month")->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
