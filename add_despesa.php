@@ -188,6 +188,7 @@ $sql .= " ORDER BY d.data DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$total_despesa = array_sum(array_column($despesas, 'valor'));
 ?>
 
 <!DOCTYPE html>
@@ -303,6 +304,9 @@ $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </button>
             <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
           </div>
+          <div class="fw-bold text-md-end">
+                <input type="text" name="totalreceita" class="form-control" value="R$ <?= number_format($total_receita, 2, ',', '.') ?>" readonly>
+                </div>
         </form>
         <form method="POST">
           <table class="table table-bordered table-striped">
