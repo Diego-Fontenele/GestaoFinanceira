@@ -82,10 +82,8 @@ if ($mensagem && $telefone) {
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
         $parcelas = isset($match[5]) ? intval($match[5]) : 1;
-        error_log("Tipo: $tipo");
-        error_log("descricao: $descricao");
-        error_log("valor: $valor");
-        error_log("parcelas: $parcelas");
+        $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
+
     
         if ($tipo === 'receita' || $tipo === 'ganhei' || $tipo === 'recebi') {
             $tipo = 'receita';
@@ -93,14 +91,14 @@ if ($mensagem && $telefone) {
     
             for ($i = 0; $i < $parcelas; $i++) {
                 $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
-                $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, date_trunc('month', ?))");
+                $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
                     $descricao . ($parcelas > 1 ? " (" . ($i+1) . "/$parcelas)" : ""),
                     round($valor / $parcelas, 2),
                     $resultado['id'],
                     $dataParcela,
-                    $dataParcela
+                    $dataReferencia
                 ]);
             }
     
@@ -108,20 +106,20 @@ if ($mensagem && $telefone) {
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-    
+            
             for ($i = 0; $i < $parcelas; $i++) {
                 $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
-                $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, date_trunc('month', ?))");
+                $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
                     $descricao . ($parcelas > 1 ? " (" . ($i+1) . "/$parcelas)" : ""),
                     round($valor / $parcelas, 2),
                     $resultado['id'],
                     $dataParcela,
-                    $dataParcela
+                    $dataReferencia
                 ]);
             }
-    
+            
             enviarMensagem($telefone, "📌 Despesa registrada em $parcelas parcela(s)!\n💸 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         }
     } else {
