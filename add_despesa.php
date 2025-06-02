@@ -305,8 +305,8 @@ $total_despesa = array_sum(array_column($despesas, 'valor'));
             <a href="add_despesa.php" class="btn btn-outline-secondary">Limpar</a>
           </div>
           <div class="fw-bold text-md-end">
-                <input type="text" name="totalreceita" class="form-control" value="R$ <?= number_format($total_despesa, 2, ',', '.') ?>" readonly>
-                </div>
+                <input type="text" name="totalreceita" class="form-control text-end" value="R$ <?= number_format($total_despesa, 2, ',', '.') ?>" readonly>
+          </div>
         </form>
         <form method="POST">
           <table class="table table-bordered table-striped">
