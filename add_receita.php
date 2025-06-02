@@ -303,7 +303,7 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
             <div class="col-md-4">
               <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between h-100 gap-2">
                 <div>
-                  <button type="submit" class="btn btn-primary w-100 w-md-auto">
+                  <button type="submit" class="btn btn-primary w-100 w-me-auto">
                     <i class="bi bi-filter"></i> Filtrar
                   </button>
                 </div>
