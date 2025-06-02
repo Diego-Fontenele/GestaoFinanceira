@@ -170,7 +170,32 @@ $stmt = $pdo->prepare("SELECT distinct descricao FROM receitas  WHERE usuario_id
 $stmt->execute([$_SESSION['usuario_id']]);
 $desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Buscar receitas com filtros
+$sql = "SELECT r.*, c.nome AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
+$params = [$_SESSION['usuario_id']];
 
+if (!empty($filtro_categoria)) {
+  $sql .= " AND c.id = ?";
+  $params[] = $filtro_categoria;
+}
+if (!empty($filtro_inicio)) {
+  $sql .= " AND r.data >= ?";
+  $params[] = $filtro_inicio;
+}
+if (!empty($filtro_fim)) {
+  $sql .= " AND r.data <= ?";
+  $params[] = $filtro_fim;
+}
+if (!empty($filtro_desc)) {
+  $sql .= " AND r.descricao = ?";
+  $params[] = $filtro_desc;
+}
+
+$sql .= " ORDER BY r.data DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$total_receita = array_sum(array_column($receitas, 'valor'));
 ?>
 
 <!DOCTYPE html>
@@ -273,7 +298,9 @@ $desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
           </div>
           <div class="col-md-2">
-            <label class="form-label" name="valor"><?= $total_receita ?></label>
+            <label class="form-label">Total:</label>
+            <input type="text" name="valor" class="form-control" value="<?= $total_receita ?>" readonly>
+            
           </div>
           
         </form>
