@@ -194,7 +194,7 @@ if (!empty($filtro_desc)) {
 $sql .= " ORDER BY r.data DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$receitas = $stmt->fetchAll(PDO::FETCH_ASSOC)['valor'] ?? 0;
 ?>
 
 <!DOCTYPE html>
