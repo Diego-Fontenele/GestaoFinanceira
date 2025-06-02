@@ -265,41 +265,50 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
         <h5 class="mb-3">Receitas Cadastradas</h5>
 
         <form class="row mb-4" method="GET">
-          <div class="col-md-2">
-            <label class="form-label">Categoria</label>
-            <select name="filtro_categoria" class="form-select">
-              <option value="">Todas</option>
-              <?php foreach ($categorias as $cat): ?>
-                <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Descrição</label>
-            <select name="filtro_descricao" class="form-select">
-              <option value="">Todas</option>
-              <?php foreach ($desc_receitas as $desc): ?>
-                <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Início</label>
-            <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Fim</label>
-            <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
-          </div>
-            <!-- Nova linha para alinhar o total à esquerda -->
-          <div class="col-md-2 d-flex align-items-end">
-            <label class="form-label w-100"><?= 'Total: R$ ' . number_format($total_receita, 2, ',', '.') ?></label>
-          </div>
-          <div class="col-md-4 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-filter"></i> Filtrar
-            </button>
-            <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+          <div class="row">
+            <div class="col-md-2">
+              <label class="form-label">Categoria</label>
+              <select name="filtro_categoria" class="form-select">
+                <option value="">Todas</option>
+                <?php foreach ($categorias as $cat): ?>
+                  <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Descrição</label>
+              <select name="filtro_descricao" class="form-select">
+                <option value="">Todas</option>
+                <?php foreach ($desc_receitas as $desc): ?>
+                  <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Início</label>
+              <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Fim</label>
+              <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
+            </div>
+
+            <!-- LINHA COM BOTÕES E TOTAL -->
+            <div class="col-md-4 d-flex align-items-end">
+              <!-- Total à esquerda -->
+              <div class="me-auto">
+                <label class="form-label m-0 fw-bold">Total: R$ <?= number_format($total_receita, 2, ',', '.') ?></label>
+              </div>
+
+              <!-- Botões à direita -->
+              <button type="submit" class="btn btn-primary me-2">
+                <i class="bi bi-filter"></i> Filtrar
+              </button>
+              <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+            </div>
           </div>
 
 
