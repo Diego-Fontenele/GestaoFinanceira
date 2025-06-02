@@ -168,8 +168,20 @@ if ($mensagem && $telefone) {
         }
     } else {
         enviarMensagem($telefone, 
-"👋 Ei {$usuario['nome']}! Não consegui entender direitinho sua mensagem. Mas calma, tô aqui pra te ajudar! 🤗\n\n📌 Aqui vão alguns jeitos de registrar suas movimentações:\n\n💰 *Receitas* (dinheiro que entrou):\n➕ *Ganhei* bolo 150\n➕ *Recebi* aluguel 800\n➕ *Freelancer* 200 reais\n\n💸 *Despesas* (gastos que você teve):\n➖ *Paguei* luz 120\n➖ *Gastei* mercado 350\n➖ *Cartão* 250 reais\n\n📆 *Parcelado?* É só dizer assim:\n💳 Celular 1200 em 6x\n💳 Curso online 600 em 3x\n\n📴 *Fatura fechada?* Escreva:\n💳 Celular 1200 em 6x *fechado* (lança só no próximo mês!)\n\n✨ *Dicas mágicas:*\n✅ Pode escrever com ou sem “reais”\n✅ Pode usar palavras como *ganhei, recebi, paguei, gastei*\n✅ Simples e direto, como se estivesse contando pra um amigo!\n\n🔁 Agora é só tentar de novo! Tô contigo! 💪😄"
-);
+        "👋 Oi {$usuario['nome']}! Não entendi sua mensagem. Veja como registrar:
+        
+        🟢 *Formato:* [tipo] [descrição] [valor] [parcelas] [fechado]
+        
+        📌 *Exemplos:*
+        - Receita venda de bolo 150  
+        - Despesa mercado 200 reais  
+        - Despesa celular 1200 em 6x fechado
+        
+        🔁 *Tipo:* receita, despesa (ou: ganhei, recebi, paguei, gastei)  
+        💬 *Parcelas* e *fechado* são *opcionais*.
+        
+        Tenta de novo e qualquer coisa estou por aqui! 😊"
+        );
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
