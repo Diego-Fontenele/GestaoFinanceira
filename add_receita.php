@@ -207,11 +207,11 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
 </head>
 
 <body class="bg-light">
-<?php include 'loading.php'?>
+  <?php include 'loading.php' ?>
   <button class="btn btn-primary d-md-none m-2 position-fixed top-0 start-0 z-3 ms-0 mt-0" type="button"
     data-bs-toggle="collapse" data-bs-target="#menuLateral">
     &#9776;
@@ -296,8 +296,11 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
               <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
-            <label class="form-label"><?= $total_receita?></label> 
           </div>
+          <div class="col-md-2">
+            <label class="form-label" name="valor"><?= $total_receita ?></label>
+          </div>
+          
         </form>
         <form method="POST">
           <table class="table table-bordered table-striped">
