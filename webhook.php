@@ -76,12 +76,16 @@ if ($mensagem && $telefone) {
         enviarMensagem($telefone, "👋 Olá! Parece que seu número ainda não está cadastrado.\n\nPara usar o Domine Seu Bolso, acesse:\nwww.domineseubolso.com.br\n\n⚠️ O cadastro é rápido e gratuito!");
         exit;
     }
-   
+    $mensagem = trim(preg_replace('/\s+/', ' ', $mensagem));
     if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
         $parcelas = isset($match[5]) ? intval($match[5]) : 1;
+        error_log("Tipo: $tipo");
+        error_log("descricao: $descricao");
+        error_log("valor: $valor");
+        error_log("parcelas: $parcelas");
     
         if ($tipo === 'receita' || $tipo === 'ganhei' || $tipo === 'recebi') {
             $tipo = 'receita';
