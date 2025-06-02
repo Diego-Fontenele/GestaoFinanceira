@@ -102,7 +102,17 @@ if ($mensagem && $telefone) {
                 ]);
             }
     
-            enviarMensagem($telefone, "✅ Receita registrada em $parcelas parcela(s)!\n💰 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
+            $msg = "✅ Receita registrada em $parcelas parcela(s)!\n" .
+            "💰 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n";
+     
+            if ($parcelas > 1) {
+                $msg .= "💳 Valor da parcela: R$ " . number_format(round($valor / $parcelas, 2), 2, ',', '.') . "\n";
+            }
+            
+            $msg .= "📝 Descrição: {$descricao}\n" .
+                    "🏷️ Categoria: {$resultado['categoria']}";
+     
+            enviarMensagem($telefone, $msg);
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
@@ -120,7 +130,17 @@ if ($mensagem && $telefone) {
                 ]);
             }
             
-            enviarMensagem($telefone, "📌 Despesa registrada em $parcelas parcela(s)!\n💸 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
+            $msg = "📌 Despesa registrada em $parcelas parcela(s)!\n" .
+                    "💸 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n";
+
+                if ($parcelas > 1) {
+                    $msg .= "💳 Valor da parcela: R$ " . number_format(round($valor / $parcelas, 2), 2, ',', '.') . "\n";
+                }
+
+                $msg .= "📝 Descrição: {$descricao}\n" .
+                        "🏷️ Categoria: {$resultado['categoria']}";
+
+                enviarMensagem($telefone, $msg);
         }
     } else {
         enviarMensagem($telefone, "👋 Olá {$usuario['nome']}! Não consegui entender sua mensagem. 😕\n\nVeja como você pode registrar suas movimentações:\n\n📥 *Para receitas* (dinheiro que entrou):\n➡️ Receita Venda de bolo 150 reais\n➡️ Ganhei Freelancer 200\n➡️ Recebi Aluguel 800 reais\n\n📤 *Para despesas* (gastos):\n➡️ Despesa Luz 120 reais\n➡️ Paguei Cartão 250\n➡️ Gastei Mercado 350 reais\n\n✅ Você também pode registrar *parcelas* assim:\n➡️ Despesa Celular 1200 reais em 6x\n➡️ Receita Curso online 600 em 3x\n\n🔁 *Dicas úteis:*\n- Use palavras como *ganhei, recebi, paguei, gastei* — todas funcionam!\n- Escreva o valor com ou sem “reais” no final.\n\nTente novamente seguindo esse padrão. Estou aqui pra te ajudar! 😊");
