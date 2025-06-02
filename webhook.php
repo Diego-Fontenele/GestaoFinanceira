@@ -77,26 +77,51 @@ if ($mensagem && $telefone) {
         exit;
     }
    
-    if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?$/iu', $mensagem, $match)) {
+    if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
-        
-        if ($tipo === 'receita' || $tipo === 'ganhei'|| $tipo === 'recebi') {
+        $parcelas = isset($match[5]) ? intval($match[5]) : 1;
+    
+        if ($tipo === 'receita' || $tipo === 'ganhei' || $tipo === 'recebi') {
             $tipo = 'receita';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-            $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),date_trunc('month', NOW()))");
-            $stmt->execute([$usuario['id'], $descricao, $valor, $resultado['id']]);
-            enviarMensagem($telefone, "✅ Receita registrada com sucesso!\n💰 Valor: R$ {$valor}\n📝 Descrição: {$descricao} \n🏷️ Categoria: {$resultado['categoria']}");
+    
+            for ($i = 0; $i < $parcelas; $i++) {
+                $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
+                $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, date_trunc('month', ?))");
+                $stmt->execute([
+                    $usuario['id'],
+                    $descricao . ($parcelas > 1 ? " (" . ($i+1) . "/$parcelas)" : ""),
+                    round($valor / $parcelas, 2),
+                    $resultado['id'],
+                    $dataParcela,
+                    $dataParcela
+                ]);
+            }
+    
+            enviarMensagem($telefone, "✅ Receita registrada em $parcelas parcela(s)!\n💰 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
-            $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, NOW(),date_trunc('month', NOW()))");
-            $stmt->execute([$usuario['id'], $descricao, $valor, $resultado['id']]);
-            enviarMensagem($telefone, "📌 Despesa registrada!\n💸 Valor: R$ {$valor}\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
+    
+            for ($i = 0; $i < $parcelas; $i++) {
+                $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
+                $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, date_trunc('month', ?))");
+                $stmt->execute([
+                    $usuario['id'],
+                    $descricao . ($parcelas > 1 ? " (" . ($i+1) . "/$parcelas)" : ""),
+                    round($valor / $parcelas, 2),
+                    $resultado['id'],
+                    $dataParcela,
+                    $dataParcela
+                ]);
+            }
+    
+            enviarMensagem($telefone, "📌 Despesa registrada em $parcelas parcela(s)!\n💸 Valor total: R$ " . number_format($valor, 2, ',', '.') . "\n📝 Descrição: {$descricao}\n🏷️ Categoria: {$resultado['categoria']}");
         }
     } else {
-        enviarMensagem($telefone, "👋 Oi {$usuario['nome']}! Não entendi sua mensagem.\n\nExemplos válidos:\n➡️ Receita Venda de bolo 150 reais\n➡️ Despesa Luz 120 reais\n\nTente novamente seguindo esse padrão. Também entendo palavras similares como:\n➡️ Ganhei ou Recebi\n➡️ Gastei ou Paguei");
+        enviarMensagem($telefone, "👋 Olá {$usuario['nome']}! Não consegui entender sua mensagem. 😕\n\nVeja como você pode registrar suas movimentações:\n\n📥 *Para receitas* (dinheiro que entrou):\n➡️ Receita Venda de bolo 150 reais\n➡️ Ganhei Freelancer 200\n➡️ Recebi Aluguel 800 reais\n\n📤 *Para despesas* (gastos):\n➡️ Despesa Luz 120 reais\n➡️ Paguei Cartão 250\n➡️ Gastei Mercado 350 reais\n\n✅ Você também pode registrar *parcelas* assim:\n➡️ Despesa Celular 1200 reais em 6x\n➡️ Receita Curso online 600 em 3x\n\n🔁 *Dicas úteis:*\n- Use palavras como *ganhei, recebi, paguei, gastei* — todas funcionam!\n- Escreva o valor com ou sem “reais” no final.\n\nTente novamente seguindo esse padrão. Estou aqui pra te ajudar! 😊");
     }
 } else {
     error_log("Mensagem ou telefone inválido recebido.");
