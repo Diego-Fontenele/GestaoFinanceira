@@ -171,7 +171,7 @@ $stmt->execute([$_SESSION['usuario_id']]);
 $desc_receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar receitas com filtros
-$sql = "SELECT sum(r.valor) valor AS categoria_nome FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
+$sql = "SELECT sum(r.valor) as  valor  FROM receitas r JOIN categorias c ON r.categoria_id = c.id WHERE r.usuario_id = ?";
 $params = [$_SESSION['usuario_id']];
 
 if (!empty($filtro_categoria)) {
