@@ -126,9 +126,14 @@ if ($mensagem && $telefone) {
         } else {
             $tipo = 'despesa';
             $resultado = detectarCategoria($pdo, $tipo, $descricao);
+            if ($faturaFechada) {
+                $proximo_mes = 1;
+            }else{
+                $proximo_mes = 0;
+            }
             
             for ($i = 0; $i < $parcelas; $i++) {
-                $dataParcela = (new DateTime())->modify("+$i month")->format('Y-m-d');
+                $dataParcela = (new DateTime())->modify("+($i+$proximo_mes) month")->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
