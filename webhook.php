@@ -78,7 +78,11 @@ if ($mensagem && $telefone) {
         exit;
     }
     $mensagem = strtolower($mensagem);
-    if ((strpos($mensagem, 'fechado') !== false)||(strpos($mensagem, 'fechada') !== false)) {
+    if (strpos($mensagem, 'fechado') !== false){
+        $faturaFechada = true;
+        $mensagem = str_ireplace('fechado', '', $mensagem); // remove a palavra
+        }
+    elseif (strpos($mensagem, 'fechada') !== false) {
         $faturaFechada = true;
         $mensagem = str_ireplace('fechado', '', $mensagem); // remove a palavra
     }
