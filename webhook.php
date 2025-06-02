@@ -168,29 +168,30 @@ if ($mensagem && $telefone) {
         }
     } else {
         enviarMensagem($telefone, 
-        "👋 Ei {$usuario['nome']}! Não consegui entender direitinho sua mensagem. Mas calma, tô aqui pra te ajudar! 🤗
+        "👋 Ei {$usuario['nome']}! Não entendi muito bem... mas olha como é fácil:
         
-        💰 *Registrar receita:*  
+        💰 *Receita:*  
         ➕ Receita venda bolo 150  
         💵 Ganhei aluguel 800 reais  
         📥 Recebi pix da Ana 200
-
-        💸 *Registrar despesa:*  
+        
+        💸 *Despesa:*  
         ➖ Despesa mercado 300  
         🧾 Paguei cartão 250  
         🍕 Gastei pizza 90 reais
-
+        
         📆 *Parcelado?*  
+        Despesas ou receitas em várias vezes:  
         📱 Despesa celular 1200 em 6x  
         🎓 Receita curso 600 em 3x
-
+        
         🔒 *Fatura fechada?*  
-        Só escrever *fechado* no final pra lançar só no mês que vem!  
-        (ex: Despesa TV 2400 em 4x fechado)
-
-        ✨ Use palavras simples e direto ao ponto!  
-        Tenta aí que tô aqui pra ajudar 😄"
-         );
+        Escreva *fechado* no final e lançarei no mês que vem 😉  
+        Ex: Despesa TV 2400 em 4x fechado
+        
+        ✨ Use frases simples e diretas.  
+        Tenta de novo que tô contigo! 😄"
+        );
 
     }
 } else {
