@@ -191,7 +191,7 @@ if (!empty($filtro_desc)) {
   $params[] = $filtro_desc;
 }
 
-$sql .= " ORDER BY r.data DESC";
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $receitas = $stmt->fetch(PDO::FETCH_ASSOC)['valor'] ?? 0;
