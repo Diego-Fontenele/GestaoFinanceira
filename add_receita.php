@@ -265,57 +265,42 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
         <h5 class="mb-3">Receitas Cadastradas</h5>
 
         <form class="row mb-4" method="GET">
-          <div class="row gy-3">
-            <div class="col-md-2">
-              <label class="form-label">Categoria</label>
-              <select name="filtro_categoria" class="form-select">
-                <option value="">Todas</option>
-                <?php foreach ($categorias as $cat): ?>
-                  <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>>
-                    <?= $cat['nome'] ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <label class="form-label">Descrição</label>
-              <select name="filtro_descricao" class="form-select">
-                <option value="">Todas</option>
-                <?php foreach ($desc_receitas as $desc): ?>
-                  <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>>
-                    <?= $desc['descricao'] ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <label class="form-label">Início</label>
-              <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
-            </div>
-
-            <div class="col-md-2">
-              <label class="form-label">Fim</label>
-              <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
-            </div>
-
-            <div class="col-md-4">
-              <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between h-100 gap-2">
-                <div>
-                  <button type="submit" class="btn btn-primary w-100 w-me-auto">
-                    <i class="bi bi-filter"></i> Filtrar
-                  </button>
-                </div>
-                <div>
-                  <a href="add_receita.php" class="btn btn-outline-secondary w-100 w-md-auto">Limpar</a>
-                </div>
-                <div class="fw-bold text-md-end">
-                <input type="text" name="totalreceita" class="form-control" value="R$ <?= number_format($total_receita, 2, ',', '.') ?>" readonly>
-                </div>
-              </div>
-            </div>
+          <div class="col-md-2">
+            <label class="form-label">Categoria</label>
+            <select name="filtro_categoria" class="form-select">
+              <option value="">Todas</option>
+              <?php foreach ($categorias as $cat): ?>
+                <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>><?= $cat['nome'] ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
+          <div class="col-md-2">
+            <label class="form-label">Descrição</label>
+            <select name="filtro_descricao" class="form-select">
+              <option value="">Todas</option>
+              <?php foreach ($desc_receitas as $desc): ?>
+                <option value="<?= $desc['descricao'] ?>" <?= $filtro_desc == $desc['descricao'] ? 'selected' : '' ?>><?= $desc['descricao'] ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Início</label>
+            <input type="date" name="filtro_inicio" class="form-control" value="<?= $filtro_inicio ?>">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Fim</label>
+            <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-filter"></i> Filtrar
+            </button>
+            <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
+          </div>
+          <div class="fw-bold text-md-end">
+                <input type="text" name="totalreceita" class="form-control" value="R$ <?= number_format($total_receita, 2, ',', '.') ?>" readonly>
+          </div>
+          
         </form>
         <form method="POST">
           <table class="table table-bordered table-striped">
