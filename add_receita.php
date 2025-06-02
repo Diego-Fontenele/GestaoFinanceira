@@ -296,10 +296,8 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
               <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
-          </div>
-          <div class="col-md-2">
             <label class="form-label">Total:</label>
-            <input type="text" name="valor" class="form-control" value="<?= $total_receita ?>" readonly>
+            <input type="text" name="valor" class="form-control" value="<?=  'Total: R$ ' . number_format($total_receita, 2, ',', '.') ?>" readonly>
             
           </div>
           
