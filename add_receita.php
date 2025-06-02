@@ -291,15 +291,18 @@ $total_receita = array_sum(array_column($receitas, 'valor'));
             <label class="form-label">Fim</label>
             <input type="date" name="filtro_fim" class="form-control" value="<?= $filtro_fim ?>">
           </div>
+            <!-- Nova linha para alinhar o total à esquerda -->
+          <div class="col-md-2 d-flex align-items-end">
+            <label class="form-label w-100"><?= 'Total: R$ ' . number_format($total_receita, 2, ',', '.') ?></label>
+          </div>
           <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary">
-              <i class="bi bi-filter"></i>Filtrar
+              <i class="bi bi-filter"></i> Filtrar
             </button>
             <a href="add_receita.php" class="btn btn-outline-secondary">Limpar</a>
-            <label class="form-label">"<?=  'Total: R$ ' . number_format($total_receita, 2, ',', '.') ?>"</label>
-         
           </div>
-          
+
+
         </form>
         <form method="POST">
           <table class="table table-bordered table-striped">
