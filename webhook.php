@@ -84,7 +84,7 @@ if ($mensagem && $telefone) {
         }
     elseif (strpos($mensagem, 'fechada') !== false) {
         $faturaFechada = true;
-        $mensagem = str_ireplace('fechado', '', $mensagem); // remove a palavra
+        $mensagem = str_ireplace('fechada', '', $mensagem); // remove a palavra
     }
 
     $mensagem = trim(preg_replace('/\s+/', ' ', $mensagem));
@@ -93,7 +93,7 @@ if ($mensagem && $telefone) {
         $descricao = ucwords(trim($match[2]));
         $valor = floatval(str_replace(',', '.', $match[3]));
         $parcelas = isset($match[5]) ? intval($match[5]) : 1;
-        $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
+        
 
     
         if ($tipo === 'receita' || $tipo === 'ganhei' || $tipo === 'recebi') {
@@ -107,6 +107,7 @@ if ($mensagem && $telefone) {
             for ($i = 0; $i < $parcelas; $i++) {
                 $mes = $proximo_mes + $i;
                 $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
+                $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
@@ -141,6 +142,7 @@ if ($mensagem && $telefone) {
             for ($i = 0; $i < $parcelas; $i++) {
                 $mes = $proximo_mes + $i;
                 $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
+                $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
