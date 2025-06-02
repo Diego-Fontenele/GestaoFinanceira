@@ -171,7 +171,7 @@ if ($mensagem && $telefone) {
         $msgFim .= "💰 *Receita:*\n➕ Receita venda bolo 150\n💵 Ganhei aluguel 800 reais\n📥 Recebi pix da Ana 200\n\n💸";
         $msgFim .="*Despesa:*➖ Despesa mercado 300\n🧾 Paguei cartão 250\n🍕 Gastei pizza 90 reais\n\n📆 *Parcelado?*\nDespesas ou receitas em várias vezes:\n";
         $msgFim .="📱 Despesa celular 1200 em 6x\n🎓 Receita curso 600 em 3x\n\n🔒 *Fatura fechada?*\nEscreva *fechado* no final e lançarei";
-        $msgFim .="no mês que vem 😉\nEx: Despesa TV 2400 em 4x fechado\n✨ Use frases simples e diretas.\n\nTenta de novo que tô contigo! 😄";
+        $msgFim .=" no mês que vem 😉\nEx: Despesa TV 2400 em 4x fechado\n✨ Use frases simples e diretas.\n\nTenta de novo que tô contigo! 😄";
         enviarMensagem($telefone,$msgFim);
 
     }
