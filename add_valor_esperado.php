@@ -1,6 +1,9 @@
 <?php
 session_start();
 require 'Conexao.php';
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$limite = 3;
+$offset = ($pagina - 1) * $limite;
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
@@ -40,7 +43,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
     } else {
         // Inserir
         $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, mentor_id, aluno_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
-        if ($stmt->execute([$categoria_id, $_SESSION['usuario_id'],$_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
+        if ($stmt->execute([$categoria_id, $_SESSION['usuario_id'], $_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: add_valor_esperado.php");
             exit;
@@ -95,9 +98,17 @@ $stmt = $pdo->prepare("
     JOIN categorias c ON cve.categoria_id = c.id
     JOIN usuarios u ON cve.mentor_id = u.id
     WHERE cve.mentor_id = ?
+    ORDER BY cve.mes_ano DESC
+    LIMIT ? OFFSET ?
 ");
-$stmt->execute([$_SESSION['usuario_id']]);
+$stmt->execute([$_SESSION['usuario_id'], $limite, $offset]);
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM categoria_valores_esperados WHERE mentor_id = ?");
+$stmt->execute([$_SESSION['usuario_id']]);
+$total_registros = $stmt->fetchColumn();
+$total_paginas = ceil($total_registros / $limite);
 ?>
 
 <!DOCTYPE html>
@@ -182,6 +193,17 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php if ($total_paginas > 1): ?>
+                    <nav>
+                        <ul class="pagination">
+                            <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                                <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                                    <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             </div>
         </div>
     </div>
