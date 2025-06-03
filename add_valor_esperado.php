@@ -2,8 +2,9 @@
 session_start();
 require 'Conexao.php';
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$limite = 3;
+$limite = 15;
 $offset = ($pagina - 1) * $limite;
+$filtro_mes_ano = $_GET['filtro_mes_ano'] ?? '';
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
@@ -92,16 +93,22 @@ $stmt->execute([$_SESSION['usuario_id']]);
 $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Listagem geral
-$stmt = $pdo->prepare("
-    SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno,  to_char(cve.mes_ano ,'dd/mm/yyyy') as mes_ano
+// Monta a SQL base
+$sql = "
+    SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno, to_char(cve.mes_ano ,'dd/mm/yyyy') as mes_ano
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
-    JOIN usuarios u ON cve.mentor_id = u.id
+    JOIN usuarios u ON cve.aluno_id = u.id
     WHERE cve.mentor_id = ?
-    ORDER BY cve.mes_ano DESC
-    LIMIT ? OFFSET ?
-");
-$stmt->execute([$_SESSION['usuario_id'], $limite, $offset]);
+";
+
+// Adiciona filtro de mês/ano se houver
+if ($filtro_mes_ano) {
+    $sql .= " AND to_char(cve.mes_ano, 'YYYY-MM') = ?";
+}
+
+$sql .= " ORDER BY cve.mes_ano DESC LIMIT ? OFFSET ?";
+$stmt->execute([$_SESSION['usuario_id'], $filtro_mes_ano, $limite, $offset]);
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -168,6 +175,18 @@ $total_paginas = ceil($total_registros / $limite);
 
             <div class="card p-4">
                 <h5 class="mb-3">Valores Cadastrados</h5>
+                <form method="GET" class="row g-3 align-items-center mb-4">
+                    <div class="col-auto">
+                        <label for="filtro_mes_ano" class="col-form-label">Filtrar por Mês/Ano:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="month" name="filtro_mes_ano" id="filtro_mes_ano" class="form-control" value="<?= htmlspecialchars($filtro_mes_ano) ?>">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        <a href="add_valor_esperado.php" class="btn btn-secondary">Limpar</a>
+                    </div>
+                </form>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -193,16 +212,18 @@ $total_paginas = ceil($total_registros / $limite);
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-4">
                 <?php if ($total_paginas > 1): ?>
                     <nav>
                         <ul class="pagination">
                             <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
                                 <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
-                                    <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                                <a class="page-link" href="?pagina=<?= $i ?>&filtro_mes_ano=<?= urlencode($filtro_mes_ano) ?>"><?= $i ?></a>
                                 </li>
                             <?php endfor; ?>
                         </ul>
                     </nav>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
