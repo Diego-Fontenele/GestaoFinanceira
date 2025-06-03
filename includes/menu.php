@@ -40,7 +40,7 @@
     </li>
     <!-- Gamificação: visível para todos, mas com funções diferentes -->
     <li class="nav-item mb-2">
-      <a class="nav-link text-white d-flex align-items-center gap-2" href="gamificacao.php">
+      <a class="nav-link text-white d-flex align-items-center gap-2" href="conquista_usuario.php">
         <i class="bi bi-trophy"></i> Gamificação
       </a>
     </li>
