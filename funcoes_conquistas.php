@@ -10,12 +10,12 @@ function verificarConquistasSistema($usuario_id, $pdo)
 
     // Verifica se já ganhou a conquista 'Primeira Meta Criada'
     if (quantidadeRegistros('metas', $usuario_id, $pdo) >= 1) {
-        atribuirConquista($usuario_id, 'Primeira Meta Criada', $pdo);
+        atribuirConquista($usuario_id, 'Meta Criada', $pdo);
     }
 
     // Verifica se já ganhou a conquista 'Investidor Iniciante'
     if (quantidadeRegistros('investimentos', $usuario_id, $pdo) >= 1) {
-        atribuirConquista($usuario_id, 'Investidor Iniciante', $pdo);
+        atribuirConquista($usuario_id, 'Primeiro Investimento', $pdo);
     }
 
     // Verifica se tem saldo positivo no mês anterior
