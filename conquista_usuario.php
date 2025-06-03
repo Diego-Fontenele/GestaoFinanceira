@@ -26,7 +26,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
             </div>
             <div class="flex-grow-1 p-4">
                 <div class="card p-4">
-                    <h4 class="mb-4">🎖️ Minhas Conquistas - <?= $_SESSION['usuario'];?> você tem <?=$qtd_conquistadas?>🏆</h4>
+                    <h4 class="mb-4">Minhas Conquistas - <?= $_SESSION['usuario'];?>, parabéns! Você já tem <?=$qtd_conquistadas?>🏆</h4>
                     <div class="row">
                         <?php
                         $usuario_id = $_SESSION['usuario_id'];
