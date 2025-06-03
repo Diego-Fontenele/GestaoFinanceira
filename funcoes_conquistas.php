@@ -45,13 +45,14 @@ function saldoPositivoMesAnterior($usuario_id, $pdo)
 {
     $mesAnterior = date('m', strtotime('-1 month'));
     $anoAnterior = date('Y', strtotime('-1 month'));
+    $datafinal = $anoAnterior.'-'.$mesAnterior.'-01';
 
-    $stmt = $pdo->prepare("SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-    $stmt->execute([$usuario_id, $mesAnterior, $anoAnterior]);
+    $stmt = $pdo->prepare("SELECT COALESCE(SUM(valor), 0) FROM receitas WHERE usuario_id = ? AND data_referencia = ?");
+    $stmt->execute([$usuario_id, $datafinal]);
     $receitas = $stmt->fetchColumn();
 
-    $stmt = $pdo->prepare("SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-    $stmt->execute([$usuario_id, $mesAnterior, $anoAnterior]);
+    $stmt = $pdo->prepare("SELECT COALESCE(SUM(valor), 0) FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
+    $stmt->execute([$usuario_id, $datafinal]);
     $despesas = $stmt->fetchColumn();
 
     return ($receitas - $despesas) > 0;
