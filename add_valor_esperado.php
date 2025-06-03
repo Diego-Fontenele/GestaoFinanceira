@@ -16,14 +16,12 @@ $id_edicao = null;
 $erro = '';
 
 $categoria_id = '';
-$aluno_id = '';
 $valor_esperado = '';
 
 // Cadastro ou edição
 if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id']))) {
     $id = $_POST['id'] ?? '';
     $categoria_id = $_POST['categoria_id'];
-    $aluno_id = $_POST['aluno_id'];
     $valor_esperado = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_esperado'])));
     $mes_ano = $_POST['mes_ano'] ?? '';
     if ($mes_ano != '') {
@@ -31,8 +29,8 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
     }
     if ($id) {
         // Atualizar
-        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?, aluno_id = ?, valor = ?, mes_ano=?  WHERE id = ?");
-        if ($stmt->execute([$categoria_id, $aluno_id, $valor_esperado, $mes_ano, $id])) {
+        $stmt = $pdo->prepare("UPDATE categoria_valores_esperados SET categoria_id = ?,  valor = ?, mes_ano=?  WHERE id = ?");
+        if ($stmt->execute([$categoria_id, $valor_esperado, $mes_ano, $id])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado atualizado com sucesso!'];
             header("Location: add_valor_esperado.php");
             exit;
@@ -41,8 +39,8 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
         }
     } else {
         // Inserir
-        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, aluno_id,mentor_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
-        if ($stmt->execute([$categoria_id, $aluno_id, $_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
+        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, mentor_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
+        if ($stmt->execute([$categoria_id, $_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: add_valor_esperado.php");
             exit;
@@ -53,7 +51,6 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
 
     // Limpa campos
     $categoria_id = '';
-    $aluno_id = '';
     $valor_esperado = '';
 }
 
@@ -75,7 +72,6 @@ if (isset($_GET['editar'])) {
     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($registro) {
         $categoria_id = $registro['categoria_id'];
-        $aluno_id = $registro['aluno_id'];
         $valor_esperado = number_format($registro['valor'], 2, ',', '.');
         $mes_ano = $registro['mes_ano'];
         $editando = true;
@@ -83,10 +79,8 @@ if (isset($_GET['editar'])) {
 }
 
 // Buscar categorias
-$aluno_id = $_POST['aluno_id'] ?? $aluno_id ?? '';
-$alunoParaCategorias = $aluno_id ?: 0;
 $stmt = $pdo->prepare("SELECT id, nome FROM categorias WHERE tipo ='despesa' and  (usuario_id = ? OR usuario_id IS NULL)");
-$stmt->execute([$alunoParaCategorias]);
+$stmt->execute([$_SESSION['usuario_id']]);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar alunos vinculados ao mentor
@@ -99,7 +93,7 @@ $stmt = $pdo->prepare("
     SELECT cve.id, cve.valor, c.nome as categoria, u.nome as aluno,  to_char(cve.mes_ano ,'dd/mm/yyyy') as mes_ano
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
-    JOIN usuarios u ON cve.aluno_id = u.id
+    JOIN usuarios u ON cve.mentor_id = u.id
     WHERE cve.mentor_id = ?
 ");
 $stmt->execute([$_SESSION['usuario_id']]);
@@ -136,16 +130,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
 
                 <form method="POST">
-
-                    <div class="mb-3">
-                        <label class="form-label">Aluno</label>
-                        <select name="aluno_id" class="form-control" id="aluno_id" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($alunos as $a): ?>
-                                <option value="<?= $a['id'] ?>" <?= $aluno_id == $a['id'] ? 'selected' : '' ?>><?= $a['nome'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                     <input type="hidden" name="id" value="<?= $id_edicao ?>">
                     <div class="mb-3">
                         <label class="form-label">Categoria</label>
@@ -216,24 +200,6 @@ $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 allowMinus: false,
                 removeMaskOnSubmit: true
             }).mask('.valor');
-        });
-
-        $(document).ready(function() {
-            $('#aluno_id').on('change', function() {
-                let alunoId = $(this).val();
-                if (!alunoId) return;
-
-                $.getJSON('buscar_categorias.php', {
-                    aluno_id: alunoId
-                }, function(data) {
-                    let categoriaSelect = $('select[name="categoria_id"]');
-                    categoriaSelect.empty().append('<option value="">Selecione</option>');
-
-                    data.forEach(function(cat) {
-                        categoriaSelect.append('<option value="' + cat.id + '">' + cat.nome + '</option>');
-                    });
-                });
-            });
         });
 
         <?php if (!empty($flash)): ?>
