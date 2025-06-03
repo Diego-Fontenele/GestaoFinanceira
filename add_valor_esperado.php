@@ -104,11 +104,11 @@ $sql = "
 
 // Adiciona filtro de mês/ano se houver
 if ($filtro_mes_ano) {
-    $sql .= " AND to_char(cve.mes_ano, 'YYYY-MM') = ?";
+    $sql .= " AND cve.mes_ano = ?";
 }
 
 $sql .= " ORDER BY cve.mes_ano DESC LIMIT ? OFFSET ?";
-$stmt->execute([$_SESSION['usuario_id'], $filtro_mes_ano, $limite, $offset]);
+$stmt->execute([$_SESSION['usuario_id'], $filtro_mes_ano.'-01', $limite, $offset]);
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
