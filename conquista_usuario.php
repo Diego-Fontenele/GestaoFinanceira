@@ -41,8 +41,8 @@ include('funcoes_conquistas.php');
                                 <div class="card h-100 shadow-sm <?php echo $c['data_conquista'] ? 'border-success' : 'border-secondary'; ?>">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-3">
-                                            <img src="imagens/conquistas/<?php echo $c['icone']; ?>" alt="<?php echo $c['titulo']; ?>" width="40" class="me-3">
-                                            <h5 class="card-title mb-0"><?php echo $c['titulo']; ?></h5>
+                                        <div style="font-size: 1.5rem; margin-right: 0.75rem;"><?php echo $c['icone']; ?></div>
+                                        <h5 class="card-title mb-0"><?php echo $c['titulo']; ?></h5>
                                         </div>
                                         <p class="card-text small text-muted"><?php echo $c['descricao']; ?></p>
                                         <div class="mb-2">
