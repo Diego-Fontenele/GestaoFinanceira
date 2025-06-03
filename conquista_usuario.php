@@ -3,6 +3,8 @@
 session_start();
 include("Conexao.php");
 include('funcoes_conquistas.php');
+$usuario_id = $_SESSION['usuario_id'];
+verificarConquistasSistema($usuario_id, $pdo);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
