@@ -96,6 +96,15 @@ function patrimonioTotal($usuario_id, $pdo)
     $stmt->execute([$usuario_id, $usuario_id]);
     return (float)$stmt->fetchColumn();
 }
+function qtdconquistadas($usuario_id, $pdo)
+{
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios_conquistas WHERE usuario_id = ?");
+    $stmt->execute([$usuario_id]);
+    $conquistadas = $stmt->fetchColumn();
+
+    return $conquistadas;
+}
+
 
 function conquistouTodas($usuario_id, $pdo)
 {

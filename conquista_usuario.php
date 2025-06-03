@@ -5,6 +5,7 @@ include("Conexao.php");
 include('funcoes_conquistas.php');
 $usuario_id = $_SESSION['usuario_id'];
 verificarConquistasSistema($usuario_id, $pdo);
+$qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -25,7 +26,7 @@ verificarConquistasSistema($usuario_id, $pdo);
             </div>
             <div class="flex-grow-1 p-4">
                 <div class="card p-4">
-                    <h4 class="mb-4">🎖️ Minhas Conquistas</h4>
+                    <h4 class="mb-4">🎖️ Minhas Conquistas - <?= $_SESSION['usuario'];?> você tem <?=$qtd_conquistadas?>🏆</h4>
                     <div class="row">
                         <?php
                         $usuario_id = $_SESSION['usuario_id'];
