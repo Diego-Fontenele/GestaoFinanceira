@@ -224,7 +224,7 @@ $total_paginas = ceil($total_registros / $limite);
                         </ul>
                     </nav>
                 </div>
-                <?php endif; ?>
+                <?php endif; ?> 
             </div>
         </div>
     </div>
