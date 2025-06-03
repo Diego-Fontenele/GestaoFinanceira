@@ -1,8 +1,8 @@
 <?php
 // conquistas_usuario.php
 session_start();
-include("conexao.php");
-include("verifica_login.php");
+include("Conexao.php");
+include('funcoes_conquistas.php');
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -24,11 +24,14 @@ include("verifica_login.php");
                 $usuario_id = $_SESSION['usuario_id'];
                 $sql = "SELECT c.id, c.titulo, c.descricao, c.dificuldade, c.icone, uc.data_conquista
                         FROM conquistas c
-                        LEFT JOIN usuarios_conquistas uc ON c.id = uc.conquista_id AND uc.usuario_id = $usuario_id
+                        LEFT JOIN usuarios_conquistas uc ON c.id = uc.conquista_id AND uc.usuario_id = :usuario_id
                         WHERE c.ativa = true
                         ORDER BY c.dificuldade DESC, c.id ASC";
-                $result = pg_query($conexao, $sql);
-                while($c = pg_fetch_assoc($result)): ?>
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['usuario_id' => $usuario_id]);
+                $conquistas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach($conquistas as $c): ?>
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm <?php echo $c['data_conquista'] ? 'border-success' : 'border-secondary'; ?>">
                             <div class="card-body">
@@ -50,7 +53,7 @@ include("verifica_login.php");
                             </div>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
