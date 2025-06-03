@@ -7,6 +7,10 @@ function verificarConquistasSistema($usuario_id, $pdo)
     if (quantidadeRegistros('receitas', $usuario_id, $pdo) >= 1) {
         atribuirConquista($usuario_id, 'Primeira Receita', $pdo);
     }
+      // Verifica se já ganhou a conquista 'Primeira Despesa'
+      if (quantidadeRegistros('despesas', $usuario_id, $pdo) >= 1) {
+        atribuirConquista($usuario_id, 'Primeira Despesa', $pdo);
+    }
 
     // Verifica se já ganhou a conquista 'Primeira Meta Criada'
     if (quantidadeRegistros('metas', $usuario_id, $pdo) >= 1) {
