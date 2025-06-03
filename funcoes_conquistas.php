@@ -80,7 +80,7 @@ function patrimonioTotal($usuario_id, $pdo)
                                                     sum(investido)
                                                 from
                                                     patrimonio");
-    $stmt->execute([$usuario_id]);
+    $stmt->execute([$usuario_id, $usuario_id]);
     return (float)$stmt->fetchColumn();
 }
 
