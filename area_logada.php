@@ -71,7 +71,9 @@ foreach ($mesesTotais as $mes) {
   $valoresReceitasUnificadas[] = $dadosReceitas[$mes] ?? 0;
   $valoresDespesasUnificadas[] = array_combine($mesesDespesas, $valoresDespesas)[$mes] ?? 0;
 }
-
+$dataAnterior = new DateTime();
+$dataAnterior->modify('-1 month');
+$dataAnterior->modify('first day of this month');
 if (isset($_GET['mes_descricao'])) {
 
   $datareferencia = $_GET['mes_descricao'] . '-01';
@@ -99,7 +101,7 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                      r.data_referencia =?
                                 group by ca.nome, ca.id');
 
-$sqlCategoria->execute([$usuarioId,$datareferencia]);
+$sqlCategoria->execute([$usuarioId, $datareferencia]);
 $resultado = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
 $categorias = [];
 $valores = [];
@@ -107,14 +109,12 @@ foreach ($resultado as $linha) {
   $categorias[] = $linha['nome'];
   $valores[] = $linha['total'];
 }
-$dataAnterior = new DateTime();
-$dataAnterior->modify('-1 month');
-$dataAnterior->modify('first day of this month');
 
-if (isset($_GET['mes_tipoPagamento'])){
-  $mes_tipopagamento = $_GET['mes_tipoPagamento'].'-01';
+
+if (isset($_GET['mes_tipoPagamento'])) {
+  $mes_tipopagamento = $_GET['mes_tipoPagamento'] . '-01';
   $mesSelecionadotp =  $_GET['mes_tipoPagamento'];
-}else{
+} else {
   $mes = $dataAnterior->format('m');
   $ano = $dataAnterior->format('Y');
   $mes_tipopagamento = $dataAnterior->format('Y-m-d');
@@ -128,7 +128,7 @@ $sqlTipoPagamento = $pdo->prepare('select tipo_pagamento ,
                                       group by tipo_pagamento
                                     ');
 
-$sqlTipoPagamento->execute([$usuarioId,$mes_tipopagamento]);
+$sqlTipoPagamento->execute([$usuarioId, $mes_tipopagamento]);
 $resultadoTipoPg = $sqlTipoPagamento->fetchAll(PDO::FETCH_ASSOC);
 $tipoPagamento = [];
 $valoresTpPagamento = [];
@@ -430,8 +430,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </div>
           </div>
         </div>
-        
-         <!-- Gráfico de Pizza por tipo de pagamento  -->
+
+        <!-- Gráfico de Pizza por tipo de pagamento  -->
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
             <div class="card-body">
@@ -445,9 +445,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               </div>
             </div>
           </div>
-        </div>             
-	
-	 <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
+        </div>
+
+        <!-- Gráfico de Linha de Despesas com Barra de Rolagem Horizontal -->
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
             <div class="card-body" style="max-height: 400px; overflow-x: auto; overflow-y: hidden;">
@@ -459,7 +459,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               </div>
             </div>
           </div>
-        </div>	
+        </div>
 
         <!-- Gráfico de Comparativo de Receitas vs Despesas -->
         <div class="col-md-6 mb-4 d-flex">
@@ -491,7 +491,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                       $selected = $meta['id'] == $metaIdSelecionada ? 'selected' : '';
                       echo "<option value='{$meta['id']}' $selected>{$meta['titulo']}</option>";
                     }
-                    */?>>
+                    */ ?>>
                   </select>
                 </form>
               </h5>
@@ -587,7 +587,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           });
 
 
-          
+
           const ctxMeta = document.getElementById('graficoProgressoMeta');
           const graficoProgressoMeta = new Chart(ctxMeta, {
             type: 'line',
@@ -864,7 +864,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             },
             plugins: [ChartDataLabels]
           });
-	  const ctxDespesasMes = document.getElementById('graficoDespesasMes');
+          const ctxDespesasMes = document.getElementById('graficoDespesasMes');
           const graficoDespesasMes = new Chart(ctxDespesasMes, {
             type: 'line',
             data: {
@@ -908,7 +908,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 }
               }
             }
-          });	
+          });
           const ctxComparativoCat = document.getElementById('graficoComparativoCategorias').getContext('2d');
           const graficoComparativoCategorias = new Chart(ctxComparativoCat, {
             type: 'bar',
