@@ -72,6 +72,19 @@ foreach ($mesesTotais as $mes) {
   $valoresDespesasUnificadas[] = array_combine($mesesDespesas, $valoresDespesas)[$mes] ?? 0;
 }
 
+if (isset($_GET['mes_descricao'])) {
+
+  $datareferencia = $_GET['mes_descricao'] . '-01';
+  $mesSelecionado = $_GET['mes_descricao'];
+  list($ano, $mes) = explode('-', $mesSelecionado);
+} else {
+  $datareferencia = $dataAnterior->format('Y-m-d');
+  $mes = $dataAnterior->format('m');
+  $ano = $dataAnterior->format('Y');
+  $mesSelecionado = "$ano-$mes";
+}
+
+
 //Saldo
 $saldo = $receitas - $despesas;
 
@@ -83,9 +96,10 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                      categorias as ca
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
+                                     r.data_referencia =?
                                 group by ca.nome, ca.id');
 
-$sqlCategoria->execute([$usuarioId]);
+$sqlCategoria->execute([$usuarioId,$datareferencia]);
 $resultado = $sqlCategoria->fetchAll(PDO::FETCH_ASSOC);
 $categorias = [];
 $valores = [];
@@ -122,20 +136,6 @@ foreach ($resultadoTipoPg as $linha) {
   $tipoPagamento[] = $linha['tipo_pagamento'];
   $valoresTpPagamento[] = $linha['valor'];
 }
-
-
-if (isset($_GET['mes_descricao'])) {
-
-  $datareferencia = $_GET['mes_descricao'] . '-01';
-  $mesSelecionado = $_GET['mes_descricao'];
-  list($ano, $mes) = explode('-', $mesSelecionado);
-} else {
-  $datareferencia = $dataAnterior->format('Y-m-d');
-  $mes = $dataAnterior->format('m');
-  $ano = $dataAnterior->format('Y');
-  $mesSelecionado = "$ano-$mes";
-}
-
 
 
 
