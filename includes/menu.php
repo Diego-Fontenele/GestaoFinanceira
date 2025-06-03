@@ -26,7 +26,7 @@
     <!-- Menu exclusivo para mentores -->
     <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'mentor'): ?>
         <li class="nav-item">
-        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="add_valor_esperado.php"><i class="bi bi-tags"></i> Vincular Categoria</a>
+        <a class="nav-link text-white d-flex align-items-center gap-2 text-nowrap" href="add_valor_esperado.php"><i class="bi bi-exclamation-octagon"></i> Limitar Categoria</a>
         </li>
       <?php endif; ?>
     <li class="nav-item mb-2">
