@@ -108,7 +108,13 @@ if ($filtro_mes_ano) {
 }
 
 $sql .= " ORDER BY cve.mes_ano DESC LIMIT ? OFFSET ?";
-$stmt->execute([$_SESSION['usuario_id'], $filtro_mes_ano.'-01', $limite, $offset]);
+
+$stmt = $pdo->prepare($sql);
+if ($filtro_mes_ano) {
+    $stmt->execute([$_SESSION['usuario_id'], $filtro_mes_ano.'-01', $limite, $offset]);
+}else{
+    $stmt->execute([$_SESSION['usuario_id'],  $limite, $offset]);
+}
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
