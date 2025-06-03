@@ -1,7 +1,8 @@
 <?php
 // funcoes_conquistas.php
 
-function verificarConquistasSistema($usuario_id, $pdo) {
+function verificarConquistasSistema($usuario_id, $pdo)
+{
     // Verifica se já ganhou a conquista 'Primeira Receita'
     if (quantidadeRegistros('receitas', $usuario_id, $pdo) >= 1) {
         atribuirConquista($usuario_id, 'Primeira Receita', $pdo);
@@ -33,13 +34,15 @@ function verificarConquistasSistema($usuario_id, $pdo) {
     }
 }
 
-function quantidadeRegistros($tabela, $usuario_id, $pdo) {
+function quantidadeRegistros($tabela, $usuario_id, $pdo)
+{
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM $tabela WHERE usuario_id = ?");
     $stmt->execute([$usuario_id]);
     return (int)$stmt->fetchColumn();
 }
 
-function saldoPositivoMesAnterior($usuario_id, $pdo) {
+function saldoPositivoMesAnterior($usuario_id, $pdo)
+{
     $mesAnterior = date('m', strtotime('-1 month'));
     $anoAnterior = date('Y', strtotime('-1 month'));
 
@@ -54,13 +57,35 @@ function saldoPositivoMesAnterior($usuario_id, $pdo) {
     return ($receitas - $despesas) > 0;
 }
 
-function patrimonioTotal($usuario_id, $pdo) {
-    $stmt = $pdo->prepare("SELECT COALESCE(SUM(valor), 0) FROM investimentos WHERE usuario_id = ?");
+function patrimonioTotal($usuario_id, $pdo)
+{
+    $stmt = $pdo->prepare("with patrimonio as (
+                                                select
+                                                    coalesce(SUM(im.valor), 0) as investido
+                                                from
+                                                    investimentos i
+                                                left join investimentos_movimentacoes im on
+                                                    i.id = im.investimento_id
+                                                where
+                                                    usuario_id = ?
+                                                union all
+                                                select
+                                                    coalesce(SUM(i.saldo_inicial), 0)
+                                                from
+                                                    investimentos i
+                                                where
+                                                    usuario_id = ?)
+                                                    
+                                                    select
+                                                    sum(investido)
+                                                from
+                                                    patrimonio");
     $stmt->execute([$usuario_id]);
     return (float)$stmt->fetchColumn();
 }
 
-function conquistouTodas($usuario_id, $pdo) {
+function conquistouTodas($usuario_id, $pdo)
+{
     $stmt = $pdo->query("SELECT COUNT(*) FROM conquistas WHERE ativa = true");
     $total = $stmt->fetchColumn();
 
@@ -71,7 +96,8 @@ function conquistouTodas($usuario_id, $pdo) {
     return $conquistadas >= $total;
 }
 
-function atribuirConquista($usuario_id, $titulo_conquista, $pdo) {
+function atribuirConquista($usuario_id, $titulo_conquista, $pdo)
+{
     $stmt = $pdo->prepare("SELECT id FROM conquistas WHERE titulo = ?");
     $stmt->execute([$titulo_conquista]);
     $conquista = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -88,4 +114,3 @@ function atribuirConquista($usuario_id, $titulo_conquista, $pdo) {
         }
     }
 }
-?>
