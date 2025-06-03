@@ -98,7 +98,7 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                      categorias as ca
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
-                                     r.data_referencia =?
+                                  and r.data_referencia =?
                                 group by ca.nome, ca.id');
 
 $sqlCategoria->execute([$usuarioId, $datareferencia]);
