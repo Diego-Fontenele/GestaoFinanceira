@@ -136,13 +136,13 @@ function calcularProgressoUsuario($usuario_id, $pdo) {
             $progresso = 100;
         }
 
-return [
- 'pontos' => $pontos,
- 'nivel' => $nivel,
- 'cor' => $cor,
- 'progresso' => round($progresso)
-];
-}
+        return [
+        'pontos' => $pontos,
+        'nivel' => $nivel,
+        'cor' => $cor,
+        'progresso' => round($progresso)
+        ];
+    }
 
 function conquistouTodas($usuario_id, $pdo)
 {
