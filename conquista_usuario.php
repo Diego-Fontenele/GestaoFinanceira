@@ -20,7 +20,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
 
 <body class="bg-light">
 <?php
-$progresso = calcularProgressoUsuario($conexao, $_SESSION['usuario_id']);
+$progresso = calcularProgressoUsuario($pdo, $_SESSION['usuario_id']);
 ?>
 <div class="position-absolute top-0 end-0 m-4" style="width: 250px;">
     <div class="card shadow-sm">
