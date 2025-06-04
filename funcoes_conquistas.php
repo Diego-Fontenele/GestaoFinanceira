@@ -43,14 +43,13 @@ function verificarConquistasSistema($usuario_id, $pdo)
 
     // Verifica se o patrimônio atingiu 1 milhão
     $patrimonio = patrimonioTotal($usuario_id, $pdo);
-    echo $patrimonio;
     if ($patrimonio >= 1000000) {
         atribuirConquista($usuario_id, 'O primeiro Milhão', $pdo);
-    }elseif($patrimonio >= 100000){
+    }if($patrimonio >= 100000){
         atribuirConquista($usuario_id, 'Entendi o jogo', $pdo);
-    }elseif($patrimonio >= 10000){
+    }if($patrimonio >= 10000){
         atribuirConquista($usuario_id, 'Pegando Gosto', $pdo);
-    }elseif($patrimonio >= 1000){
+    }if($patrimonio >= 1000){
         atribuirConquista($usuario_id, 'Tirando o Pé da Lama', $pdo);
     }
 
