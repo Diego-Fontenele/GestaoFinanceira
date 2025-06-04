@@ -43,7 +43,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && (!empty($_POST['categoria_id'])))
         }
     } else {
         // Inserir
-        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, mentor_id, aluno_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
+        $stmt = $pdo->prepare("INSERT INTO categoria_valores_esperados (categoria_id, usuario_id, aluno_id, valor,mes_ano) VALUES (?, ?, ?,?,?)");
         if ($stmt->execute([$categoria_id, $_SESSION['usuario_id'], $_SESSION['usuario_id'], $valor_esperado, $mes_ano])) {
             $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valor esperado cadastrado com sucesso!'];
             header("Location: add_valor_esperado.php");
@@ -99,7 +99,7 @@ $sql = "
     FROM categoria_valores_esperados cve
     JOIN categorias c ON cve.categoria_id = c.id
     JOIN usuarios u ON cve.aluno_id = u.id
-    WHERE cve.mentor_id = ?
+    WHERE cve.usuario_id = ?
 ";
 
 // Adiciona filtro de mês/ano se houver
@@ -118,7 +118,7 @@ if ($filtro_mes_ano) {
 $valores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM categoria_valores_esperados WHERE mentor_id = ?");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM categoria_valores_esperados WHERE usuario_id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $total_registros = $stmt->fetchColumn();
 $total_paginas = ceil($total_registros / $limite);
