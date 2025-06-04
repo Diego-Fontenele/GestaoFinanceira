@@ -106,13 +106,13 @@ function qtdconquistadas($usuario_id, $pdo)
 }
 function calcularProgressoUsuario($usuario_id, $pdo) {
      // Pontuação total conquistada pelo usuário
-     $sql = "SELECT COALESCE(SUM(c.pontos), 0) AS total_pontos
+     $stmt = $pdo->prepare("SELECT COALESCE(SUM(c.pontos), 0) AS total_pontos
      FROM conquistas c
      JOIN usuarios_conquistas uc ON c.id = uc.conquista_id
-     WHERE uc.usuario_id = $1";
-        $result = pg_query_params($pdo, $sql, [$usuario_id]);
-        $row = pg_fetch_assoc($result);
-        $pontos = $row['total_pontos'];
+     WHERE uc.usuario_id = ?");
+        $stmt->execute([$usuario_id]);
+        $conquista = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pontos = $conquista['total_pontos'];
 
         // Definição de níveis
         if ($pontos >= 100) {
