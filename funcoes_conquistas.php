@@ -112,30 +112,35 @@ function calcularProgressoUsuario($usuario_id, $pdo) {
      WHERE uc.usuario_id = ?");
         $stmt->execute([$usuario_id]);
         $conquista = $stmt->fetch(PDO::FETCH_ASSOC);
-        $pontos = $conquista['total_pontos'];
-       
-        // Definição de níveis
-        if ($pontos >= 100) {
-        $nivel = "Ouro";
-        $cor = "warning";
-        $meta = 150;
-        } elseif ($pontos >= 50) {
-        $nivel = "Prata";
-        $cor = "secondary";
-        $meta = 100;
-        } else {
-        $nivel = "Bronze";
-        $cor = "bronze"; // criaremos essa classe
-        $meta = 50;
-        }
+        $pontos = $conquista['total_pontos'] ?? 0;
 
-$progresso = min(100, round(($pontos / $meta) * 100));
+        if ($pontos >= 0 && $pontos < 100) {
+            $nivel = "Bronze";
+            $cor = "secondary";
+            $progresso = ($pontos / 100) * 100;
+        } elseif ($pontos >= 100 && $pontos < 200) {
+            $nivel = "Prata";
+            $cor = "info";
+            $progresso = (($pontos - 100) / 100) * 100;
+        } elseif ($pontos >= 200 && $pontos < 300) {
+            $nivel = "Ouro";
+            $cor = "warning";
+            $progresso = (($pontos - 200) / 100) * 100;
+        } elseif ($pontos >= 300 && $pontos < 400) {
+            $nivel = "Platina";
+            $cor = "primary";
+            $progresso = (($pontos - 300) / 100) * 100;
+        } else {
+            $nivel = "Diamante";
+            $cor = "success";
+            $progresso = 100;
+        }
 
 return [
  'pontos' => $pontos,
  'nivel' => $nivel,
  'cor' => $cor,
- 'progresso' => $progresso
+ 'progresso' => round($progresso)
 ];
 }
 
