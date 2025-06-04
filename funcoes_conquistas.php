@@ -24,6 +24,10 @@ function verificarConquistasSistema($usuario_id, $pdo)
     if (quantidadeRegistros('metas', $usuario_id, $pdo) >= 1) {
         atribuirConquista($usuario_id, 'Meta Criada', $pdo);
     }
+     // Verifica se já ganhou a conquista 'Conectar com o MV'
+     if (quantidadeRegistros('mentor_virtual_respostas', $usuario_id, $pdo) >= 1) {
+        atribuirConquista($usuario_id, 'Conectar com o MV', $pdo);
+    }
 
   
     // Verifica se já ganhou a conquista 'Criando Limites'
