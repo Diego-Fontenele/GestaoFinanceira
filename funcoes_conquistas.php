@@ -113,7 +113,7 @@ function calcularProgressoUsuario($usuario_id, $pdo) {
         $stmt->execute([$usuario_id]);
         $conquista = $stmt->fetch(PDO::FETCH_ASSOC);
         $pontos = $conquista['total_pontos'];
-
+       
         // Definição de níveis
         if ($pontos >= 100) {
         $nivel = "Ouro";
