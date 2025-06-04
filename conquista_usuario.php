@@ -30,13 +30,13 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
             <div class="flex-grow-1 p-4">
                 <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <h4>Minhas Conquistas - <?= $_SESSION['usuario']; ?>, parabéns! Você já tem <?= $qtd_conquistadas ?> conquistas.🏆</h4>
+                        <h4>Minhas Conquistas</h4>
 
                         <div style="width: 280px;">
                             <div class="card shadow-sm">
                                 <div class="card-body p-3">
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span class="fw-bold">Nível: <?= $progresso['nivel']; ?></span>
+                                        <span class="fw-bold"><?= $progresso['nivel']; ?></span>
                                         <span><?= $progresso['pontos']; ?> pts</span>
                                     </div>
                                     <div class="progress">
