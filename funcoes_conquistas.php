@@ -25,6 +25,15 @@ function verificarConquistasSistema($usuario_id, $pdo)
         atribuirConquista($usuario_id, 'Meta Criada', $pdo);
     }
 
+    // Verifica se já ganhou a conquista 'Criando Limites'
+    if (quantidadeRegistros('categoria_valores_esperados', $usuario_id, $pdo) >= 1) {
+        atribuirConquista($usuario_id, 'Meta Criada', $pdo);
+    }
+    // Verifica se já ganhou a conquista 'Criando Limites'
+    if (quantidadeRegistros('categoria_valores_esperados', $usuario_id, $pdo) >= 1) {
+        atribuirConquista($usuario_id, 'Meta Criada', $pdo);
+    }
+
     // Verifica se já ganhou a conquista 'Investidor Iniciante'
     if (quantidadeRegistros('investimentos', $usuario_id, $pdo) >= 1) {
         atribuirConquista($usuario_id, 'Primeiro Investimento', $pdo);
@@ -37,7 +46,13 @@ function verificarConquistasSistema($usuario_id, $pdo)
 
     // Verifica se o patrimônio atingiu 1 milhão
     if (patrimonioTotal($usuario_id, $pdo) >= 1000000) {
-        atribuirConquista($usuario_id, 'Rumo ao 1º Milhão', $pdo);
+        atribuirConquista($usuario_id, 'O primeiro Milhão', $pdo);
+    }elseif(patrimonioTotal($usuario_id, $pdo) >= 100000){
+        atribuirConquista($usuario_id, 'Entendi o jogo', $pdo);
+    }elseif(patrimonioTotal($usuario_id, $pdo) >= 10000){
+        atribuirConquista($usuario_id, 'Pegando Gosto', $pdo);
+    }elseif(patrimonioTotal($usuario_id, $pdo) >= 10000){
+        atribuirConquista($usuario_id, 'Tirando o Pé da Lama', $pdo);
     }
 
     // Verifica se conquistou todas as conquistas
