@@ -20,7 +20,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
     .bg-bronze { background-color: #cd7f32 !important; }
     .bg-prata { background-color: #c0c0c0 !important; }
     .bg-ouro { background-color: #ffd700 !important; }
-    .bg-platina { background-color: #e5e4e2 !important; }
+    .bg-platina { background-color:rgb(133, 132, 130) !important; }
     .bg-diamante { background-color: #b9f2ff !important; }
 </style>
 </head>
@@ -43,7 +43,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
                             <div class="card shadow-sm">
                                 <div class="card-body p-3">
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span class="fw-bold">Nível:<?= $progresso['nivel']; ?></span>
+                                        <span class="fw-bold">Nível: <?= $progresso['nivel']; ?></span>
                                         <span><?= $progresso['pontos']; ?> pts</span>
                                     </div>
                                     <div class="progress">
