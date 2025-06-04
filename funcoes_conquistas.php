@@ -25,13 +25,10 @@ function verificarConquistasSistema($usuario_id, $pdo)
         atribuirConquista($usuario_id, 'Meta Criada', $pdo);
     }
 
+  
     // Verifica se já ganhou a conquista 'Criando Limites'
     if (quantidadeRegistros('categoria_valores_esperados', $usuario_id, $pdo) >= 1) {
-        atribuirConquista($usuario_id, 'Meta Criada', $pdo);
-    }
-    // Verifica se já ganhou a conquista 'Criando Limites'
-    if (quantidadeRegistros('categoria_valores_esperados', $usuario_id, $pdo) >= 1) {
-        atribuirConquista($usuario_id, 'Meta Criada', $pdo);
+        atribuirConquista($usuario_id, 'Criando Limites', $pdo);
     }
 
     // Verifica se já ganhou a conquista 'Investidor Iniciante'
@@ -46,6 +43,7 @@ function verificarConquistasSistema($usuario_id, $pdo)
 
     // Verifica se o patrimônio atingiu 1 milhão
     $patrimonio = patrimonioTotal($usuario_id, $pdo);
+    echo $patrimonio;
     if ($patrimonio >= 1000000) {
         atribuirConquista($usuario_id, 'O primeiro Milhão', $pdo);
     }elseif($patrimonio >= 100000){
