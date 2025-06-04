@@ -21,7 +21,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
 <body class="bg-light">
     <?php
     $progresso = calcularProgressoUsuario($_SESSION['usuario_id'], $pdo);
-    ?> 
+    ?>
     <div class="d-flex">
         <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0" style="position: relative;">
             <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
@@ -29,19 +29,22 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
             </div>
             <div class="flex-grow-1 p-4">
                 <div class="card p-4">
-                    <h4 class="mb-4">Minhas Conquistas - <?= $_SESSION['usuario']; ?>, parabéns! Você já tem <?= $qtd_conquistadas ?> conquistas.🏆</h4>
-                    <div class="top-0 end-0 m-4" style="width: 300px; z-index: 1050;">
-                        <div class="card shadow-sm">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Nível: <?= $progresso['nivel']; ?></span>
-                                    <span><?= $progresso['pontos']; ?> pts</span>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar bg-<?= $progresso['cor']; ?>" role="progressbar"
-                                        style="width: <?= $progresso['progresso']; ?>%" 
-                                        aria-valuenow="<?= $progresso['progresso']; ?>" aria-valuemin="0" aria-valuemax="100">
-                                        <?= $progresso['progresso']; ?>%
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <h4>Minhas Conquistas - <?= $_SESSION['usuario']; ?>, parabéns! Você já tem <?= $qtd_conquistadas ?> conquistas.🏆</h4>
+
+                        <div style="width: 280px;">
+                            <div class="card shadow-sm">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="fw-bold">Nível: <?= $progresso['nivel']; ?></span>
+                                        <span><?= $progresso['pontos']; ?> pts</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-<?= $progresso['cor']; ?>" role="progressbar"
+                                            style="width: <?= $progresso['progresso']; ?>%"
+                                            aria-valuenow="<?= $progresso['progresso']; ?>" aria-valuemin="0" aria-valuemax="100">
+                                            <?= $progresso['progresso']; ?>%
+                                        </div>
                                     </div>
                                 </div>
                             </div>
