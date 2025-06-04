@@ -16,6 +16,13 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .bg-bronze { background-color: #cd7f32 !important; }
+    .bg-prata { background-color: #c0c0c0 !important; }
+    .bg-ouro { background-color: #ffd700 !important; }
+    .bg-platina { background-color: #e5e4e2 !important; }
+    .bg-diamante { background-color: #b9f2ff !important; }
+</style>
 </head>
 
 <body class="bg-light">
@@ -36,7 +43,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
                             <div class="card shadow-sm">
                                 <div class="card-body p-3">
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span class="fw-bold"><?= $progresso['nivel']; ?></span>
+                                        <span class="fw-bold">Nível:<?= $progresso['nivel']; ?></span>
                                         <span><?= $progresso['pontos']; ?> pts</span>
                                     </div>
                                     <div class="progress">

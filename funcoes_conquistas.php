@@ -115,24 +115,24 @@ function calcularProgressoUsuario($usuario_id, $pdo) {
         $pontos = $conquista['total_pontos'] ?? 0;
 
         if ($pontos >= 0 && $pontos < 100) {
-            $nivel = "Iniciante";
-            $cor = "secondary";
+            $nivel = "Bronze";
+            $cor = "bronze";
             $progresso = ($pontos / 100) * 100;
         } elseif ($pontos >= 100 && $pontos < 200) {
-            $nivel = "Aprendiz";
-            $cor = "info";
+            $nivel = "Prata";
+            $cor = "prata";
             $progresso = (($pontos - 100) / 100) * 100;
         } elseif ($pontos >= 200 && $pontos < 300) {
-            $nivel = "Intermediário";
-            $cor = "warning";
+            $nivel = "Ouro";
+            $cor = "ouro";
             $progresso = (($pontos - 200) / 100) * 100;
         } elseif ($pontos >= 300 && $pontos < 400) {
-            $nivel = "Avançado";
-            $cor = "primary";
+            $nivel = "Platina";
+            $cor = "platina";
             $progresso = (($pontos - 300) / 100) * 100;
         } else {
-            $nivel = "Expert";
-            $cor = "success";
+            $nivel = "Diamante";
+            $cor = "diamante";
             $progresso = 100;
         }
 
