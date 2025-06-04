@@ -18,10 +18,10 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     .bg-bronze { background-color: #cd7f32 !important; }
-    .bg-prata { background-color: #c0c0c0 !important; }
+    .bg-prata { background-color:rgb(138, 137, 137) !important; }
     .bg-ouro { background-color: #ffd700 !important; }
     .bg-platina { background-color:rgb(133, 132, 130) !important; }
-    .bg-diamante { background-color: #b9f2ff !important; }
+    .bg-diamante { background-color:rgb(20, 209, 252) !important; }
 </style>
 </head>
 
