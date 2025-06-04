@@ -19,6 +19,26 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
 </head>
 
 <body class="bg-light">
+<?php
+$progresso = calcularProgressoUsuario($conexao, $_SESSION['usuario_id']);
+?>
+<div class="position-absolute top-0 end-0 m-4" style="width: 250px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between mb-1">
+                <span class="fw-bold">Nível: <?php echo $progresso['nivel']; ?></span>
+                <span><?php echo $progresso['pontos']; ?> pts</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar bg-<?php echo $progresso['cor']; ?>" role="progressbar"
+                     style="width: <?php echo $progresso['progresso']; ?>%" 
+                     aria-valuenow="<?php echo $progresso['progresso']; ?>" aria-valuemin="0" aria-valuemax="100">
+                    <?php echo $progresso['progresso']; ?>%
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <div class="d-flex">
         <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
             <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">

@@ -104,7 +104,40 @@ function qtdconquistadas($usuario_id, $pdo)
 
     return $conquistadas;
 }
+function calcularProgressoUsuario($usuario_id, $pdo) {
+     // Pontuação total conquistada pelo usuário
+     $sql = "SELECT COALESCE(SUM(c.pontos), 0) AS total_pontos
+     FROM conquistas c
+     JOIN usuarios_conquistas uc ON c.id = uc.conquista_id
+     WHERE uc.usuario_id = $1";
+        $result = pg_query_params($pdo, $sql, [$usuario_id]);
+        $row = pg_fetch_assoc($result);
+        $pontos = $row['total_pontos'];
 
+        // Definição de níveis
+        if ($pontos >= 100) {
+        $nivel = "Ouro";
+        $cor = "warning";
+        $meta = 150;
+        } elseif ($pontos >= 50) {
+        $nivel = "Prata";
+        $cor = "secondary";
+        $meta = 100;
+        } else {
+        $nivel = "Bronze";
+        $cor = "bronze"; // criaremos essa classe
+        $meta = 50;
+        }
+
+$progresso = min(100, round(($pontos / $meta) * 100));
+
+return [
+ 'pontos' => $pontos,
+ 'nivel' => $nivel,
+ 'cor' => $cor,
+ 'progresso' => $progresso
+];
+}
 
 function conquistouTodas($usuario_id, $pdo)
 {
