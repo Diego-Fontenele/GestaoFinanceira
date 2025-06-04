@@ -22,7 +22,7 @@ $qtd_conquistadas = qtdconquistadas($usuario_id, $pdo);
     <?php
     $progresso = calcularProgressoUsuario($_SESSION['usuario_id'], $pdo);
     var_dump($progresso);
-    ?>
+    ?> 
     <div class="d-flex">
         <div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
             <div id="menuLateral" class="collapse d-md-block bg-light p-3 min-vh-100" style="width: 250px;">
