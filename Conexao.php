@@ -10,6 +10,7 @@ try {
     $pdo = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec("SET search_path TO public;");
+    $pdo->exec("SET TIME ZONE 'America/Sao_Paulo'");
     //echo "Conectado com sucesso ao PostgreSQL!";
 } catch (PDOException $e) {
     echo "Erro na conexão: " . $e->getMessage();

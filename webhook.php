@@ -3,7 +3,7 @@
 
 $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
-$timezone = new DateTimeZone('America/Sao_Paulo');
+
 // Log para debug
 //error_log("Requisição recebida: $dataRaw");
 
@@ -106,14 +106,8 @@ if ($mensagem && $telefone) {
             }
             for ($i = 0; $i < $parcelas; $i++) {
                 $mes = $proximo_mes + $i;
-                //ajustando com o horario do brasil estava pegando o horário do servidor que não está como o fuso brasil.
-                $dataParcela = (new DateTime('now', $timezone))
-                    ->modify("+$mes month")
-                    ->format('Y-m-d');
-                $dataReferencia = (new DateTime($dataParcela, $timezone))
-                    ->modify('first day of this month')
-                    ->format('Y-m-d');    
-
+                $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
+                $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
@@ -147,12 +141,8 @@ if ($mensagem && $telefone) {
             }
             for ($i = 0; $i < $parcelas; $i++) {
                 $mes = $proximo_mes + $i;
-                $dataParcela = (new DateTime('now', $timezone))
-                    ->modify("+$mes month")
-                    ->format('Y-m-d');
-                $dataReferencia = (new DateTime($dataParcela, $timezone))
-                    ->modify('first day of this month')
-                    ->format('Y-m-d');  
+                $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
+                $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $usuario['id'],
