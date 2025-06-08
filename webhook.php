@@ -41,7 +41,7 @@ if ($mensagem && $telefone) {
 
         // Buscar somatório de despesas por dia (últimos 7 dias)
         $placeholders = implode(',', array_fill(0, count($datas), '?'));
-        $params = array_merge($usuario_id, $datas);
+        $params = array_merge([$usuario_id], $datas);
 
         $stmt = $pdo->prepare("
         SELECT 
