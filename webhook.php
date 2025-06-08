@@ -85,6 +85,19 @@ if ($mensagem && $telefone) {
                     'display' => true,
                     'text' => 'Despesas - Últimos 7 dias'
                 ],
+                'plugins' => [
+                    'datalabels' => [
+                        'color' => '#000',
+                        'anchor' => 'end',
+                        'align' => 'top',
+                        'font' => [
+                            'weight' => 'bold',
+                            'size' => 12
+                        ],
+                        // Para formatter, colocamos uma string especial que será depois substituída:
+                        'formatter' => '__FUNC__function(value){return "R$ " + value.toFixed(2).replace(".", ",");}__ENDFUNC__'
+                    ]
+                ],
                 'scales' => [
                     'yAxes' => [[
                         'ticks' => ['beginAtZero' => true]
@@ -92,11 +105,17 @@ if ($mensagem && $telefone) {
                 ]
             ]
         ];
-
-        $urlFinal = $chartUrl . "?width=500&height=300&format=png&c=" . urlencode(json_encode($chartData));
+        
+        // Transformar o array em JSON
+        $jsonChart = json_encode($chartData);
+        
+        // Substituir as strings especiais pela função JS real
+        $jsonChart = preg_replace('/"__FUNC__(.*?)__ENDFUNC__"/', '$1', $jsonChart);
+        
+        $urlFinal = $chartUrl . "?width=500&height=300&format=png&plugins=datalabels&c=" . urlencode($jsonChart);
 
         // Enviar imagem no WhatsApp (imagem gerada pelo QuickChart)
-        enviarImagem($telefone, $urlFinal, "📊 Resumo de despesas dos últimos 7 dias:");
+        enviarImagem($telefone, $urlFinal, "");
     }
     function detectarCategoria($pdo, $tipo, $descricao)
     {
