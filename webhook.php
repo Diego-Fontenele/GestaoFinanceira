@@ -28,6 +28,62 @@ $mes = 0;
 
 if ($mensagem && $telefone) {
     include "Conexao.php";
+    function enviarResumoSemanal($pdo, $usuario_id, $telefone) {
+        $stmt = $pdo->prepare("SELECT data, descricao, valor FROM despesas WHERE usuario_id = ? AND data >= CURRENT_DATE - INTERVAL '7 days' ORDER BY data");
+        $stmt->execute([$usuario_id]);
+        $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        if (!$despesas) {
+            enviarMensagem($telefone, "📉 Nenhuma despesa registrada nos últimos 7 dias.");
+            return;
+        }
+    
+        $dias = [];
+        $valoresPorDia = [];
+    
+        foreach ($despesas as $despesa) {
+            $dia = (new DateTime($despesa['data']))->format('d/m');
+            if (!isset($valoresPorDia[$dia])) {
+                $valoresPorDia[$dia] = 0;
+            }
+            $valoresPorDia[$dia] += $despesa['valor'];
+        }
+    
+        ksort($valoresPorDia); // Ordena por data
+    
+        $labels = array_keys($valoresPorDia);
+        $valores = array_values($valoresPorDia);
+    
+        // Gerar URL do gráfico com QuickChart
+        $chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode([
+            'type' => 'bar',
+            'data' => [
+                'labels' => $labels,
+                'datasets' => [[
+                    'label' => 'Despesas por dia (últimos 7 dias)',
+                    'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
+                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'borderWidth' => 1,
+                    'data' => $valores
+                ]]
+            ],
+            'options' => [
+                'scales' => [
+                    'yAxes' => [[
+                        'ticks' => ['beginAtZero' => true]
+                    ]]
+                ]
+            ]
+        ]));
+    
+        $msg = "📊 *Resumo das Despesas (últimos 7 dias)*\n\n";
+        foreach ($valoresPorDia as $dia => $valor) {
+            $msg .= "🗓️ $dia - R$ " . number_format($valor, 2, ',', '.') . "\n";
+        }
+        $msg .= "\n🖼️ Veja o gráfico: $chartUrl";
+    
+        enviarMensagem($telefone, $msg);
+    }
     function detectarCategoria($pdo, $tipo, $descricao) {
         $descricaoLower = mb_strtolower($descricao);
     
@@ -88,6 +144,10 @@ if ($mensagem && $telefone) {
     }
 
     $mensagem = trim(preg_replace('/\s+/', ' ', $mensagem));
+    if (strpos($mensagem, 'resumo') !== false) {
+        enviarResumoSemanal($pdo, $usuario['id'], $telefone);
+        exit;
+    }
     if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei|compra|comprei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu', $mensagem, $match)) {
         $tipo = strtolower($match[1]);
         $descricao = ucwords(trim($match[2]));
