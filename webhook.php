@@ -29,60 +29,57 @@ $mes = 0;
 if ($mensagem && $telefone) {
     include "Conexao.php";
     function enviarResumoSemanal($pdo, $usuario_id, $telefone) {
-        $stmt = $pdo->prepare("SELECT data, descricao, valor FROM despesas WHERE usuario_id = ? AND data >= CURRENT_DATE - INTERVAL '7 days' ORDER BY data");
-        $stmt->execute([$usuario_id]);
-        $despesas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        if (!$despesas) {
-            enviarMensagem($telefone, "📉 Nenhuma despesa registrada nos últimos 7 dias.");
-            return;
-        }
-    
-        $dias = [];
-        $valoresPorDia = [];
-    
-        foreach ($despesas as $despesa) {
-            $dia = (new DateTime($despesa['data']))->format('d/m');
-            if (!isset($valoresPorDia[$dia])) {
-                $valoresPorDia[$dia] = 0;
-            }
-            $valoresPorDia[$dia] += $despesa['valor'];
-        }
-    
-        ksort($valoresPorDia); // Ordena por data
-    
-        $labels = array_keys($valoresPorDia);
-        $valores = array_values($valoresPorDia);
-    
-        // Gerar URL do gráfico com QuickChart
-        $chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode([
-            'type' => 'bar',
-            'data' => [
-                'labels' => $labels,
-                'datasets' => [[
-                    'label' => 'Despesas por dia (últimos 7 dias)',
-                    'backgroundColor' => 'rgba(255, 99, 132, 0.6)',
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
-                    'borderWidth' => 1,
-                    'data' => $valores
-                ]]
-            ],
-            'options' => [
-                'scales' => [
-                    'yAxes' => [[
-                        'ticks' => ['beginAtZero' => true]
-                    ]]
-                ]
+        $stmt = $pdo->prepare("
+        SELECT 
+            data, 
+            SUM(valor) AS total
+        FROM despesas
+        WHERE usuario_id = ? AND data >= CURRENT_DATE - INTERVAL '6 days'
+        GROUP BY data
+        ORDER BY data ASC
+    ");
+    $stmt->execute([$usuario_id]);
+    $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$dados) {
+        enviarMensagem($telefone, "📊 Você não teve despesas nos últimos 7 dias.");
+        exit;
+    }
+
+    // Preparar dados do gráfico
+    $labels = [];
+    $valores = [];
+
+    foreach ($dados as $linha) {
+        $labels[] = date('d/m', strtotime($linha['data']));
+        $valores[] = round($linha['total'], 2);
+    }
+
+    // Gerar gráfico com QuickChart
+    $chartUrl = "https://quickchart.io/chart";
+    $chartData = [
+        'type' => 'bar',
+        'data' => [
+            'labels' => $labels,
+            'datasets' => [[
+                'label' => 'Despesas por dia (R$)',
+                'backgroundColor' => 'rgba(255,99,132,0.6)',
+                'data' => $valores
+            ]]
+        ],
+        'options' => [
+            'title' => [
+                'display' => true,
+                'text' => 'Despesas - Últimos 7 dias'
             ]
-        ]));
+        ]
+    ];
     
-        $msg = "📊 *Resumo das Despesas (últimos 7 dias)*\n\n";
-        foreach ($valoresPorDia as $dia => $valor) {
-            $msg .= "🗓️ $dia - R$ " . number_format($valor, 2, ',', '.') . "\n";
-        }
-        $msg .= "\n🖼️ Veja o gráfico: $chartUrl";
-    
-        enviarMensagem($telefone, $msg);
+    $finalUrl = $chartUrl . "?c=" . urlencode(json_encode($chartData));
+
+    // Enviar o link da imagem para o WhatsApp
+    enviarMensagem($telefone, "📊 Aqui está seu resumo de *despesas dos últimos 7 dias*:\n\n$finalUrl");
+    exit;
     }
     function detectarCategoria($pdo, $tipo, $descricao) {
         $descricaoLower = mb_strtolower($descricao);
