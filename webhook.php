@@ -106,7 +106,10 @@ if ($mensagem && $telefone) {
             }
             for ($i = 0; $i < $parcelas; $i++) {
                 $mes = $proximo_mes + $i;
-                $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
+                //ajustando com o horario do brasil estava pegando o horário do servidor que não está como o fuso brasil.
+                $dataParcela = (new DateTime('now', new DateTimeZone('America/Sao_Paulo')))
+                ->modify("+$mes month")
+                ->format('Y-m-d');
                 $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
                 $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, descricao, valor, categoria_id, data, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->execute([
