@@ -48,8 +48,8 @@ while ($row = $sqlReceitasMes->fetch()) {
 }
 
 //Despesas
-$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ?");
-$sqlDespesas->execute([$usuarioId]);
+$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
+$sqlDespesas->execute([$usuarioId, $datareferencia]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
 //Despesas por mês
