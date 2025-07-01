@@ -9,12 +9,25 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 $usuarioId = $_SESSION['usuario_id'];
-// Simulação de dados, substitua pelos dados reais do banco
 
+$dataAnterior = new DateTime();
+$dataAnterior->modify('-1 month');
+$dataAnterior->modify('first day of this month');
+if (isset($_GET['mes_descricao'])) {
+
+  $datareferencia = $_GET['mes_descricao'] . '-01';
+  $mesSelecionado = $_GET['mes_descricao'];
+  list($ano, $mes) = explode('-', $mesSelecionado);
+} else {
+  $datareferencia = $dataAnterior->format('Y-m-d');
+  $mes = $dataAnterior->format('m');
+  $ano = $dataAnterior->format('Y');
+  $mesSelecionado = "$ano-$mes";
+}
 
 //Receitas
-$sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ?");
-$sqlReceitas->execute([$usuarioId]);
+$sqlReceitas = $pdo->prepare("SELECT SUM(valor) as total FROM receitas WHERE usuario_id = ? AND data_referencia = ?");
+$sqlReceitas->execute([$usuarioId, $datareferencia]);
 $receitas = $sqlReceitas->fetch()['total'] ?? 0;
 $categoriaIDSelecionada = $_GET['categoria_id'] ?? 'todos';
 // Receitas por mês
@@ -71,20 +84,7 @@ foreach ($mesesTotais as $mes) {
   $valoresReceitasUnificadas[] = $dadosReceitas[$mes] ?? 0;
   $valoresDespesasUnificadas[] = array_combine($mesesDespesas, $valoresDespesas)[$mes] ?? 0;
 }
-$dataAnterior = new DateTime();
-$dataAnterior->modify('-1 month');
-$dataAnterior->modify('first day of this month');
-if (isset($_GET['mes_descricao'])) {
 
-  $datareferencia = $_GET['mes_descricao'] . '-01';
-  $mesSelecionado = $_GET['mes_descricao'];
-  list($ano, $mes) = explode('-', $mesSelecionado);
-} else {
-  $datareferencia = $dataAnterior->format('Y-m-d');
-  $mes = $dataAnterior->format('m');
-  $ano = $dataAnterior->format('Y');
-  $mesSelecionado = "$ano-$mes";
-}
 
 
 //Saldo
