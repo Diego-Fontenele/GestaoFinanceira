@@ -60,7 +60,7 @@ $total_alocacao_i = $stmt->fetchColumn() ?? 0;
 
 
 $total_alocacao = $stmt->fetchColumn() ?? 0;
-$saldo = $total_receitas - $total_despesas - $total_alocacao_i - $total_alocacao_m;
+$saldo = $total_receitas - $total_despesas;
 
 // Buscar metas
 $stmt = $pdo->prepare("SELECT id, titulo FROM metas WHERE usuario_id = ?");
