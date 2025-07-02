@@ -33,7 +33,7 @@ $categoriaIDSelecionada = $_GET['categoria_id'] ?? 'todos';
 // Receitas por mês
 $sqlReceitasMes = $pdo->prepare("
   SELECT 
-    TO_CHAR(data, 'YYYY-MM') AS mes,
+    TO_CHAR(data_referencia, 'YYYY-MM') AS mes,
     SUM(valor) AS total
   FROM receitas
   WHERE usuario_id = ?
@@ -55,7 +55,7 @@ $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 //Despesas por mês
 $sqlDespesasMes = $pdo->prepare("
   SELECT 
-    TO_CHAR(data, 'YYYY-MM') AS mes,
+    TO_CHAR(data_referencia, 'YYYY-MM') AS mes,
     SUM(valor) AS total
   FROM despesas
   WHERE usuario_id = ?
