@@ -29,13 +29,13 @@ if ($mesSelecionado) {
 list($ano, $mes) = explode('-', $mesSelecionado);
 
 // Buscar total de receitas
-$stmt = $pdo->prepare("SELECT SUM(valor) AS total FROM receitas WHERE usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-$stmt->execute([$usuario_id, $mes, $ano]);
+$stmt = $pdo->prepare("SELECT SUM(valor) AS total FROM receitas WHERE usuario_id = ? AND data_referencia = ?");
+$stmt->execute([$usuario_id, "$ano-$mes-01"]);
 $total_receitas = $stmt->fetchColumn() ?? 0;
 
 // Buscar total de despesas
-$stmt = $pdo->prepare("SELECT SUM(valor) AS total FROM despesas WHERE usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
-$stmt->execute([$usuario_id, $mes, $ano]);
+$stmt = $pdo->prepare("SELECT SUM(valor) AS total FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
+$stmt->execute([$usuario_id,"$ano-$mes-01"]);
 $total_despesas = $stmt->fetchColumn() ?? 0;
 
 // Buscar total de alocação em metas
