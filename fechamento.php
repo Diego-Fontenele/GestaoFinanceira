@@ -93,13 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       // Inserir despesa da alocação total
-      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
+      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
       $stmt->execute([
         $usuario_id,
         $valorTotal,
         "$ano-$mes-01",
         'Direcionamento para metas/investimentos',
-        48 // categoria de transferência de saldo - despesa
+        48, // categoria de transferência de saldo - despesa
+        "$ano-$mes-01"
       ]);
 
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
@@ -118,12 +119,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $data_proximo_mes = date('Y-m-01', strtotime("+1 month", strtotime($data_atual_mes)));
 
       // Inserir despesa no mês atual
-      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
-      $stmt->execute([$usuario_id, $valor, $data_atual_mes, 'Transferência de saldo para próximo mês', 48]);
+      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+      $stmt->execute([$usuario_id, $valor, $data_atual_mes, 'Transferência de saldo para próximo mês', 48, $data_atual_mes]);
 
       // Inserir receita no mês seguinte
-      $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
-      $stmt->execute([$usuario_id, $valor, $data_proximo_mes, 'Transferência de saldo do mês anterior', 47]);
+      $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, valor, data, descricao, categoria_id, data_referencia) VALUES (?, ?, ?, ?, ?, ?)");
+      $stmt->execute([$usuario_id, $valor, $data_proximo_mes, 'Transferência de saldo do mês anterior', 47,$data_proximo_mes]);
 
       $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Saldo transferido para o próximo mês.'];
       header("Location: fechamento.php$queryString");
