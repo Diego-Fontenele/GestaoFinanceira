@@ -72,34 +72,62 @@ $stmt = $pdo->prepare("SELECT id, nome FROM investimentos WHERE usuario_id = ?")
 $stmt->execute([$usuario_id]);
 $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Direcionar valor para uma meta
+// Direcionar valor para uma meta, investimento ou para outro mes.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $meta_id = $_POST['meta_id'];
-  $inv_id = $_POST['inv_id'];
-  $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
-  $valorinv = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inv'])));
+  if ($_POST['acao'] === 'direcionar') {
+    $meta_id = $_POST['meta_id'];
+    $inv_id = $_POST['inv_id'];
+    $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
+    $valorinv = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inv'])));
+    $valorTotal = round($valor + $valorinv, 2);
 
-  $valorinv = round($valorinv, 2);
-  $valor = round($valor, 2);
-  $valorTotal = $valorinv + $valor;
-  $saldo = round($saldo, 2);
+    if ($valorTotal > 0 && $valorTotal <= $saldo) {
+      if (!empty($meta_id)) {
+        $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
+        $stmt->execute([$meta_id, "$ano-$mes-01", $valor]);
+      }
+      if (!empty($inv_id)) {
+        $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor, data) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$inv_id, 'alocacao', $valorinv, "$ano-$mes-01"]);
+      }
 
-  if ($valorTotal > 0 && $valorTotal <= $saldo) {
-    if (!empty($_POST['meta_id'])){
-    $stmt = $pdo->prepare("INSERT INTO metas_aportes (meta_id, data, valor) VALUES (?, ?, ?)");
-    $stmt->execute([$meta_id, "$ano-$mes-01", $valor]);
+      // Inserir despesa da alocação total
+      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
+      $stmt->execute([
+        $usuario_id,
+        $valorTotal,
+        "$ano-$mes-01",
+        'Direcionamento para metas/investimentos',
+        48 // categoria de transferência de saldo - despesa
+      ]);
+
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
+    } else {
+      $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores. Valor excede saldo.'];
     }
-    if (!empty($_POST['inv_id'])){
-    $stmt = $pdo->prepare("INSERT INTO investimentos_movimentacoes (investimento_id, tipo, valor,data) VALUES (?, ?, ?,?)");
-    $stmt->execute([$inv_id, 'alocacao', $valorinv, "$ano-$mes-01"]);
-    }
-    $saldo -= $valorTotal;
-    $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Valores alocados com sucesso!'];
-    header("Location: fechamento.php$queryString");
-  } else {
-    $_SESSION['flash'] = ['tipo' => 'error', 'mensagem' => 'Problemas para atribuir valores em meta e/ou investimento. Valor que está atribuindo é maior que o saldo.'];
+
     header("Location: fechamento.php$queryString");
     exit;
+
+  } elseif ($_POST['acao'] === 'transferir') {
+    $valor = round($saldo, 2);
+    if ($valor > 0) {
+      $data_atual = date('Y-m-d H:i:s');
+      $data_atual_mes = "$ano-$mes-01";
+      $data_proximo_mes = date('Y-m-01', strtotime("+1 month", strtotime($data_atual_mes)));
+
+      // Inserir despesa no mês atual
+      $stmt = $pdo->prepare("INSERT INTO despesas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
+      $stmt->execute([$usuario_id, $valor, $data_atual_mes, 'Transferência de saldo para próximo mês', 48]);
+
+      // Inserir receita no mês seguinte
+      $stmt = $pdo->prepare("INSERT INTO receitas (usuario_id, valor, data, descricao, categoria_id) VALUES (?, ?, ?, ?, ?)");
+      $stmt->execute([$usuario_id, $valor, $data_proximo_mes, 'Transferência de saldo do mês anterior', 47]);
+
+      $_SESSION['flash'] = ['tipo' => 'success', 'mensagem' => 'Saldo transferido para o próximo mês.'];
+      header("Location: fechamento.php$queryString");
+      exit;
+    }
   }
 }
 ?>
@@ -149,15 +177,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php
         $saldo = round($saldo, 2);
-        if ($saldo > 0): ?>
+         if ($saldo > 0): ?>
           <form method="POST" class="mt-4">
+            <input type="hidden" name="acao" value="direcionar">
             <h5>Direcionar saldo para uma meta ou investimento</h5>
-            <?php if (!empty($erro)): ?>
-              <div class="alert alert-danger"><?= $erro ?></div>
-            <?php endif; ?>
+        
             <div class="mb-3">
               <label class="form-label">Meta</label>
-              <select name="meta_id" class="form-select" >
+              <select name="meta_id" class="form-select">
                 <option value="">Selecione</option>
                 <?php foreach ($metas as $meta): ?>
                   <option value="<?= $meta['id'] ?>"><?= $meta['titulo'] ?></option>
@@ -166,11 +193,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="mb-3">
               <label class="form-label">Valor</label>
-              <input type="text" name="valor" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" >
+              <input type="text" name="valor" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>">
             </div>
             <div class="mb-3">
               <label class="form-label">Investimento</label>
-              <select name="inv_id" class="form-select" >
+              <select name="inv_id" class="form-select">
                 <option value="">Selecione</option>
                 <?php foreach ($investimentos as $inv): ?>
                   <option value="<?= $inv['id'] ?>"><?= $inv['nome'] ?></option>
@@ -179,9 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="mb-3">
               <label class="form-label">Valor</label>
-              <input type="text" name="valor_inv" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>" >
+              <input type="text" name="valor_inv" class="form-control valor" value="<?= number_format(0, 2, ',', '.') ?>">
             </div>
             <button type="submit" class="btn btn-success">Direcionar</button>
+          </form>
+        
+          <form method="POST" class="mt-3">
+            <input type="hidden" name="acao" value="transferir">
+            <button type="submit" class="btn btn-secondary">Transferir sobra para o próximo mês</button>
           </form>
         <?php endif; ?>
       </div>
