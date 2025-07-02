@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valor = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor'])));
     $valorinv = floatval(str_replace(',', '.', str_replace(['R$', '.', ' '], '', $_POST['valor_inv'])));
     $valorTotal = round($valor + $valorinv, 2);
+    $saldo = round($saldo, 2);
 
     if ($valorTotal > 0 && $valorTotal <= $saldo) {
       if (!empty($meta_id)) {
