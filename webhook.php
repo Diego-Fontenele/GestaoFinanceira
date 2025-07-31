@@ -48,8 +48,9 @@ if ($mensagem && $telefone) {
             data, 
             SUM(valor) AS total
         FROM despesas
-        WHERE usuario_id = ? AND data IN ($placeholders)
-         and categoria_id <> 48
+        WHERE usuario_id = ? 
+        AND data IN ($placeholders)
+        AND categoria_id <> 48
         GROUP BY data
     ");
         $stmt->execute($params);

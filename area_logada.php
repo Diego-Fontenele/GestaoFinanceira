@@ -48,7 +48,7 @@ while ($row = $sqlReceitasMes->fetch()) {
 }
 
 //Despesas
-$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
+$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ? AND categoria_id <> 48");
 $sqlDespesas->execute([$usuarioId, $datareferencia]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
@@ -59,6 +59,7 @@ $sqlDespesasMes = $pdo->prepare("
     SUM(valor) AS total
   FROM despesas
   WHERE usuario_id = ?
+  AND categoria_id <> 48
   GROUP BY mes
   ORDER BY mes
 ");
@@ -99,6 +100,7 @@ $sqlCategoria = $pdo->prepare('select ca.id,
                                 where r.categoria_id = ca.id 
                                   and r.usuario_id =?
                                   and r.data_referencia =?
+                                  AND categoria_id <> 48
                                 group by ca.nome, ca.id');
 
 $sqlCategoria->execute([$usuarioId, $datareferencia]);
@@ -125,6 +127,7 @@ $sqlTipoPagamento = $pdo->prepare('select tipo_pagamento ,
                                           sum(valor)as valor
                                     from despesas where usuario_id = ?
                                       and data_referencia = ?
+                                      AND categoria_id <> 48
                                       group by tipo_pagamento
                                     ');
 
@@ -149,6 +152,7 @@ if (!isset($_GET['categoria_id']) || $_GET['categoria_id'] === 'todos') {
       FROM despesas
       WHERE usuario_id = ?
         AND data_referencia = ?
+        AND categoria_id <> 48
       GROUP BY descricao
       ORDER BY total DESC
       LIMIT 10
