@@ -141,7 +141,7 @@ $investimentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <th>Data de Aplicação</th>
               <th>Categoria</th>
               <th>Valor Inicial</th>
-              <th>Rendimento</th>
+              <th>Rendimento/Aporte</th>
               <th>Valor Atualizado</th>
               <th>Data de Vencimento</th>
               <th style="width: 150px">Ações</th>
