@@ -399,9 +399,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         <!-- Card 3 -->
         <div class="col">
-          <div class="card text-white bg-danger shadow rounded-4">
+          <div class="card text-white bg-warning shadow rounded-4">
             <div class="card-body">
-              <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Transferências</h5>
+              <h5 class="card-title"><i class="bi bi-arrow-repeat"></i> Transferências</h5>
               <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
             </div>
           </div>
@@ -409,9 +409,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         <!-- Card 4 -->
         <div class="col">
-          <div class="card text-white bg-danger shadow rounded-4">
+          <div class="card text-white bg-info shadow rounded-4">
             <div class="card-body">
-              <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Investimentos</h5>
+              <h5 class="card-title"><i class="bi bi-graph-up-arrow"></i> Investimentos</h5>
               <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
             </div>
           </div>
