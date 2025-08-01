@@ -48,7 +48,7 @@ while ($row = $sqlReceitasMes->fetch()) {
 }
 
 //Despesas
-$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ? AND categoria_id <> 48");
+$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
 $sqlDespesas->execute([$usuarioId, $datareferencia]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
@@ -389,7 +389,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <div class="col-md-4">
           <div class="card text-white bg-danger shadow rounded-4">
             <div class="card-body">
-              <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas</h5>
+              <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas/Aplicações</h5>
               <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
             </div>
           </div>
