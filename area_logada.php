@@ -365,60 +365,62 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       <?php include('includes/menu.php'); ?>
     </div>
 
-    <main class="flex-grow-1 p-4">
-      <h2 class="mb-4">Olá, <?= $_SESSION['usuario']; ?> 👋</h2>
+    <div class="container mt-4">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="mb-0">Olá, <?= $nome_usuario ?? '' ?>!</h5>
+      </div>
 
       <!-- Cards de Resumo -->
-<div class="container mt-4">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-    
-    <div class="col">
-      <div class="card text-white bg-success shadow rounded-4">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Saldo</h5>
-          <p class="card-text fs-4">R$ <?= number_format($saldo, 2, ',', '.'); ?></p>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col">
-      <div class="card text-white bg-primary shadow rounded-4">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-arrow-down-circle"></i> Receitas</h5>
-          <p class="card-text fs-4">R$ <?= number_format($receitas, 2, ',', '.'); ?></p>
-        </div>
-      </div>
-    </div>
+      <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
 
-    <div class="col">
-      <div class="card text-white bg-danger shadow rounded-4">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Transferência para próximo mês</h5>
-          <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+          <div class="col">
+            <div class="card text-white bg-success shadow rounded-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Saldo</h5>
+                <p class="card-text fs-4">R$ <?= number_format($saldo, 2, ',', '.'); ?></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card text-white bg-primary shadow rounded-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-arrow-down-circle"></i> Receitas</h5>
+                <p class="card-text fs-4">R$ <?= number_format($receitas, 2, ',', '.'); ?></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card text-white bg-danger shadow rounded-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Transferência para próximo mês</h5>
+                <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card text-white bg-danger shadow rounded-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Investimentos</h5>
+                <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card text-white bg-danger shadow rounded-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas/Aplicações</h5>
+                <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
-
-    <div class="col">
-      <div class="card text-white bg-danger shadow rounded-4">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Investimentos</h5>
-          <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card text-white bg-danger shadow rounded-4">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-arrow-up-circle"></i> Despesas/Aplicações</h5>
-          <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
 
       <!-- Gráficos lado a lado -->
       <div class="row mt-4">
@@ -969,7 +971,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             }
           });
         </script>
-    </main>
+        </main>
 
 </body>
 
