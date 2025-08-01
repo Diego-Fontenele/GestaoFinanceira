@@ -368,7 +368,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 
     <div class="container mt-4">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 align-items-start">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 align-items-start">
 
         <!-- Coluna do "Olá" -->
         <div class="col">
