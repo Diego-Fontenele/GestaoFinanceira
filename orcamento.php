@@ -94,7 +94,7 @@ if (isset($_GET['mes_ano']) && !empty($_GET['mes_ano'])) {
     $valor_esperado = $stmt->fetchColumn() ?: 0;
 
     // Total de despesas
-    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE   usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ?");
+    $stmt = $pdo->prepare("SELECT SUM(valor) FROM despesas WHERE   usuario_id = ? AND EXTRACT(MONTH FROM data) = ? AND EXTRACT(YEAR FROM data) = ? and  categoria_id = 48");
     $stmt->execute([$aluno_id, $mes, $ano]);
     $total_despesas = $stmt->fetchColumn() ?: 0;
 }
