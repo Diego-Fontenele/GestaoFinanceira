@@ -48,7 +48,7 @@ while ($row = $sqlReceitasMes->fetch()) {
 }
 
 //Despesas
-$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ?");
+$sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ? and categoria_id <> 48");
 $sqlDespesas->execute([$usuarioId, $datareferencia]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
@@ -99,7 +99,7 @@ foreach ($mesesTotais as $mes) {
 
 
 //Saldo
-$saldo = $receitas - $despesas;
+$saldo = $receitas - $despesas - $transferencia - $investimentos;
 
 //Categoria
 $sqlCategoria = $pdo->prepare('select ca.id,
