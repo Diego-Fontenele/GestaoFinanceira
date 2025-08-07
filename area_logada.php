@@ -557,7 +557,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
             <div class="card-body">
-              <h5 class="card-title mb-3"><i class="bi bi-bar-chart-line-fill"></i> Saldos dos Investimentos</h5>
+              <h5 class="card-title mb-3"><i class="bi bi-bar-chart-line-fill"></i> Saldos dos Investimentos <?= $total?></h5>
               <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
                 <div style="width: 1200px; height: 300px;">
                   <canvas id="graficoSaldosInvestimentos" class="w-100" style="height: 100%;"></canvas>
