@@ -47,6 +47,7 @@ $stmt = $pdo->prepare("
     LEFT JOIN categoria_valores_esperados ce ON ce.categoria_id = c.id AND ce.aluno_id = ? AND ce.mes_ano = ?
     LEFT JOIN despesas d ON d.categoria_id = c.id AND d.usuario_id = ? AND EXTRACT(MONTH FROM d.data) = ? AND EXTRACT(YEAR FROM d.data) = ?
     WHERE ce.valor IS NOT NULL OR d.valor IS NOT NULL
+    and categoria_id <> 48
     ORDER BY c.nome
 ");
 $stmt->execute([$aluno_id, $mes_ano, $aluno_id, $mes, $ano]);
