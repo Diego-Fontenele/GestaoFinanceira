@@ -52,6 +52,16 @@ $sqlDespesas = $pdo->prepare("SELECT SUM(valor) as total FROM despesas WHERE usu
 $sqlDespesas->execute([$usuarioId, $datareferencia]);
 $despesas = $sqlDespesas->fetch()['total'] ?? 0;
 
+//Transferencia
+$sqlTransferencia = $pdo->prepare("SELECT COALESCE(SUM(valor),0) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ? AND categoria_id = 48 and descricao like 'Transferência%'");
+$sqlTransferencia->execute([$usuarioId, $datareferencia]);
+$transferencia = $sqlTransferencia->fetch()['total'] ?? 0;
+
+//Investimentos
+$sqlInvestimentos = $pdo->prepare("SELECT COALESCE(SUM(valor),0) as total FROM despesas WHERE usuario_id = ? AND data_referencia = ? AND categoria_id = 48 and descricao like '%/investimentos%'");
+$sqlInvestimentos->execute([$usuarioId, $datareferencia]);
+$investimentos = $sqlInvestimentos->fetch()['total'] ?? 0;
+
 //Despesas por mês
 $sqlDespesasMes = $pdo->prepare("
   SELECT 
@@ -373,7 +383,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <!-- Coluna do "Olá" -->
         <div class="col">
           <div class="d-flex align-items-center h-100">
-            <h5 class="mb-0">Olá, <?= $_SESSION['usuario']; ?> 👋</h5>
+            <h3 class="mb-0">Olá, <?= $_SESSION['usuario']; ?> 👋</h3>
           </div>
         </div>
 
@@ -402,7 +412,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           <div class="card text-white bg-warning shadow rounded-4">
             <div class="card-body">
               <h5 class="card-title"><i class="bi bi-arrow-repeat"></i> Transferências</h5>
-              <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+              <p class="card-text fs-4">R$ <?= number_format($transferencia, 2, ',', '.'); ?></p>
             </div>
           </div>
         </div>
@@ -412,7 +422,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           <div class="card text-white bg-info shadow rounded-4">
             <div class="card-body">
               <h5 class="card-title"><i class="bi bi-graph-up-arrow"></i> Investimentos</h5>
-              <p class="card-text fs-4">R$ <?= number_format($despesas, 2, ',', '.'); ?></p>
+              <p class="card-text fs-4">R$ <?= number_format($investimentos, 2, ',', '.'); ?></p>
             </div>
           </div>
         </div>
