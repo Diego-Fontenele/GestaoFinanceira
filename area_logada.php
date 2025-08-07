@@ -301,7 +301,7 @@ foreach ($resultados as $row) {
   $total = $row['saldo_inicial'] + $row['aportes'] + $row['rendimentos'] + $row['alocacoes'] - $row['retiradas'];
   $totais[] = round($total, 2);
 }
-
+$total_geral_inv = array_sum($totais);
 // Consulta SQL NÃO ESTÁ sendo utilizado por enquanto.
 $sql = "
   with categoriaEsperado as (
@@ -557,7 +557,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <div class="col-md-6 mb-4 d-flex">
           <div class="card w-100 h-100">
             <div class="card-body">
-              <h5 class="card-title mb-3"><i class="bi bi-bar-chart-line-fill"></i> Saldos dos Investimentos R$<?= $total?></h5>
+              <h5 class="card-title mb-3"><i class="bi bi-bar-chart-line-fill"></i> Saldos dos Investimentos R$<?= $total_geral_inv?></h5>
               <div style="width: 100%; max-width: 1200px; overflow-x: auto; overflow-y: hidden; border: 1px solid #ccc; padding: 10px;">
                 <div style="width: 1200px; height: 300px;">
                   <canvas id="graficoSaldosInvestimentos" class="w-100" style="height: 100%;"></canvas>
