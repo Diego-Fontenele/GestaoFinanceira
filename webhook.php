@@ -1,5 +1,57 @@
 <?php
-// webhook.php
+header('Content-Type: application/json');
+
+// Captura o corpo bruto da requisição
+$input = file_get_contents('php://input');
+
+// 🔍 Envia o conteúdo bruto do webhook para o log do Render
+error_log("=== Webhook recebido em " . date('Y-m-d H:i:s') . " ===");
+error_log($input);
+error_log("============================================");
+
+// Decodifica o JSON
+$data = json_decode($input, true);
+
+// Verifica se o JSON é válido
+if (json_last_error() !== JSON_ERROR_NONE) {
+    http_response_code(400);
+    error_log("❌ JSON inválido recebido");
+    echo json_encode(['status' => 'error', 'message' => 'JSON inválido']);
+    exit;
+}
+
+// Captura os possíveis campos de telefone e mensagem (formatos antigo, novo e legado)
+$telefone = $data['phone']
+    ?? ($data['data']['message']['sender']['id'] ?? null)
+    ?? ($data['messageData']['from'] ?? null);
+
+$mensagem = $data['text']['message']
+    ?? ($data['data']['message']['text'] ?? null)
+    ?? ($data['messageData']['textMessageData']['textMessage'] ?? null);
+
+// Limpa o telefone (remove @c.us e não dígitos)
+if ($telefone) {
+    $telefone = preg_replace('/[^0-9]/', '', $telefone);
+}
+
+// Se faltar telefone ou mensagem, loga o erro completo
+if (!$telefone || !$mensagem) {
+    error_log("⚠️ Mensagem ou telefone inválido recebido");
+    error_log("Payload decodificado:");
+    error_log(print_r($data, true));
+
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Mensagem ou telefone inválido']);
+    exit;
+}
+
+// Se chegou até aqui, é válido
+error_log("✅ Mensagem recebida de {$telefone}: {$mensagem}");
+
+http_response_code(200);
+echo json_encode(['status' => 'success', 'message' => 'Webhook recebido com sucesso']);
+
+// webhook.php aquiiii
 
 $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
