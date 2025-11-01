@@ -4,17 +4,36 @@
 $dataRaw = file_get_contents('php://input');
 $data = json_decode($dataRaw, true);
 
-// Log para debug
-//error_log("Requisição recebida: $dataRaw");
+// Salva o conteúdo recebido para depuração (opcional, pode comentar depois)
+#file_put_contents('log_zapi.txt', date('Y-m-d H:i:s') . " - " . $dataRaw . PHP_EOL, FILE_APPEND);
 
-// Extrai a mensagem corretamente do campo text.message
-$mensagem = isset($data['text']['message']) ? trim($data['text']['message']) : null;
+// Extrai a mensagem recebida (Z-API usa o campo data.message.text)
+$mensagem = null;
+if (isset($data['text']['message'])) {
+    $mensagem = trim($data['text']['message']);
+} elseif (isset($data['data']['message']['text'])) {
+    $mensagem = trim($data['data']['message']['text']);
+} elseif (isset($data['messageData']['textMessageData']['textMessage'])) {
+    // compatível com versões mais antigas da Z-API
+    $mensagem = trim($data['messageData']['textMessageData']['textMessage']);
+}
 
-// Extrai o telefone e ajusta para garantir que tenha o 9 após o DDD no Brasil
-$telefone = isset($data['phone']) ? preg_replace('/\D/', '', $data['phone']) : null;
-//error_log("Telefone ajustado: $telefone");
+// Extrai o telefone (Z-API envia em data.message.sender.id ou data.phone)
+$telefone = null;
+if (isset($data['phone'])) {
+    $telefone = preg_replace('/\D/', '', $data['phone']);
+} elseif (isset($data['data']['message']['sender']['id'])) {
+    $telefone = preg_replace('/\D/', '', $data['data']['message']['sender']['id']);
+    $telefone = str_replace('@c.us', '', $telefone);
+} elseif (isset($data['messageData']['from'])) {
+    // compatível com versões antigas
+    $telefone = preg_replace('/\D/', '', $data['messageData']['from']);
+    $telefone = str_replace('@c.us', '', $telefone);
+}
+
+// Ajusta telefone para garantir o formato correto (55 + DDD + número)
 if ($telefone) {
-    // Corrige telefone: se for número do Brasil com 12 dígitos (55 + DDD + 8 números), adiciona o 9 após o DDD
+    // Se o número tiver apenas 12 dígitos (55 + DDD + 8 dígitos), adiciona o 9
     if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
         $ddd = $m[1];
         $numero = $m[2];
@@ -24,7 +43,10 @@ if ($telefone) {
 
 $proximo_mes = 0;
 $mes = 0;
-//error_log("Telefone ajustado: $telefone");
+
+// Debug temporário — remove depois que funcionar
+// error_log("Mensagem recebida: $mensagem");
+// error_log("Telefone recebido: $telefone");
 
 if ($mensagem && $telefone) {
     include "Conexao.php";
