@@ -1,89 +1,48 @@
 <?php
 // webhook.php
 
-// Define que a resposta será JSON (não obrigatório para a Z-API, mas ajuda no debug)
-header('Content-Type: application/json');
-
-// Inclui a conexão com o banco de dados
-include "Conexao.php";
-
-// Captura todo o payload enviado pelo webhook
+// Recebe o payload do webhook
 $dataRaw = file_get_contents('php://input');
-
-// Decodifica o JSON em array associativo
 $data = json_decode($dataRaw, true);
 
-// === LOG PARA DEBUG ===
-// Grava no log a hora e o payload completo recebido
+// Log completo do webhook
 error_log("=== Webhook recebido em " . date('Y-m-d H:i:s') . " ===");
 error_log($dataRaw);
+error_log("Payload decodificado:");
+error_log(print_r($data, true));
 error_log("============================================");
 
-// ===============================
-// TRATAMENTO DO TELEFONE
-// ===============================
-
-// Extrai o telefone enviado pelo webhook
-$telefone = $data['phone'] ?? null;
-
-// Remove qualquer caracter que não seja número
-if ($telefone) {
-    $telefone = preg_replace('/\D/', '', $telefone);
-
-    // Se for número do Brasil sem o 9, ajusta para incluir
-    if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
-        $ddd = $m[1];
-        $numero = $m[2];
-        $telefone = "55{$ddd}9{$numero}";
-    }
-}
-
-// ===============================
-// TRATAMENTO DA MENSAGEM
-// ===============================
-
-// Extrai mensagem de texto de acordo com estrutura da Z-API
-$mensagem = $data['text']['message'] ?? ($data['messageData']['textMessageData']['textMessage'] ?? null);
-
-// Remove espaços extras
-if ($mensagem) $mensagem = trim($mensagem);
-
-// Validação inicial: se telefone ou mensagem estiverem vazios, ignora
-if (!$telefone || !$mensagem) {
-    error_log("⚠️ Telefone ou mensagem vazio, ignorando");
-    http_response_code(200); // Respondemos 200 para não gerar erro no webhook
-    exit;
-}
-
-// ===============================
-// BUSCA DO USUÁRIO
-// ===============================
-
-// Primeiro busca nos dependentes
-$stmt = $pdo->prepare("SELECT usuario_id as id, nome FROM dependentes WHERE telefone = ?");
-$stmt->execute([$telefone]);
-$usuario = $stmt->fetch();
-
-// Se não encontrou em dependentes, busca na tabela principal
-if (!$usuario) {
-    $stmt = $pdo->prepare("SELECT id, nome FROM usuarios WHERE num_telefone = ?");
-    $stmt->execute([$telefone]);
-    $usuario = $stmt->fetch();
-}
-
-// Se não encontrou usuário, envia aviso e sai
-if (!$usuario) {
-    enviarMensagem($telefone, "👋 Olá! Parece que seu número ainda não está cadastrado.\n\nPara usar o Domine Seu Bolso, acesse:\nwww.domineseubolso.com.br\n\n⚠️ O cadastro é rápido e gratuito!");
+// Se não for uma mensagem de texto, apenas loga e sai
+if (!isset($data['text']['message'])) {
+    error_log("Evento recebido sem mensagem de texto: tipo=" . ($data['type'] ?? 'desconhecido') . 
+              " waitingMessage=" . (!empty($data['waitingMessage']) ? 'sim' : 'não'));
     http_response_code(200);
     exit;
 }
 
-// ===============================
-// FUNÇÕES DE ENVIO
-// ===============================
+// Extrai a mensagem e o telefone
+$mensagem = trim($data['text']['message'] ?? '');
+$telefone = preg_replace('/\D/', '', $data['phone'] ?? '');
 
-// Função para enviar mensagem de texto via Z-API
-function enviarMensagem($telefone, $mensagem) {
+// Corrige telefone brasileiro (adiciona 9 após DDD se necessário)
+if (preg_match('/^55(\d{2})(\d{8})$/', $telefone, $m)) {
+    $ddd = $m[1];
+    $numero = $m[2];
+    $telefone = "55{$ddd}9{$numero}";
+}
+
+// Se mensagem ou telefone estiverem vazios, retorna erro
+if (!$mensagem || !$telefone) {
+    error_log("⚠️ Mensagem ou telefone inválido recebido.");
+    http_response_code(400);
+    exit;
+}
+
+include "Conexao.php";
+
+// Função para enviar mensagens via Z-API
+function enviarMensagem($telefone, $mensagem)
+{
     $instancia = getenv('ZAPI_INSTANCIA');
     $token = getenv('ZAPI_TOKEN');
     $clientToken = getenv('CLIENT_TOKEN');
@@ -91,107 +50,141 @@ function enviarMensagem($telefone, $mensagem) {
     $url = "https://api.z-api.io/instances/$instancia/token/$token/send-text";
 
     $headers = ["Content-Type: application/json", "Client-Token: $clientToken"];
-    $payload = ["phone"=>$telefone,"message"=>$mensagem];
+    $payload = ["phone" => $telefone, "message" => $mensagem];
 
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch, CURLOPT_POST,true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($payload));
-    curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
     $response = curl_exec($ch);
 
-    if(curl_errno($ch)) error_log("Erro ao enviar mensagem: " . curl_error($ch));
-    else error_log("Mensagem enviada para $telefone: $mensagem | Resposta: $response");
+    if (curl_errno($ch)) {
+        error_log("Erro ao enviar mensagem para $telefone: " . curl_error($ch));
+    } else {
+        error_log("Mensagem enviada para $telefone: $mensagem");
+        error_log("Resposta da API: $response");
+    }
     curl_close($ch);
 }
 
 // Função para enviar imagem via Z-API
-function enviarImagem($telefone, $urlImagem, $legenda='') {
+function enviarImagem($telefone, $urlImagem, $legenda = '')
+{
     $instancia = getenv('ZAPI_INSTANCIA');
     $token = getenv('ZAPI_TOKEN');
     $clientToken = getenv('CLIENT_TOKEN');
 
     $url = "https://api.z-api.io/instances/$instancia/token/$token/send-image";
+
     $headers = ["Content-Type: application/json", "Client-Token: $clientToken"];
-    $payload = ["phone"=>$telefone,"image"=>$urlImagem,"caption"=>$legenda];
+    $payload = ["phone" => $telefone, "image" => $urlImagem, "caption" => $legenda];
 
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch, CURLOPT_POST,true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($payload));
-    curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
     $response = curl_exec($ch);
 
-    if(curl_errno($ch)) error_log("Erro ao enviar imagem: " . curl_error($ch));
-    else error_log("Imagem enviada para $telefone: $urlImagem | Resposta: $response");
+    if (curl_errno($ch)) {
+        error_log("Erro ao enviar imagem para $telefone: " . curl_error($ch));
+    } else {
+        error_log("Imagem enviada para $telefone: $urlImagem");
+        error_log("Resposta da API: $response");
+    }
     curl_close($ch);
 }
 
-// ===============================
-// DETECTA CATEGORIA AUTOMÁTICA
-// ===============================
-function detectarCategoria($pdo, $tipo, $descricao) {
+// Função para detectar categoria
+function detectarCategoria($pdo, $tipo, $descricao)
+{
     $descricaoLower = mb_strtolower($descricao);
-    $stmt = $pdo->prepare("SELECT id_categoria, categoria, palavra_chave FROM palavras_chave_categorias WHERE tipo = ? ORDER BY LENGTH(palavra_chave) DESC");
+
+    $stmt = $pdo->prepare("SELECT id_categoria, categoria, palavra_chave 
+                           FROM palavras_chave_categorias 
+                           WHERE tipo = ? 
+                           ORDER BY LENGTH(palavra_chave) DESC");
     $stmt->execute([$tipo]);
-    foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $linha){
-        if(strpos($descricaoLower, mb_strtolower($linha['palavra_chave'])) !== false){
-            return ['id'=>$linha['id_categoria'], 'categoria'=>$linha['categoria']];
+    $palavras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($palavras as $linha) {
+        if (strpos($descricaoLower, mb_strtolower($linha['palavra_chave'])) !== false) {
+            return ['id' => $linha['id_categoria'], 'categoria' => $linha['categoria']];
         }
     }
-    return $tipo==='receita'?['id'=>'13','categoria'=>'Outros']:['id'=>'8','categoria'=>'Outros'];
+
+    return ['id' => ($tipo=='receita'?13:8), 'categoria'=> 'Outros'];
 }
 
-// ===============================
-// RESUMO SEMANAL
-// ===============================
-function enviarResumoSemanal($pdo, $usuario_id, $telefone){
-    // Últimos 7 dias
-    $datas = []; for($i=6;$i>=0;$i--) $datas[]=date('Y-m-d',strtotime("-$i days"));
+// Função para enviar resumo semanal
+function enviarResumoSemanal($pdo, $usuario_id, $telefone)
+{
+    $datas = [];
+    for ($i=6;$i>=0;$i--) $datas[] = date('Y-m-d', strtotime("-$i days"));
     $totais = array_fill_keys($datas,0);
+
     $placeholders = implode(',', array_fill(0,count($datas),'?'));
-    $params = array_merge([$usuario_id],$datas);
+    $params = array_merge([$usuario_id], $datas);
 
-    $stmt = $pdo->prepare("SELECT data, SUM(valor) AS total FROM despesas WHERE usuario_id=? AND data IN ($placeholders) AND categoria_id<>48 GROUP BY data");
+    $stmt = $pdo->prepare("SELECT data, SUM(valor) as total FROM despesas 
+                           WHERE usuario_id = ? AND data IN ($placeholders) AND categoria_id<>48 GROUP BY data");
     $stmt->execute($params);
-    foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $linha) $totais[$linha['data']] = round($linha['total'],2);
+    $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $labels=[]; $valores=[];
-    foreach($totais as $data=>$valor){ $labels[]=date('d/m',strtotime($data)); $valores[]=$valor; }
+    foreach ($dados as $linha) if (isset($totais[$linha['data']])) $totais[$linha['data']] = round($linha['total'],2);
 
-    // Gera gráfico com QuickChart
-    $chartUrl = "https://quickchart.io/chart";
-    $chartData=[
+    $labels = $valores = [];
+    foreach ($totais as $d => $v) { $labels[] = date('d/m', strtotime($d)); $valores[] = $v; }
+
+    $chartData = [
         'type'=>'bar',
         'data'=>['labels'=>$labels,'datasets'=>[['label'=>'Despesas por dia (R$)','backgroundColor'=>'rgba(255,99,132,0.6)','data'=>$valores]]],
         'options'=>['title'=>['display'=>true,'text'=>'Despesas - Últimos 7 dias'],'scales'=>['yAxes'=>[['ticks'=>['beginAtZero'=>true]]]]]
     ];
-    $urlFinal = $chartUrl."?width=500&height=300&format=png&c=".urlencode(json_encode($chartData));
 
-    enviarImagem($telefone,$urlFinal,"Despesas - Últimos 7 dias");
+    $urlFinal = "https://quickchart.io/chart?width=500&height=300&format=png&c=" . urlencode(json_encode($chartData));
+
+    enviarImagem($telefone,$urlFinal,"Resumo semanal");
 }
 
-// ===============================
-// PROCESSAMENTO DA MENSAGEM
-// ===============================
+// Buscar usuário
+$stmt = $pdo->prepare("SELECT usuario_id as id,nome FROM dependentes WHERE telefone=?");
+$stmt->execute([$telefone]);
+$usuario = $stmt->fetch();
+
+if (!$usuario) {
+    $stmt = $pdo->prepare("SELECT id,nome FROM usuarios WHERE num_telefone=?");
+    $stmt->execute([$telefone]);
+    $usuario = $stmt->fetch();
+}
+
+if (!$usuario) {
+    enviarMensagem($telefone, "👋 Olá! Seu número ainda não está cadastrado. Acesse www.domineseubolso.com.br");
+    http_response_code(200);
+    exit;
+}
+
+// Processa mensagem
 $mensagemLower = strtolower($mensagem);
 $faturaFechada = false;
-
-// Verifica se mensagem contém "fechado/fechada"
-if(strpos($mensagemLower,'fechado')!==false){$faturaFechada=true;$mensagemLower=str_replace('fechado','',$mensagemLower);}
-elseif(strpos($mensagemLower,'fechada')!==false){$faturaFechada=true;$mensagemLower=str_replace('fechada','',$mensagemLower);}
+if (strpos($mensagemLower,'fechado')!==false) { $faturaFechada=true; $mensagemLower=str_replace('fechado','',$mensagemLower); }
+if (strpos($mensagemLower,'fechada')!==false) { $faturaFechada=true; $mensagemLower=str_replace('fechada','',$mensagemLower); }
 $mensagemLower = trim(preg_replace('/\s+/',' ',$mensagemLower));
 
-// Se mensagem contém "resumo", envia resumo semanal
-if(strpos($mensagemLower,'resumo')!==false){
+if (strpos($mensagemLower,'resumo')!==false) {
     enviarResumoSemanal($pdo,$usuario['id'],$telefone);
     http_response_code(200);
     exit;
 }
 
-// Regex para detectar receitas ou despesas
-if(preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei|compra|comprei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu',$mensagemLower,$match)){
-    $tipo = in_array(strtolower($match[1]),['receita','recebi','ganhei'])?'receita':'despesa';
+// Regex para registrar receita/despesa
+if (preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei|compra|comprei)\s+([a-zA-ZÀ-ÿ\s]+)\s+(\d+(?:[\.,]\d{1,2})?)\s*(reais)?(?:\s+em\s+(\d+)x)?$/iu',
+    $mensagemLower,$match))
+{
+    $tipo = in_array(strtolower($match[1]),['receita','ganhei','recebi'])?'receita':'despesa';
     $descricao = ucwords(trim($match[2]));
     $valor = floatval(str_replace(',','.',$match[3]));
     $parcelas = isset($match[5])?intval($match[5]):1;
@@ -199,24 +192,21 @@ if(preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei|compra|comprei)\s+
     $resultado = detectarCategoria($pdo,$tipo,$descricao);
     $proximo_mes = $faturaFechada?1:0;
 
-    // Insere parcelas no banco
     for($i=0;$i<$parcelas;$i++){
         $mes = $proximo_mes+$i;
         $dataParcela = (new DateTime())->modify("+$mes month")->format('Y-m-d');
         $dataReferencia = (new DateTime($dataParcela))->modify('first day of this month')->format('Y-m-d');
 
-        if($tipo==='receita'){
-            $stmt=$pdo->prepare("INSERT INTO receitas(usuario_id,descricao,valor,categoria_id,data,data_referencia) VALUES(?,?,?,?,?,?)");
-        } else {
-            $stmt=$pdo->prepare("INSERT INTO despesas(usuario_id,descricao,valor,categoria_id,data,data_referencia) VALUES(?,?,?,?,?,?)");
-        }
-        $stmt->execute([$usuario['id'],$descricao.($parcelas>1?" (".($i+1)."/$parcelas)":""),round($valor/$parcelas,2),$resultado['id'],$dataParcela,$dataReferencia]);
+        $stmt = $pdo->prepare(
+            "INSERT INTO ".($tipo==='receita'?'receitas':'despesas')." 
+            (usuario_id,descricao,valor,categoria_id,data,data_referencia) VALUES (?,?,?,?,?,?)"
+        );
+        $stmt->execute([$usuario['id'],$descricao.($parcelas>1?" ($i+1/$parcelas)":""),round($valor/$parcelas,2),$resultado['id'],$dataParcela,$dataReferencia]);
     }
 
     $msg = ($tipo==='receita'?"✅ Receita":"📌 Despesa")." registrada em $parcelas parcela(s)!\n💰 Valor total: R$ ".number_format($valor,2,',','.')."\n";
     if($parcelas>1)$msg.="💳 Valor da parcela: R$ ".number_format(round($valor/$parcelas,2),2,',','.')."\n";
     $msg.="📝 Descrição: $descricao\n🏷️ Categoria: ".$resultado['categoria'];
-
     enviarMensagem($telefone,$msg);
 
 } else {
@@ -228,8 +218,8 @@ if(preg_match('/^(receita|recebi|ganhei|paguei|despesa|gastei|compra|comprei)\s+
     enviarMensagem($telefone,$msgFim);
 }
 
-// Responde OK para webhook
 http_response_code(200);
+
 
 /*
 <?php
